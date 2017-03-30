@@ -80,7 +80,7 @@ class DataTable {
 
         if (count($this->_data) === 0)
         {
-            return; // TODO: What to do when no headers defined and there is no data?
+            return; // TODO: What to do when no headers are defined and there is no data?
         }
 
         $this->_headers = array_map(function ($header)
