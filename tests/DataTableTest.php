@@ -2,7 +2,6 @@
 
 namespace packages\hamburgscleanest\DataTables\tests;
 
-use Carbon\Carbon;
 use hamburgscleanest\DataTables\DataTablesServiceProvider;
 use hamburgscleanest\DataTables\Facades\DataTable;
 use Orchestra\Testbench\TestCase as Orchestra;
