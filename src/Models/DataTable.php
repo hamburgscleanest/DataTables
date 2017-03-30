@@ -71,14 +71,9 @@ class DataTable {
      */
     private function _generateHeaders()
     {
-        if (empty($this->_data))
-        {
-            return;
-        }
-
         if (\count($this->_data) === 0)
         {
-            return; // TODO: What to do when no headers are defined and there is no data?
+            return;
         }
 
         $this->_headers = \array_map(function ($header)
