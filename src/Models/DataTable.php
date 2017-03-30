@@ -2,18 +2,16 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
-use function array_keys;
-use function array_map;
+
 use Closure;
 use RuntimeException;
-use function str_replace;
 
 class DataTable {
 
     /**
      * @var array
      */
-    private $_data;
+    private $_data = [];
 
     /** @var Closure */
     private $_rowRenderer; // TODO: IColumnFormatter => DateColumnFormatter etc.
@@ -78,16 +76,16 @@ class DataTable {
             return;
         }
 
-        if (count($this->_data) === 0)
+        if (\count($this->_data) === 0)
         {
             return; // TODO: What to do when no headers are defined and there is no data?
         }
 
-        $this->_headers = array_map(function ($header)
+        $this->_headers = \array_map(function ($header)
         {
-            return str_replace('_', ' ', ucfirst($header));
+            return \str_replace('_', ' ', \ucfirst($header));
         },
-            array_keys($this->_data[0])
+            \array_keys($this->_data[0])
         );
     }
 
@@ -103,7 +101,7 @@ class DataTable {
         if (empty($this->_headers))
         {
             $this->_generateHeaders();
-        } else if (count($this->_headers) !== count(array_keys($this->_data[0])))
+        } else if (\count($this->_headers) !== \count(\array_keys($this->_data[0])))
         {
             throw new RuntimeException('The headers count does not match the columnt count!');
         }
@@ -182,14 +180,16 @@ class DataTable {
     /**
      * Renders the table.
      *
+     * @param Closure $noDataView
+     *
+     * @return mixed|string
      * @throws \RuntimeException
      */
-    public function render()
+    public function render(Closure $noDataView = null)
     {
-        if (empty($this->_data))
+        if (\count($this->_data) === 0)
         {
-            // TODO: handle empty data
-            throw new RuntimeException('No data was set.');
+            return $noDataView !== null ? $noDataView->call($this) : '<div>no data</div>';
         }
 
         return $this->_open() . $this->_renderHeaders() . $this->_renderBody() . $this->_close();

@@ -57,7 +57,25 @@ class DataTableTest extends Orchestra {
     {
         $dataTable = DataTable::data([]);
 
-        $dataTable->render();
+        $this->assertEquals(
+            '<div>no data</div>',
+            $dataTable->render()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function renders_custom_no_data()
+    {
+        $dataTable = DataTable::data([]);
+
+        $view = '<p>Nothing here</p>';
+
+        $this->assertEquals(
+            $view,
+            $dataTable->render(function () use ($view) { return $view; })
+        );
     }
 
     /**
