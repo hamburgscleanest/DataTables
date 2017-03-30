@@ -115,4 +115,17 @@ class DataTableTest extends Orchestra {
             $dataTable->render()
         );
     }
+
+    /**
+     * @test
+     */
+    public function table_has_class()
+    {
+        $dataTable = DataTable::data($this->_testData)->classes('test-class');
+
+        $this->assertEquals(
+            '<table class="test-class"><tr><th>Id</th><th>Created at</th><th>Name</th></tr><tr><td>1</td><td>2017-01-01 12:00:00</td><td>Andre</td></tr><tr><td>2</td><td>2017-01-01 12:00:00</td><td>Timo</td></tr></table>',
+            $dataTable->render()
+        );
+    }
 }

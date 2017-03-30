@@ -11,7 +11,7 @@ class DataTable {
     /**
      * @var array
      */
-    private $_data = [];
+    private $_data = []; // TODO: QueryBuilder instance better? Pagination, Sorting, etc.
 
     /** @var Closure */
     private $_rowRenderer; // TODO: IColumnFormatter => DateColumnFormatter etc.
