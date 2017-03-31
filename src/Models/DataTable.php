@@ -5,6 +5,7 @@ namespace hamburgscleanest\DataTables\Models;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use RuntimeException;
@@ -17,20 +18,25 @@ use RuntimeException;
  */
 class DataTable {
 
+    /** @var Request */
+    private $_request;
+
     /** @var Builder */
-    private $_query;
+    private $_queryBuilder;
 
-    /** @var int */
-    private $_perPage = 0;
-
-    /** @var int */
-    private $_currentPage = 0;
+    /** @var Paginator */
+    private $_paginator;
 
     /** @var Closure */
     private $_rowRenderer; // TODO: IColumnFormatter => DateColumnFormatter etc.
 
     /** @var string */
     private $_classes;
+
+    public function __construct(Request $request)
+    {
+        $this->_request = $request;
+    }
 
     /**
      * Set the Query builder instance which is used to display the data.
@@ -41,7 +47,8 @@ class DataTable {
      */
     public function query(Builder $queryBuilder, Closure $customRowRenderer = null)
     {
-        $this->_query = $queryBuilder;
+        $this->_queryBuilder = $queryBuilder;
+        $this->_paginator = new Paginator($this->_queryBuilder, $this->_request);
         $this->_rowRenderer = $customRowRenderer;
 
         return $this;
@@ -56,26 +63,14 @@ class DataTable {
      */
     private function _getData()
     {
-        if ($this->_query === null)
+        if ($this->_queryBuilder === null)
         {
             throw new RuntimeException('No query builder instance set!');
         }
 
-        $this->_setPagination();
-
         // TODO: OrderBy
 
-        return $this->_query->get();
-    }
-
-    private function _setPagination()
-    {
-        if ($this->_perPage === 0)
-        {
-            return;
-        }
-
-        $this->_query->limit($this->_perPage)->offset($this->_currentPage * $this->_perPage);
+        return $this->_paginator->doPagination()->get();
     }
 
     /**
@@ -84,19 +79,7 @@ class DataTable {
      */
     public function paginate($perPage = 15)
     {
-        $this->_perPage = $perPage;
-
-        return $this;
-    }
-
-    /**
-     * @param int $limit
-     *
-     * @return $this
-     */
-    public function perPage($limit)
-    {
-        $this->_perPage = $limit;
+        $this->_paginator->paginate($perPage);
 
         return $this;
     }
@@ -147,7 +130,7 @@ class DataTable {
      */
     private function _renderHeaders()
     {
-        $query = $this->_query->getQuery();
+        $query = $this->_queryBuilder->getQuery();
         $headers = $query->columns !== null ? $this->_extractColumnNames($query->columns) : Schema::getColumnListing($query->from);
 
         $html = '<tr>';
@@ -242,5 +225,23 @@ class DataTable {
         }
 
         return $this->_open() . $this->_renderHeaders() . $this->_renderBody($data) . $this->_close();
+    }
+
+    /**
+     * @return int
+     */
+    public function pageCount()
+    {
+        return $this->_paginator->pageCount();
+    }
+
+    /**
+     * Renders the pagination links.
+     *
+     * @return string
+     */
+    public function renderPagination()
+    {
+        return $this->_paginator->render();
     }
 }

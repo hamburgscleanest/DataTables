@@ -5,6 +5,7 @@ namespace hamburgscleanest\DataTables;
 use hamburgscleanest\DataTables\Models\DataTable;
 use hamburgscleanest\DataTables\Facades\DataTable as DataTableFacade;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
 class DataTablesServiceProvider extends ServiceProvider {
@@ -26,9 +27,9 @@ class DataTablesServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app->bind('datatable', function ()
+        $this->app->bind('datatable', function ($app)
         {
-            return new DataTable();
+            return new DataTable($app->request);
         });
 
         $this->app->booting(function ()

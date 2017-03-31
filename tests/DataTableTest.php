@@ -77,7 +77,7 @@ class DataTableTest extends TestCase {
         $dataTable = DataTable::query(TestModel::where('name', 'test')->select(['id', 'created_at', 'name']), function ($row) { return ['T', 'ES', 'T']; });
 
         $this->assertEquals(
-            '<table><tr><th>Id</th><th>Created at</th><th>Name</th></tr><tr><td>T</td><td>ES</td><td>T</td></tr><tr><td>T</td><td>ES</td><td>T</td></tr></table>',
+            '<table><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>T</td><td>ES</td><td>T</td></tr><tr><td>T</td><td>ES</td><td>T</td></tr></table>',
             $dataTable->render()
         );
     }
@@ -96,11 +96,26 @@ class DataTableTest extends TestCase {
         $dataTable = DataTable::query(TestModel::where('name', 'test')->select(['id', 'created_at', 'name']))->classes('test-class');
 
         $this->assertEquals(
-            '<table class="test-class"><tr><th>Id</th><th>Created at</th><th>Name</th></tr><tr><td>' .
+            '<table class="test-class"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>' .
             $testmodel->id . '</td><td>' .
             $testmodel->created_at->format('Y-m-d H:i:s') . '</td><td>' .
             $testmodel->name . '</td></tr></table>',
             $dataTable->render()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function pagination_is_rendered_correctly_for_first_page()
+    {
+        $appUrl = 'http://localhost/';
+
+        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']));
+
+        $this->assertEquals(
+            '<ul><li><a href="' . $appUrl . '?page=1">→</a></li></ul>',
+            $dataTable->paginate(15)->renderPagination()
         );
     }
 }
