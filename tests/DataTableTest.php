@@ -1,60 +1,24 @@
 <?php
 
-namespace packages\hamburgscleanest\DataTables\tests;
+namespace hamburgscleanest\DataTables\Tests;
 
-use hamburgscleanest\DataTables\DataTablesServiceProvider;
 use hamburgscleanest\DataTables\Facades\DataTable;
-use Orchestra\Testbench\TestCase as Orchestra;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /**
  * Class DataTableTest
- * @package packages\hamburgscleanest\DataTables\tests
+ * @package hamburgscleanest\DataTables\Tests
  */
-class DataTableTest extends Orchestra {
+class DataTableTest extends TestCase {
 
-    private $_testData;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->_testData = [
-            [
-                'id'         => 1,
-                'created_at' => '2017-01-01 12:00:00',
-                'name'       => 'Andre'
-            ],
-            [
-                'id'         => 2,
-                'created_at' => '2017-01-01 12:00:00',
-                'name'       => 'Timo'
-            ]
-        ];
-    }
-
-    /**
-     * @param \Illuminate\Foundation\Application $app
-     * @return array
-     */
-    protected function getPackageProviders($app)
-    {
-        return [DataTablesServiceProvider::class];
-    }
-
-    /**
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function getEnvironmentSetUp($app)
-    {
-
-    }
+    use DatabaseMigrations;
 
     /**
      * @test
      */
     public function empty_data_is_properly_displayed()
     {
-        $dataTable = DataTable::data([]);
+        $dataTable = DataTable::query(TestModel::where('created_at', '1991-08-03'));
 
         $this->assertEquals(
             '<div>no data</div>',
@@ -67,7 +31,7 @@ class DataTableTest extends Orchestra {
      */
     public function renders_custom_no_data()
     {
-        $dataTable = DataTable::data([]);
+        $dataTable = DataTable::query(TestModel::where('created_at', '1991-08-03'));
 
         $view = '<p>Nothing here</p>';
 
@@ -82,23 +46,19 @@ class DataTableTest extends Orchestra {
      */
     public function renders_table_correctly()
     {
-        $dataTable = DataTable::data($this->_testData);
+        /** @var TestModel $testmodel */
+        $testmodel = TestModel::create([
+            'name'       => 'test',
+            'created_at' => '2017-01-01 12:00:00'
+        ]);
+
+        $dataTable = DataTable::query(TestModel::where('name', 'test')->select(['id', 'created_at', 'name']));
 
         $this->assertEquals(
-            '<table><tr><th>Id</th><th>Created at</th><th>Name</th></tr><tr><td>1</td><td>2017-01-01 12:00:00</td><td>Andre</td></tr><tr><td>2</td><td>2017-01-01 12:00:00</td><td>Timo</td></tr></table>',
-            $dataTable->render()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function renders_headers_correctly()
-    {
-        $dataTable = DataTable::data($this->_testData)->headers(['Number', 'Date', 'Name']);
-
-        $this->assertEquals(
-            '<table><tr><th>Number</th><th>Date</th><th>Name</th></tr><tr><td>1</td><td>2017-01-01 12:00:00</td><td>Andre</td></tr><tr><td>2</td><td>2017-01-01 12:00:00</td><td>Timo</td></tr></table>',
+            '<table><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>' .
+            $testmodel->id . '</td><td>' .
+            $testmodel->created_at->format('Y-m-d H:i:s') . '</td><td>' .
+            $testmodel->name . '</td></tr></table>',
             $dataTable->render()
         );
     }
@@ -108,7 +68,13 @@ class DataTableTest extends Orchestra {
      */
     public function closure_is_working()
     {
-        $dataTable = DataTable::data($this->_testData, function ($row) { return ['T', 'ES', 'T']; });
+        /** @var TestModel $testmodel */
+        TestModel::create([
+            'name'       => 'test',
+            'created_at' => '2017-01-01 12:00:00'
+        ]);
+
+        $dataTable = DataTable::query(TestModel::where('name', 'test')->select(['id', 'created_at', 'name']), function ($row) { return ['T', 'ES', 'T']; });
 
         $this->assertEquals(
             '<table><tr><th>Id</th><th>Created at</th><th>Name</th></tr><tr><td>T</td><td>ES</td><td>T</td></tr><tr><td>T</td><td>ES</td><td>T</td></tr></table>',
@@ -121,10 +87,19 @@ class DataTableTest extends Orchestra {
      */
     public function table_has_class()
     {
-        $dataTable = DataTable::data($this->_testData)->classes('test-class');
+        /** @var TestModel $testmodel */
+        $testmodel = TestModel::create([
+            'name'       => 'test',
+            'created_at' => '2017-01-01 12:00:00'
+        ]);
+
+        $dataTable = DataTable::query(TestModel::where('name', 'test')->select(['id', 'created_at', 'name']))->classes('test-class');
 
         $this->assertEquals(
-            '<table class="test-class"><tr><th>Id</th><th>Created at</th><th>Name</th></tr><tr><td>1</td><td>2017-01-01 12:00:00</td><td>Andre</td></tr><tr><td>2</td><td>2017-01-01 12:00:00</td><td>Timo</td></tr></table>',
+            '<table class="test-class"><tr><th>Id</th><th>Created at</th><th>Name</th></tr><tr><td>' .
+            $testmodel->id . '</td><td>' .
+            $testmodel->created_at->format('Y-m-d H:i:s') . '</td><td>' .
+            $testmodel->name . '</td></tr></table>',
             $dataTable->render()
         );
     }

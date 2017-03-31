@@ -2,52 +2,77 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
-
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use RuntimeException;
 
+/**
+ * Class DataTable
+ * @package hamburgscleanest\DataTables\Models
+ *
+ * TODO: remember sorting (multiple columns) / pagination
+ */
 class DataTable {
 
-    /**
-     * @var array
-     */
-    private $_data = []; // TODO: QueryBuilder instance better? Pagination, Sorting, etc.
+    /** @var Builder */
+    private $_query;
+
+    /** @var int */
+    private $_perPage = 15;
+
+    /** @var int */
+    private $_currentPage = 0;
 
     /** @var Closure */
     private $_rowRenderer; // TODO: IColumnFormatter => DateColumnFormatter etc.
-
-    /** @var array */
-    private $_headers = [];
 
     /** @var string */
     private $_classes;
 
     /**
-     * Set the data which should be displayed.
+     * Set the Query builder instance which is used to display the data.
      *
-     * @param array $data
-     * @param Closure $customRowRenderer
-     *
+     * @param Builder $queryBuilder
+     * @param Closure $customRowRenderer Custom function to manipulate the fetched rows.
      * @return $this
      */
-    public function data(array $data, Closure $customRowRenderer = null)
+    public function query(Builder $queryBuilder, Closure $customRowRenderer = null)
     {
-        $this->_data = $data;
+        $this->_query = $queryBuilder;
         $this->_rowRenderer = $customRowRenderer;
 
         return $this;
     }
 
     /**
-     * Set the table headers.
+     * Get data which should be displayed in the table.
      *
-     * @param array $headers
+     * @return \Illuminate\Support\Collection
+     *
+     * @throws \RuntimeException
+     */
+    private function _getData()
+    {
+        if ($this->_query === null)
+        {
+            throw new RuntimeException('No query builder instance set!');
+        }
+
+        // TODO: OrderBy
+        return $this->_query->limit($this->_perPage)->offset($this->_currentPage * $this->_perPage)->get();
+    }
+
+    /**
+     * @param int $limit
      *
      * @return $this
      */
-    public function headers(array $headers)
+    public function perPage($limit)
     {
-        $this->_headers = $headers;
+        $this->_perPage = $limit;
 
         return $this;
     }
@@ -67,42 +92,42 @@ class DataTable {
     }
 
     /**
-     * Generates Headers by inspecting the first row.
+     * @param array $columns
+     * @return array
      */
-    private function _generateHeaders()
+    private function _extractColumnNames(array $columns)
     {
-        if (\count($this->_data) === 0)
-        {
-            return;
-        }
+        return array_map(
+            function ($column)
+            {
+                return $this->_getColumnAlias($column);
+            },
+            \explode(',', \implode(',', $columns)));
+    }
 
-        $this->_headers = \array_map(function ($header)
-        {
-            return \str_replace('_', ' ', \ucfirst($header));
-        },
-            \array_keys($this->_data[0])
-        );
+    /**
+     * @param string $column
+     * @return string
+     */
+    private function _getColumnAlias(string $column)
+    {
+        $aliasPos = mb_strpos($column, ' as ');
+
+        return $aliasPos !== false ? mb_substr($column, $aliasPos + 4) : $column;
     }
 
     /**
      * Renders the column headers.
      *
      * @return string
-     *
-     * @throws \RuntimeException
      */
     private function _renderHeaders()
     {
-        if (empty($this->_headers))
-        {
-            $this->_generateHeaders();
-        } else if (\count($this->_headers) !== \count(\array_keys($this->_data[0])))
-        {
-            throw new RuntimeException('The headers count does not match the columnt count!');
-        }
+        $query = $this->_query->getQuery();
+        $headers = $query->columns !== null ? $this->_extractColumnNames($query->columns) : Schema::getColumnListing($query->from);
 
         $html = '<tr>';
-        foreach ($this->_headers as $header)
+        foreach ($headers as $header)
         {
             $html .= '<th>' . $header . '</th>';
         }
@@ -114,12 +139,14 @@ class DataTable {
     /**
      * Displays the table body.
      *
+     * @param Collection $data
+     *
      * @return string
      */
-    private function _renderBody()
+    private function _renderBody(Collection $data)
     {
         $html = '';
-        foreach ($this->_data as $row)
+        foreach ($data as $row)
         {
             $html .= $this->_renderRow($row);
         }
@@ -130,18 +157,19 @@ class DataTable {
     /**
      * Displays a single row.
      *
-     * @param array $row
+     * @param Model $rowModel
+     *
      * @return string
      */
-    private function _renderRow(array $row)
+    private function _renderRow(Model $rowModel)
     {
         if ($this->_rowRenderer !== null)
         {
-            $row = $this->_rowRenderer->call($this, $row);
+            $this->_rowRenderer->call($this, $rowModel);
         }
 
         $html = '<tr>';
-        foreach ($row as $column)
+        foreach ($rowModel->getAttributes() as $column)
         {
             $html .= '<td>' . $column . '</td>';
         }
@@ -182,11 +210,13 @@ class DataTable {
      */
     public function render(Closure $noDataView = null)
     {
-        if (\count($this->_data) === 0)
+        $data = $this->_getData();
+
+        if ($data->count() === 0)
         {
             return $noDataView !== null ? $noDataView->call($this) : '<div>no data</div>';
         }
 
-        return $this->_open() . $this->_renderHeaders() . $this->_renderBody() . $this->_close();
+        return $this->_open() . $this->_renderHeaders() . $this->_renderBody($data) . $this->_close();
     }
 }
