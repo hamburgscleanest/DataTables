@@ -21,7 +21,7 @@ class DataTable {
     private $_query;
 
     /** @var int */
-    private $_perPage = 15;
+    private $_perPage = 0;
 
     /** @var int */
     private $_currentPage = 0;
@@ -61,8 +61,32 @@ class DataTable {
             throw new RuntimeException('No query builder instance set!');
         }
 
+        $this->_setPagination();
+
         // TODO: OrderBy
-        return $this->_query->limit($this->_perPage)->offset($this->_currentPage * $this->_perPage)->get();
+
+        return $this->_query->get();
+    }
+
+    private function _setPagination()
+    {
+        if ($this->_perPage === 0)
+        {
+            return;
+        }
+
+        $this->_query->limit($this->_perPage)->offset($this->_currentPage * $this->_perPage);
+    }
+
+    /**
+     * @param int $perPage
+     * @return $this
+     */
+    public function paginate($perPage = 15)
+    {
+        $this->_perPage = $perPage;
+
+        return $this;
     }
 
     /**
