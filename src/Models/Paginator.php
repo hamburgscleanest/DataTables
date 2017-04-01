@@ -23,6 +23,12 @@ class Paginator {
     /** @var int */
     private $_totalPageCount = 0;
 
+    /** @var string */
+    private $_previousPageSymbol = '←';
+
+    /** @var string */
+    private $_nextPageSymbol = '→';
+
     public function __construct(Builder $queryBuilder, Request $request)
     {
         $this->_queryBuilder = $queryBuilder;
@@ -121,14 +127,19 @@ class Paginator {
         return $this->_request->url() . '?' . http_build_query($parameters);
     }
 
-    private function _renderListItem($pagenumber, $url)
+    private function _renderListItem($pagenumber, $url, $symbol = null)
     {
         if ($url === null)
         {
             return '';
         }
 
-        return '<li><a href="' . $url . '">' . $pagenumber . '</a></li>';
+        if ($symbol === null)
+        {
+            $symbol = $pagenumber;
+        }
+
+        return '<li><a href="' . $url . '">' . $symbol . '</a></li>';
     }
 
     public function render()
@@ -139,8 +150,8 @@ class Paginator {
         }
 
         return '<ul>' .
-               $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl()) .
-               $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl()) .
+               $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
+               $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
                '</ul>';
     }
 }
