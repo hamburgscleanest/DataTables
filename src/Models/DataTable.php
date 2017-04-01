@@ -172,7 +172,7 @@ class DataTable {
     {
         if ($this->_rowRenderer !== null)
         {
-            $this->_rowRenderer->call($this, $rowModel);
+            $rowModel = $this->_rowRenderer->call($this, $rowModel);
         }
 
         $html = '<tr>';

@@ -28,7 +28,7 @@ vendor/
 Via Composer
 
 ``` bash
-$ composer require hamburgscleanest/DataTables
+$ composer require hamburgscleanest/data-tables
 ```
 
 ## Usage

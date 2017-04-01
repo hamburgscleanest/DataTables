@@ -74,10 +74,20 @@ class DataTableTest extends TestCase {
             'created_at' => '2017-01-01 12:00:00'
         ]);
 
-        $dataTable = DataTable::query(TestModel::where('name', 'test')->select(['id', 'created_at', 'name']), function ($row) { return ['T', 'ES', 'T']; });
+        $dataTable = DataTable::query(
+            TestModel::where('name', 'test')->select(['id', 'created_at', 'name']),
+            function ($row)
+            {
+                $row->id = 1337;
+                $row->created_at = '2017-01-01 13:37:00';
+                $row->name = 'Test';
+
+                return $row;
+            }
+        );
 
         $this->assertEquals(
-            '<table><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>T</td><td>ES</td><td>T</td></tr><tr><td>T</td><td>ES</td><td>T</td></tr></table>',
+            '<table><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>1337</td><td>2017-01-01 13:37:00</td><td>Test</td></tr></table>',
             $dataTable->render()
         );
     }

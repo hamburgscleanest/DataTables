@@ -2,13 +2,14 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
-use function array_map;
-use function explode;
-use function http_build_url;
-use const HTTP_URL_JOIN_QUERY;
+use function html_entity_decode;
+use function htmlspecialchars_decode;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use function parse_url;
+use RuntimeException;
+use function http_build_query;
+use function utf8_decode;
+use function utf8_encode;
 
 class Paginator {
 
@@ -90,11 +91,29 @@ class Paginator {
         return $this->_buildPageUrl($nextPage);
     }
 
-    private function _buildPageUrl($pageNumber)
+    private function _parameterizeQuery(string $queryString)
     {
-        // TODO: Build URI
+        $parameters = [];
+        foreach (\explode('&', $queryString) as $query)
+        {
+            $queryParts = \explode('=', $query);
+            if (\count($queryParts) !== 2)
+            {
+                throw new RuntimeException('Malformed query parameters.');
+            }
 
-        return $this->_request->getUri();
+            $parameters[$queryParts[0]] = $queryParts[1];
+        }
+
+        return $parameters;
+    }
+
+    private function _buildPageUrl(int $pageNumber)
+    {
+        $parameters = $this->_parameterizeQuery($this->_request->getQueryString());
+        $parameters['page'] = $pageNumber;
+
+        return $this->_request->url() . '?' . http_build_query($parameters);
     }
 
     private function _renderListItem($pagenumber, $url)
