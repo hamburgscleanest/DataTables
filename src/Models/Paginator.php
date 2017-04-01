@@ -102,6 +102,12 @@ class Paginator {
         return $this->_buildPageUrl($nextPage);
     }
 
+    /**
+     * @param string $queryString
+     * @return array
+     *
+     * @throws \RuntimeException
+     */
     private function _parameterizeQuery(string $queryString)
     {
         $parameters = [];
@@ -119,6 +125,14 @@ class Paginator {
         return $parameters;
     }
 
+    /**
+     * Generate URL to jump to {$pageNumber}.
+     *
+     * @param int $pageNumber
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
     private function _buildPageUrl(int $pageNumber)
     {
         $parameters = $this->_parameterizeQuery($this->_request->getQueryString());
@@ -127,7 +141,16 @@ class Paginator {
         return $this->_request->url() . '?' . http_build_query($parameters);
     }
 
-    private function _renderListItem($pagenumber, $url, $symbol = null)
+    /**
+     * Renders a list item with a page link.
+     *
+     * @param string $pagenumber
+     * @param string $url
+     * @param string $symbol
+     *
+     * @return string
+     */
+    private function _renderListItem(string $pagenumber, string $url, ?string $symbol = null)
     {
         if ($url === null)
         {
