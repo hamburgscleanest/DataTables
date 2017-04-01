@@ -2,14 +2,9 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
-use function html_entity_decode;
-use function htmlspecialchars_decode;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use RuntimeException;
-use function http_build_query;
-use function utf8_decode;
-use function utf8_encode;
 
 class Paginator {
 
@@ -25,11 +20,15 @@ class Paginator {
     /** @var int */
     private $_currentPage = 1;
 
+    /** @var int */
+    private $_totalPageCount = 0;
+
     public function __construct(Builder $queryBuilder, Request $request)
     {
         $this->_queryBuilder = $queryBuilder;
         $this->_request = $request;
 
+        $this->_totalPageCount = $this->_queryBuilder->count();
         $this->_currentPage = + $this->_request->get('page', 1);
     }
 
@@ -49,7 +48,7 @@ class Paginator {
     /**
      * @return Builder
      */
-    public function doPagination()
+    private function _doPagination()
     {
         if ($this->_perPage === 0)
         {
@@ -60,18 +59,25 @@ class Paginator {
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getData()
+    {
+        return $this->_doPagination()->get();
+    }
+
+    /**
      * @return int
      */
     public function pageCount()
     {
-        return (int) \floor($this->_queryBuilder->count() / $this->_perPage);
+        return (int) \floor($this->_totalPageCount / $this->_perPage);
     }
 
     private function _getPreviousPageUrl()
     {
         $previousPage = $this->_currentPage - 1;
-
-        if ($previousPage <= 1)
+        if ($previousPage <= 0)
         {
             return null;
         }
@@ -82,7 +88,6 @@ class Paginator {
     private function _getNextPageUrl()
     {
         $nextPage = $this->_currentPage + 1;
-
         if ($nextPage >= $this->pageCount())
         {
             return null;

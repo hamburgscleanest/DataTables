@@ -70,7 +70,7 @@ class DataTable {
 
         // TODO: OrderBy
 
-        return $this->_paginator->doPagination()->get();
+        return $this->_paginator->getData();
     }
 
     /**
