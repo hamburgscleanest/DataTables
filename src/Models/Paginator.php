@@ -21,7 +21,7 @@ class Paginator {
     private $_currentPage;
 
     /** @var int */
-    private $_totalPageCount;
+    private $_totalItemCount;
 
     /** @var string */
     private $_previousPageSymbol = '←';
@@ -34,7 +34,7 @@ class Paginator {
         $this->_queryBuilder = $queryBuilder;
         $this->_request = $request;
 
-        $this->_totalPageCount = $this->_queryBuilder->count();
+        $this->_totalItemCount = $this->_queryBuilder->count();
         $this->_currentPage = + $this->_request->get('page', 1);
     }
 
@@ -77,7 +77,12 @@ class Paginator {
      */
     public function pageCount()
     {
-        return (int) \floor($this->_totalPageCount / $this->_perPage);
+        if ($this->_perPage === 0)
+        {
+            return 1;
+        }
+
+        return (int) \floor($this->_totalItemCount / $this->_perPage);
     }
 
     /**

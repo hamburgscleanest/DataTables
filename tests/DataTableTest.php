@@ -119,13 +119,44 @@ class DataTableTest extends TestCase {
      */
     public function pagination_is_rendered_correctly_for_first_page()
     {
-        $appUrl = 'http://localhost/';
-
-        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']));
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->paginate(15);
 
         $this->assertEquals(
-            '<ul><li><a href="' . $appUrl . '?page=1">→</a></li></ul>',
-            $dataTable->paginate(15)->renderPagination()
+            '<ul><li><a href="' . $this->baseUrl . '?page=2">→</a></li></ul>',
+            $dataTable->renderPagination()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function pagination_is_rendered_correctly_for_last_page()
+    {
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->paginate(15);
+
+        $this->get($this->baseUrl . '?page=' . $dataTable->pageCount());
+
+        $this->assertEquals(
+            '<ul><li><a href="' . $this->baseUrl . '?page="' . ($dataTable->pageCount() - 1) . '>←</a></li></ul>',
+            $dataTable->renderPagination()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function pagination_is_rendered_correctly_for_other_pages()
+    {
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->paginate(15);
+
+        $this->get($this->baseUrl . '?page=2');
+
+        $this->assertEquals(
+            '<ul><li><a href="' . $this->baseUrl . '?page=1">←</a></li><li><a href="' . $this->baseUrl . '?page=3">→</a></li></ul>',
+            $dataTable->renderPagination()
         );
     }
 }
