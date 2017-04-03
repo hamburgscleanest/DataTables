@@ -29,6 +29,11 @@ class Paginator {
     /** @var string */
     private $_nextPageSymbol = '→';
 
+    /**
+     * Paginator constructor.
+     * @param Builder $queryBuilder
+     * @param Request $request
+     */
     public function __construct(Builder $queryBuilder, Request $request)
     {
         $this->_queryBuilder = $queryBuilder;
@@ -54,7 +59,7 @@ class Paginator {
     /**
      * @return Builder
      */
-    private function _doPagination()
+    public function doPagination()
     {
         if ($this->_perPage === 0)
         {
@@ -62,14 +67,6 @@ class Paginator {
         }
 
         return $this->_queryBuilder->limit($this->_perPage)->offset(($this->_currentPage - 1) * $this->_perPage);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getData()
-    {
-        return $this->_doPagination()->get();
     }
 
     /**

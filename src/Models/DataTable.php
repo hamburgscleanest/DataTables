@@ -3,6 +3,7 @@
 namespace hamburgscleanest\DataTables\Models;
 
 use Closure;
+use hamburgscleanest\hamburgscleanest\DataTables\src\Interfaces\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -27,6 +28,9 @@ class DataTable {
     /** @var Paginator */
     private $_paginator;
 
+    /** @var Sorter */
+    private $_sorter;
+
     /** @var Closure */
     private $_rowRenderer; // TODO: IColumnFormatter => DateColumnFormatter etc.
 
@@ -49,9 +53,15 @@ class DataTable {
     {
         $this->_queryBuilder = $queryBuilder;
         $this->_paginator = new Paginator($this->_queryBuilder, $this->_request);
+        $this->_sorter = new Sorter($this->_queryBuilder, $this->_request);
         $this->_rowRenderer = $customRowRenderer;
 
         return $this;
+    }
+
+    public function addComponent(DataComponent $component)
+    {
+
     }
 
     /**
@@ -68,18 +78,34 @@ class DataTable {
             throw new RuntimeException('No query builder instance set!');
         }
 
-        // TODO: OrderBy
+        $this->_paginator->doPagination();
+        $this->_sorter->doSorting();
 
-        return $this->_paginator->getData();
+        return $this->_queryBuilder->get();
     }
 
     /**
      * @param int $perPage
      * @return $this
      */
-    public function paginate($perPage = 15)
+    public function paginate(int $perPage = 15)
     {
         $this->_paginator->paginate($perPage);
+
+        return $this;
+    }
+
+    /**
+     * Sort by this column.
+     *
+     * @param string $field
+     * @param string $direction
+     *
+     * @return $this
+     */
+    public function sortBy(string $field, string $direction = 'asc')
+    {
+        $this->_sorter->addField($field, $direction);
 
         return $this;
     }
