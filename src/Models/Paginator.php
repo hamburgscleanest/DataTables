@@ -18,10 +18,10 @@ class Paginator {
     private $_perPage = 0;
 
     /** @var int */
-    private $_currentPage = 1;
+    private $_currentPage;
 
     /** @var int */
-    private $_totalPageCount = 0;
+    private $_totalPageCount;
 
     /** @var string */
     private $_previousPageSymbol = '←';
@@ -80,6 +80,10 @@ class Paginator {
         return (int) \floor($this->_totalPageCount / $this->_perPage);
     }
 
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
     private function _getPreviousPageUrl()
     {
         $previousPage = $this->_currentPage - 1;
@@ -91,6 +95,10 @@ class Paginator {
         return $this->_buildPageUrl($previousPage);
     }
 
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
     private function _getNextPageUrl()
     {
         $nextPage = $this->_currentPage + 1;
@@ -104,12 +112,17 @@ class Paginator {
 
     /**
      * @param string $queryString
-     * @return array
      *
+     * @return array
      * @throws \RuntimeException
      */
-    private function _parameterizeQuery(string $queryString)
+    private function _parameterizeQuery(?string $queryString)
     {
+        if (empty($queryString))
+        {
+            return [];
+        }
+
         $parameters = [];
         foreach (\explode('&', $queryString) as $query)
         {
@@ -150,7 +163,7 @@ class Paginator {
      *
      * @return string
      */
-    private function _renderListItem(string $pagenumber, string $url, ?string $symbol = null)
+    private function _renderListItem(string $pagenumber, ?string $url, ?string $symbol = null)
     {
         if ($url === null)
         {
