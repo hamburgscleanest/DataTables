@@ -12,18 +12,34 @@ use function implode;
 class Sorter extends DataComponent {
 
     /** @var array */
-    private $_sortFields;
+    private $_sortFields = [];
 
-    protected function _afterInit()
+    /**
+     * Sorter constructor.
+     * @param array $fields
+     */
+    public function __construct(array $fields = null)
     {
-        /** @var string $sortFields */
-        $sortFields = $this->_request->get('sort');
-
-        if (empty($sortFields))
+        if ($fields !== null)
         {
-            return;
-        }
+            foreach ($fields as $fieldName => $direction)
+            {
+                if ($fieldName === 0)
+                {
+                    $fieldName = $direction;
+                    $direction = 'asc';
+                }
 
+                $this->_sortFields[$fieldName] = $direction;
+            }
+        }
+    }
+
+    /**
+     * @param string $fields
+     */
+    private function _initFields(string $fields)
+    {
         $this->_sortFields = \array_map(
             function ($sorting)
             {
@@ -34,8 +50,20 @@ class Sorter extends DataComponent {
 
                 return $sorting;
             },
-            \explode(',', $sortFields)
+            \explode(',', $fields)
         );
+    }
+
+    protected function _afterInit()
+    {
+        /** @var string $sortFields */
+        $sortFields = $this->_request->get('sort');
+        if (empty($sortFields))
+        {
+            return;
+        }
+
+        $this->_initFields($sortFields);
     }
 
     /**
@@ -45,11 +73,9 @@ class Sorter extends DataComponent {
     {
         if (\count($this->_sortFields) > 0)
         {
-            foreach ($this->_sortFields as $sortField)
+            foreach ($this->_sortFields as $fieldName => $direction)
             {
-                $sorting = \explode(':', $sortField);
-
-                $this->_queryBuilder->orderBy($sorting[0], $sorting[1]);
+                $this->_queryBuilder->orderBy($fieldName, $direction);
             }
         }
 
@@ -66,7 +92,7 @@ class Sorter extends DataComponent {
      */
     public function addField(string $field, string $direction = 'asc')
     {
-        $this->_sortFields[] = $field . ':' . $direction;
+        $this->_sortFields[$field] = $direction;
 
         return $this;
     }

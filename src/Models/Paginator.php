@@ -8,7 +8,7 @@ use RuntimeException;
 class Paginator extends DataComponent {
 
     /** @var int */
-    private $_perPage = 15;
+    private $_perPage;
 
     /** @var int */
     private $_currentPage;
@@ -22,6 +22,15 @@ class Paginator extends DataComponent {
     /** @var string */
     private $_nextPageSymbol = '→';
 
+
+    /**
+     * Paginator constructor.
+     * @param int $perPage
+     */
+    public function __construct(int $perPage = 15)
+    {
+        $this->_perPage = $perPage;
+    }
 
     protected function _afterInit()
     {
