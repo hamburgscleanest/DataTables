@@ -3,32 +3,26 @@
 namespace hamburgscleanest\DataTables\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use function implode;
 
 /**
  * Class Sorter
  * @package hamburgscleanest\DataTables\Models
  */
-class Sorter {
-
-    /** @var Builder */
-    private $_queryBuilder;
-
-    /** @var Request */
-    private $_request;
+class Sorter extends DataComponent {
 
     /** @var array */
     private $_sortFields;
 
-    /**
-     * Sorter constructor.
-     * @param Builder $queryBuilder
-     * @param Request $request
-     */
-    public function __construct(Builder $queryBuilder, Request $request)
+    protected function _afterInit()
     {
-        $this->_queryBuilder = $queryBuilder;
-        $this->_request = $request;
+        /** @var string $sortFields */
+        $sortFields = $this->_request->get('sort');
+
+        if (empty($sortFields))
+        {
+            return;
+        }
 
         $this->_sortFields = \array_map(
             function ($sorting)
@@ -40,14 +34,14 @@ class Sorter {
 
                 return $sorting;
             },
-            \explode(',', $this->_request->get('sort', []))
+            \explode(',', $sortFields)
         );
     }
 
     /**
      * @return Builder
      */
-    public function doSorting()
+    public function shapeData(): Builder
     {
         if (\count($this->_sortFields) > 0)
         {
@@ -67,9 +61,21 @@ class Sorter {
      *
      * @param string $field
      * @param string $direction
+     *
+     * @return $this
      */
     public function addField(string $field, string $direction = 'asc')
     {
         $this->_sortFields[] = $field . ':' . $direction;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function render(): string
+    {
+        return implode(', ', $this->_sortFields);
     }
 }

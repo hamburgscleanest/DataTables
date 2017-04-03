@@ -3,19 +3,12 @@
 namespace hamburgscleanest\DataTables\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use RuntimeException;
 
-class Paginator {
-
-    /** @var Builder */
-    private $_queryBuilder;
-
-    /** @var Request */
-    private $_request;
+class Paginator extends DataComponent {
 
     /** @var int */
-    private $_perPage = 0;
+    private $_perPage = 15;
 
     /** @var int */
     private $_currentPage;
@@ -29,16 +22,9 @@ class Paginator {
     /** @var string */
     private $_nextPageSymbol = '→';
 
-    /**
-     * Paginator constructor.
-     * @param Builder $queryBuilder
-     * @param Request $request
-     */
-    public function __construct(Builder $queryBuilder, Request $request)
-    {
-        $this->_queryBuilder = $queryBuilder;
-        $this->_request = $request;
 
+    protected function _afterInit()
+    {
         $this->_totalItemCount = $this->_queryBuilder->count();
         $this->_currentPage = + $this->_request->get('page', 1);
     }
@@ -49,7 +35,7 @@ class Paginator {
      * @param int $perPage
      * @return $this
      */
-    public function paginate($perPage = 15)
+    public function entriesPerPage($perPage = 15)
     {
         $this->_perPage = $perPage;
 
@@ -59,7 +45,7 @@ class Paginator {
     /**
      * @return Builder
      */
-    public function doPagination()
+    public function shapeData(): Builder
     {
         if ($this->_perPage === 0)
         {
@@ -180,7 +166,13 @@ class Paginator {
         return '<li><a href="' . $url . '">' . $symbol . '</a></li>';
     }
 
-    public function render()
+    /**
+     * Render the page links.
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function render(): string
     {
         if ($this->_perPage === 0)
         {

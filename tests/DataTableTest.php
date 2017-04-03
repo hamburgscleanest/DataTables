@@ -3,6 +3,7 @@
 namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
+use hamburgscleanest\DataTables\Models\Paginator;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /**
@@ -119,12 +120,15 @@ class DataTableTest extends TestCase {
      */
     public function pagination_is_rendered_correctly_for_first_page()
     {
+        /** @var Paginator $paginator */
+        $paginator = new Paginator();
+
         /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->paginate(15);
+        DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($paginator);
 
         $this->assertEquals(
             '<ul><li><a href="' . $this->baseUrl . '?page=2">→</a></li></ul>',
-            $dataTable->renderPagination()
+            $paginator->render()
         );
     }
 
@@ -133,14 +137,19 @@ class DataTableTest extends TestCase {
      */
     public function pagination_is_rendered_correctly_for_last_page()
     {
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->paginate(15);
+        /** @var Paginator $paginator */
+        $paginator = new Paginator();
 
-        $this->get($this->baseUrl . '?page=' . $dataTable->pageCount());
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($paginator);
+
+        $pageCount = $paginator->pageCount();
+
+        $this->get($this->baseUrl . '?page=' . $pageCount);
 
         $this->assertEquals(
-            '<ul><li><a href="' . $this->baseUrl . '?page="' . ($dataTable->pageCount() - 1) . '>←</a></li></ul>',
-            $dataTable->renderPagination()
+            '<ul><li><a href="' . $this->baseUrl . '?page="' . ($pageCount - 1) . '>←</a></li></ul>',
+            $paginator->render()
         );
     }
 
@@ -149,14 +158,17 @@ class DataTableTest extends TestCase {
      */
     public function pagination_is_rendered_correctly_for_other_pages()
     {
+        /** @var Paginator $paginator */
+        $paginator = new Paginator();
+
         /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->paginate(15);
+        DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($paginator);
 
         $this->get($this->baseUrl . '?page=2');
 
         $this->assertEquals(
             '<ul><li><a href="' . $this->baseUrl . '?page=1">←</a></li><li><a href="' . $this->baseUrl . '?page=3">→</a></li></ul>',
-            $dataTable->renderPagination()
+            $paginator->render()
         );
     }
 }

@@ -3,7 +3,6 @@
 namespace hamburgscleanest\DataTables\Models;
 
 use Closure;
-use hamburgscleanest\hamburgscleanest\DataTables\src\Interfaces\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -25,11 +24,8 @@ class DataTable {
     /** @var Builder */
     private $_queryBuilder;
 
-    /** @var Paginator */
-    private $_paginator;
-
-    /** @var Sorter */
-    private $_sorter;
+    /** @var array */
+    private $_components = [];
 
     /** @var Closure */
     private $_rowRenderer; // TODO: IColumnFormatter => DateColumnFormatter etc.
@@ -37,6 +33,10 @@ class DataTable {
     /** @var string */
     private $_classes;
 
+    /**
+     * DataTable constructor.
+     * @param Request $request
+     */
     public function __construct(Request $request)
     {
         $this->_request = $request;
@@ -52,16 +52,25 @@ class DataTable {
     public function query(Builder $queryBuilder, Closure $customRowRenderer = null)
     {
         $this->_queryBuilder = $queryBuilder;
-        $this->_paginator = new Paginator($this->_queryBuilder, $this->_request);
-        $this->_sorter = new Sorter($this->_queryBuilder, $this->_request);
         $this->_rowRenderer = $customRowRenderer;
 
         return $this;
     }
 
+    /**
+     * Add a component to the data table.
+     * For example a "Paginator" or a "Sorter".
+     *
+     * @param DataComponent $component
+     *
+     * @return $this
+     */
     public function addComponent(DataComponent $component)
     {
+        $component->init($this->_queryBuilder, $this->_request);
+        $this->_components[] = $component;
 
+        return $this;
     }
 
     /**
@@ -78,36 +87,13 @@ class DataTable {
             throw new RuntimeException('No query builder instance set!');
         }
 
-        $this->_paginator->doPagination();
-        $this->_sorter->doSorting();
+        /** @var DataComponent $component */
+        foreach ($this->_components as $component)
+        {
+            $component->shapeData();
+        }
 
         return $this->_queryBuilder->get();
-    }
-
-    /**
-     * @param int $perPage
-     * @return $this
-     */
-    public function paginate(int $perPage = 15)
-    {
-        $this->_paginator->paginate($perPage);
-
-        return $this;
-    }
-
-    /**
-     * Sort by this column.
-     *
-     * @param string $field
-     * @param string $direction
-     *
-     * @return $this
-     */
-    public function sortBy(string $field, string $direction = 'asc')
-    {
-        $this->_sorter->addField($field, $direction);
-
-        return $this;
     }
 
     /**
@@ -251,23 +237,5 @@ class DataTable {
         }
 
         return $this->_open() . $this->_renderHeaders() . $this->_renderBody($data) . $this->_close();
-    }
-
-    /**
-     * @return int
-     */
-    public function pageCount()
-    {
-        return $this->_paginator->pageCount();
-    }
-
-    /**
-     * Renders the pagination links.
-     *
-     * @return string
-     */
-    public function renderPagination()
-    {
-        return $this->_paginator->render();
     }
 }
