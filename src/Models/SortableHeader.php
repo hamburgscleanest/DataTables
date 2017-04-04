@@ -5,7 +5,8 @@ namespace hamburgscleanest\DataTables\Models;
 use hamburgscleanest\DataTables\Helpers\UrlHelper;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use Illuminate\Http\Request;
-use function str_replace;
+use function mb_strpos;
+use function var_dump;
 
 /**
  * Class SortableHeader
@@ -20,6 +21,7 @@ use function str_replace;
 class SortableHeader implements HeaderFormatter {
 
     const SORTING_SEPARATOR = '~';
+    const COLUMN_SEPARATOR  = '.';
 
     /** @var array */
     private $_sortableHeaders;
@@ -95,7 +97,7 @@ class SortableHeader implements HeaderFormatter {
         }
 
         $sorting = [];
-        foreach (\explode(',', $sortFields) as $field)
+        foreach (\explode(self::COLUMN_SEPARATOR, $sortFields) as $field)
         {
             $sortParts = \explode(self::SORTING_SEPARATOR, $field);
             if (\count($sortParts) === 1)
@@ -109,30 +111,57 @@ class SortableHeader implements HeaderFormatter {
         return $sorting;
     }
 
+    /**
+     * @param Request $request
+     * @param string $column
+     * @param string $oldDirection
+     * @return string
+     * @throws \RuntimeException
+     */
     private function _buildSortUrl(Request $request, string $column, string $oldDirection = 'asc')
     {
+        $newSorting = $column . self::SORTING_SEPARATOR . ($oldDirection !== 'asc' ? 'asc' : 'desc');
         $parameters = UrlHelper::parameterizeQuery($request->getQueryString());
-        $parameters['sort'] = \str_replace(
-            $column . self::SORTING_SEPARATOR . $oldDirection,
-            $column . self::SORTING_SEPARATOR . ($oldDirection === 'asc' ? 'desc' : 'asc'),
-            $parameters['sort']
-        );
+
+        if (!isset($parameters['sort']))
+        {
+            $parameters['sort'] = '';
+        }
+
+        if (!empty($parameters['sort']))
+        {
+            $newSorting = self::COLUMN_SEPARATOR . $newSorting;
+        }
+
+        $columnRegex = '/(^|\\' . self::COLUMN_SEPARATOR . ')' . $column . self::SORTING_SEPARATOR . $oldDirection . '/';
+        $replacedCount = 0;
+        $parameters['sort'] = \preg_replace($columnRegex, $newSorting, $parameters['sort'], 1, $replacedCount);
+        if ($replacedCount === 0)
+        {
+            $sorting = $newSorting;
+            if (!empty($parameters['sort']))
+            {
+                $sorting = self::COLUMN_SEPARATOR . $sorting;
+            }
+            $parameters['sort'] .= $sorting;
+        }
 
         return $request->url() . '?' . \http_build_query($parameters);
     }
 
     /**
-     * Format the given header.
-     * For example add a link to sort by this header/column.
+     * Adds a link to sort by this header/column.
+     * Also indicates how the columns are sorted (when sorted).
      *
      * @param string $header
      * @param Request $request
+     * @throws \RuntimeException
      */
     public function format(string &$header, Request $request)
     {
         $column = $header;
 
-        $direction = 'asc';
+        $direction = 'none';
         $sortFields = $this->_extractSortFields($request);
         if (isset($sortFields[$column]))
         {

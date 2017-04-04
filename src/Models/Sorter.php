@@ -12,6 +12,7 @@ use function implode;
 class Sorter extends DataComponent {
 
     const SORTING_SEPARATOR = '~';
+    const COLUMN_SEPARATOR  = '.';
 
     /** @var array */
     private $_sortFields = [];
@@ -43,7 +44,7 @@ class Sorter extends DataComponent {
     private function _initFields(string $fields)
     {
         $this->_sortFields = [];
-        foreach (\explode(',', $fields) as $field)
+        foreach (\explode(self::COLUMN_SEPARATOR, $fields) as $field)
         {
             $sortParts = \explode(self::SORTING_SEPARATOR, $field);
             if (\count($sortParts) === 1)
