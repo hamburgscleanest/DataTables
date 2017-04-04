@@ -29,9 +29,9 @@ class SortableHeader implements HeaderFormatter {
     private $_dontSort;
 
     private $_sortingSymbols = [
-        'asc'  => '∧',
-        'desc' => '∨',
-        'none' => ''
+        'asc'  => '&#x25B2;',
+        'desc' => '&#x25BC;',
+        'none' => '⇵'
     ];
 
     /**
