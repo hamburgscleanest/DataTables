@@ -177,13 +177,9 @@ class SortableHeader implements HeaderFormatter {
      */
     public function format(array &$header, Request $request)
     {
-        $direction = 'none';
         $sortFields = $this->_extractSortFields($request);
-        if (isset($sortFields[$header['attribute']]))
-        {
-            $direction = $sortFields[$header['attribute']];
-            $header['name'] .= ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span>';
-        }
+        $direction = $sortFields[$header['attribute']] ?? 'none';
+        $header['name'] .= ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span>';
 
         if (\count($this->_sortableHeaders) === 0 || \in_array($header['attribute'], $this->_sortableHeaders, true))
         {

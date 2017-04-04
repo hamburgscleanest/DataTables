@@ -235,9 +235,9 @@ class DataTable {
      */
     private function _open()
     {
-        $class = !empty($this->_classes) ? ' class="' . $this->_classes . '"' : '';
+        $class = !empty($this->_classes) ? ' ' . $this->_classes : '';
 
-        return '<table' . $class . '>';
+        return '<table class="table' . $class . '">';
     }
 
     /**
