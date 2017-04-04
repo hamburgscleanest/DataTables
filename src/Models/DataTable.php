@@ -2,7 +2,6 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
-use function call_user_func_array;
 use Closure;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use Illuminate\Database\Eloquent\Builder;
@@ -163,6 +162,14 @@ class DataTable {
         $query = $this->_queryBuilder->getQuery();
         $headers = $query->columns !== null ? $this->_extractColumnNames($query->columns) : Schema::getColumnListing($query->from);
 
+        $headers = array_map(
+            function ($original)
+            {
+                return ['attribute' => $original, 'name' => $original];
+            },
+            $headers
+        );
+
         $html = '<tr>';
         foreach ($headers as $header)
         {
@@ -172,7 +179,7 @@ class DataTable {
                 $headerFormatter->format($header, $this->_request);
             }
 
-            $html .= '<th>' . $header . '</th>';
+            $html .= '<th>' . $header['name'] . '</th>';
         }
         $html .= '</tr>';
 

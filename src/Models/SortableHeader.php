@@ -28,6 +28,7 @@ class SortableHeader implements HeaderFormatter {
     /** @var array */
     private $_dontSort;
 
+    /** @var array */
     private $_sortingSymbols = [
         'asc'  => '&#x25B2;',
         'desc' => '&#x25BC;',
@@ -170,25 +171,23 @@ class SortableHeader implements HeaderFormatter {
      * Adds a link to sort by this header/column.
      * Also indicates how the columns are sorted (when sorted).
      *
-     * @param string $header
+     * @param array $header
      * @param Request $request
      * @throws \RuntimeException
      */
-    public function format(string &$header, Request $request)
+    public function format(array &$header, Request $request)
     {
-        $column = $header;
-
         $direction = 'none';
         $sortFields = $this->_extractSortFields($request);
-        if (isset($sortFields[$column]))
+        if (isset($sortFields[$header['attribute']]))
         {
-            $direction = $sortFields[$column];
-            $header .= ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span>';
+            $direction = $sortFields[$header['attribute']];
+            $header['name'] .= ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span>';
         }
 
-        if (\count($this->_sortableHeaders) === 0 || \in_array($column, $this->_sortableHeaders, true))
+        if (\count($this->_sortableHeaders) === 0 || \in_array($header['attribute'], $this->_sortableHeaders, true))
         {
-            $header = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $column, $direction) . '">' . $header . '</a>';
+            $header['name'] = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $header['attribute'], $direction) . '">' . $header['name'] . '</a>';
         }
     }
 }
