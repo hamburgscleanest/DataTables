@@ -11,6 +11,8 @@ use function implode;
  */
 class Sorter extends DataComponent {
 
+    const SORTING_SEPARATOR = '~';
+
     /** @var array */
     private $_sortFields = [];
 
@@ -30,7 +32,7 @@ class Sorter extends DataComponent {
                     $direction = 'asc';
                 }
 
-                $this->_sortFields[$fieldName] = $direction;
+                $this->_sortFields[$fieldName] = \mb_strtolower($direction);
             }
         }
     }
@@ -40,18 +42,17 @@ class Sorter extends DataComponent {
      */
     private function _initFields(string $fields)
     {
-        $this->_sortFields = \array_map(
-            function ($sorting)
+        $this->_sortFields = [];
+        foreach (\explode(',', $fields) as $field)
+        {
+            $sortParts = \explode(self::SORTING_SEPARATOR, $field);
+            if (\count($sortParts) === 1)
             {
-                if (mb_strpos($sorting, ':') === false)
-                {
-                    $sorting .= ':asc';
-                }
+                $sortParts[1] = 'asc';
+            }
 
-                return $sorting;
-            },
-            \explode(',', $fields)
-        );
+            $this->_sortFields[$sortParts[0]] = $sortParts[1];
+        }
     }
 
     protected function _afterInit()
@@ -92,7 +93,24 @@ class Sorter extends DataComponent {
      */
     public function addField(string $field, string $direction = 'asc')
     {
-        $this->_sortFields[$field] = $direction;
+        $this->_sortFields[$field] = \mb_strtolower($direction);
+
+        return $this;
+    }
+
+    /**
+     * Stop sorting by this column
+     *
+     * @param string $field
+     *
+     * @return $this
+     */
+    public function removeField(string $field)
+    {
+        if (isset($this->_sortFields[$field]))
+        {
+            unset($this->_sortFields[$field]);
+        }
 
         return $this;
     }

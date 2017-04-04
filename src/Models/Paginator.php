@@ -3,7 +3,7 @@
 namespace hamburgscleanest\DataTables\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use RuntimeException;
+use hamburgscleanest\DataTables\Helpers\UrlHelper;
 
 class Paginator extends DataComponent {
 
@@ -108,34 +108,6 @@ class Paginator extends DataComponent {
     }
 
     /**
-     * @param string $queryString
-     *
-     * @return array
-     * @throws \RuntimeException
-     */
-    private function _parameterizeQuery(?string $queryString)
-    {
-        if (empty($queryString))
-        {
-            return [];
-        }
-
-        $parameters = [];
-        foreach (\explode('&', $queryString) as $query)
-        {
-            $queryParts = \explode('=', $query);
-            if (\count($queryParts) !== 2)
-            {
-                throw new RuntimeException('Malformed query parameters.');
-            }
-
-            $parameters[$queryParts[0]] = $queryParts[1];
-        }
-
-        return $parameters;
-    }
-
-    /**
      * Generate URL to jump to {$pageNumber}.
      *
      * @param int $pageNumber
@@ -145,10 +117,10 @@ class Paginator extends DataComponent {
      */
     private function _buildPageUrl(int $pageNumber)
     {
-        $parameters = $this->_parameterizeQuery($this->_request->getQueryString());
+        $parameters = UrlHelper::parameterizeQuery($this->_request->getQueryString());
         $parameters['page'] = $pageNumber;
 
-        return $this->_request->url() . '?' . http_build_query($parameters);
+        return $this->_request->url() . '?' . \http_build_query($parameters);
     }
 
     /**

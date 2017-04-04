@@ -2,7 +2,9 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
+use function call_user_func_array;
 use Closure;
+use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -23,6 +25,9 @@ class DataTable {
 
     /** @var Builder */
     private $_queryBuilder;
+
+    /** @var array */
+    private $_headerFormatters = [];
 
     /** @var array */
     private $_components = [];
@@ -69,6 +74,19 @@ class DataTable {
     {
         $component->init($this->_queryBuilder, $this->_request);
         $this->_components[] = $component;
+
+        return $this;
+    }
+
+    /**
+     * Add a formatter for the column headers.
+     *
+     * @param HeaderFormatter $headerFormatter
+     * @return $this
+     */
+    public function formatHeaders(HeaderFormatter $headerFormatter)
+    {
+        $this->_headerFormatters[] = $headerFormatter;
 
         return $this;
     }
@@ -148,6 +166,12 @@ class DataTable {
         $html = '<tr>';
         foreach ($headers as $header)
         {
+            /** @var HeaderFormatter $headerFormatter */
+            foreach ($this->_headerFormatters as $headerFormatter)
+            {
+                $headerFormatter->format($header, $this->_request);
+            }
+
             $html .= '<th>' . $header . '</th>';
         }
         $html .= '</tr>';

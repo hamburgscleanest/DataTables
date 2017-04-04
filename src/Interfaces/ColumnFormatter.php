@@ -1,7 +1,11 @@
 <?php
 
-namespace packages\hamburgscleanest\DataTables\src\Interfaces;
+namespace hamburgscleanest\DataTables\Interfaces;
 
+/**
+ * Interface ColumnFormatter
+ * @package hamburgscleanest\DataTables\Interfaces
+ */
 interface ColumnFormatter {
 
     public function format();
