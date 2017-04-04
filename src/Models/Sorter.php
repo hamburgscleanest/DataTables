@@ -57,6 +57,11 @@ class Sorter extends DataComponent {
                 $sortParts[1] = 'asc';
             }
 
+            if ($sortParts[1] === 'none')
+            {
+                SessionHelper::removeState($this->_request, 'sort.' . $sortParts[0]);
+            }
+
             $this->_sortFields[$sortParts[0]] = $sortParts[1];
         }
     }

@@ -47,4 +47,13 @@ class SessionHelper {
     {
         return $request->session()->get(self::getFormattedKey($request, $key)) ?? $default;
     }
+
+    /**
+     * @param Request $request
+     * @param string $key
+     */
+    public static function removeState(Request $request, string $key)
+    {
+        $request->session()->remove(self::getFormattedKey($request, $key));
+    }
 }

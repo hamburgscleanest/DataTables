@@ -28,11 +28,11 @@ class SortableHeader implements HeaderFormatter {
     /** @var array */
     private $_dontSort;
 
-    /** @var string */
-    private $_symbolAsc = '∧';
-
-    /** @var string */
-    private $_symbolDesc = '∨';
+    private $_sortingSymbols = [
+        'asc'  => '∧',
+        'desc' => '∨',
+        'none' => ''
+    ];
 
     /**
      * SortableHeader constructor.
@@ -124,7 +124,19 @@ class SortableHeader implements HeaderFormatter {
      */
     private function _buildSortUrl(Request $request, string $column, string $oldDirection = 'asc')
     {
-        $newSorting = $column . self::SORTING_SEPARATOR . ($oldDirection !== 'asc' ? 'asc' : 'desc');
+        switch ($oldDirection)
+        {
+            case 'asc':
+                $newDirection = 'desc';
+                break;
+            case 'desc':
+                $newDirection = 'none';
+                break;
+            default:
+                $newDirection = 'asc';
+        }
+
+        $newSorting = $column . self::SORTING_SEPARATOR . $newDirection;
         $parameters = UrlHelper::parameterizeQuery($request->getQueryString());
 
         if (!isset($parameters['sort']))
@@ -136,7 +148,7 @@ class SortableHeader implements HeaderFormatter {
         $replacedCount = 0;
         $parameters['sort'] = \preg_replace($columnRegex, self::COLUMN_SEPARATOR . $newSorting, $parameters['sort'], 1, $replacedCount);
 
-        if ($parameters['sort'][0] === self::COLUMN_SEPARATOR)
+        if (!empty($parameters['sort']) && $parameters['sort'][0] === self::COLUMN_SEPARATOR)
         {
             $parameters['sort'] = \mb_substr($parameters['sort'], 1);
         }
@@ -171,7 +183,7 @@ class SortableHeader implements HeaderFormatter {
         if (isset($sortFields[$column]))
         {
             $direction = $sortFields[$column];
-            $header .= ' <span class="sort-symbol">' . ($direction === 'asc' ? $this->_symbolAsc : $this->_symbolDesc) . '</span>';
+            $header .= ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span>';
         }
 
         if (\count($this->_sortableHeaders) === 0 || \in_array($column, $this->_sortableHeaders, true))
