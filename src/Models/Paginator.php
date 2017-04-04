@@ -160,7 +160,7 @@ class Paginator extends DataComponent {
             return '';
         }
 
-        return '<ul>' .
+        return '<ul class="list-group" style="list-style: none;">' .
                $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
                $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
                '</ul>';
