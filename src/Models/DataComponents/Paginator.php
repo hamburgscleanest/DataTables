@@ -1,9 +1,10 @@
 <?php
 
-namespace hamburgscleanest\DataTables\Models;
+namespace hamburgscleanest\DataTables\Models\DataComponents;
 
-use Illuminate\Database\Eloquent\Builder;
 use hamburgscleanest\DataTables\Helpers\UrlHelper;
+use hamburgscleanest\DataTables\Models\DataComponent;
+use Illuminate\Database\Eloquent\Builder;
 
 class Paginator extends DataComponent {
 

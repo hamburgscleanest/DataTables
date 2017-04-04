@@ -1,19 +1,16 @@
 <?php
 
-namespace hamburgscleanest\DataTables\Models;
+namespace hamburgscleanest\DataTables\Models\HeaderFormatters;
 
-use hamburgscleanest\DataTables\Helpers\UrlHelper;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Lang;
-use function str_replace;
 
 /**
- * Class TranslatableHeader
+ * Class TranslateHeader
  *
  * @package hamburgscleanest\DataTables\Models
  */
-class TranslatableHeader implements HeaderFormatter {
+class TranslateHeader implements HeaderFormatter {
 
     /** @var array */
     private $_translations;

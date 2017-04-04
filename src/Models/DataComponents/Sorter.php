@@ -1,11 +1,11 @@
 <?php
 
-namespace hamburgscleanest\DataTables\Models;
+namespace hamburgscleanest\DataTables\Models\DataComponents;
 
 use hamburgscleanest\DataTables\Helpers\SessionHelper;
+use hamburgscleanest\DataTables\Models\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
 use function implode;
-use function var_dump;
 
 /**
  * Class Sorter

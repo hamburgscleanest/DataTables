@@ -1,6 +1,6 @@
 <?php
 
-namespace hamburgscleanest\DataTables\Models;
+namespace hamburgscleanest\DataTables\Models\HeaderFormatters;
 
 use hamburgscleanest\DataTables\Helpers\SessionHelper;
 use hamburgscleanest\DataTables\Helpers\UrlHelper;
