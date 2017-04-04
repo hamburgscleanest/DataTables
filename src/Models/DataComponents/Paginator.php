@@ -6,6 +6,10 @@ use hamburgscleanest\DataTables\Helpers\UrlHelper;
 use hamburgscleanest\DataTables\Models\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class Paginator
+ * @package hamburgscleanest\DataTables\Models\DataComponents
+ */
 class Paginator extends DataComponent {
 
     /** @var int */
