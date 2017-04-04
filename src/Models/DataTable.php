@@ -108,7 +108,7 @@ class DataTable {
         /** @var DataComponent $component */
         foreach ($this->_components as $component)
         {
-            $component->shapeData();
+            $component->transformData();
         }
 
         return $this->_queryBuilder->get();

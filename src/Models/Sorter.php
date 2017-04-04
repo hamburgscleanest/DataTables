@@ -2,8 +2,10 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
+use hamburgscleanest\DataTables\Helpers\SessionHelper;
 use Illuminate\Database\Eloquent\Builder;
 use function implode;
+use function var_dump;
 
 /**
  * Class Sorter
@@ -20,9 +22,12 @@ class Sorter extends DataComponent {
     /**
      * Sorter constructor.
      * @param array $fields
+     * @param bool $remember
      */
-    public function __construct(array $fields = null)
+    public function __construct(array $fields = null, bool $remember = false)
     {
+        $this->_rememberState = $remember;
+
         if ($fields !== null)
         {
             foreach ($fields as $fieldName => $direction)
@@ -54,6 +59,16 @@ class Sorter extends DataComponent {
 
             $this->_sortFields[$sortParts[0]] = $sortParts[1];
         }
+    }
+
+    protected function _readFromSession()
+    {
+        $this->_sortFields = SessionHelper::getState($this->_request, 'sort', []);
+    }
+
+    protected function _storeInSession()
+    {
+        SessionHelper::saveState($this->_request, 'sort', $this->_sortFields);
     }
 
     protected function _afterInit()

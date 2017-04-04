@@ -2,11 +2,10 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
+use hamburgscleanest\DataTables\Helpers\SessionHelper;
 use hamburgscleanest\DataTables\Helpers\UrlHelper;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use Illuminate\Http\Request;
-use function mb_strpos;
-use function var_dump;
 
 /**
  * Class SortableHeader
@@ -88,15 +87,20 @@ class SortableHeader implements HeaderFormatter {
         return $this;
     }
 
+    /**
+     * @param Request $request
+     * @return array
+     */
     private function _extractSortFields(Request $request)
     {
+        $sorting = SessionHelper::getState($request, 'sort', []);
+
         $sortFields = $request->get('sort');
         if (empty($sortFields))
         {
-            return [];
+            return $sorting;
         }
 
-        $sorting = [];
         foreach (\explode(self::COLUMN_SEPARATOR, $sortFields) as $field)
         {
             $sortParts = \explode(self::SORTING_SEPARATOR, $field);
@@ -128,14 +132,15 @@ class SortableHeader implements HeaderFormatter {
             $parameters['sort'] = '';
         }
 
-        if (!empty($parameters['sort']))
-        {
-            $newSorting = self::COLUMN_SEPARATOR . $newSorting;
-        }
-
         $columnRegex = '/(^|\\' . self::COLUMN_SEPARATOR . ')' . $column . self::SORTING_SEPARATOR . $oldDirection . '/';
         $replacedCount = 0;
-        $parameters['sort'] = \preg_replace($columnRegex, $newSorting, $parameters['sort'], 1, $replacedCount);
+        $parameters['sort'] = \preg_replace($columnRegex, self::COLUMN_SEPARATOR . $newSorting, $parameters['sort'], 1, $replacedCount);
+
+        if ($parameters['sort'][0] === self::COLUMN_SEPARATOR)
+        {
+            $parameters['sort'] = \mb_substr($parameters['sort'], 1);
+        }
+
         if ($replacedCount === 0)
         {
             $sorting = $newSorting;
