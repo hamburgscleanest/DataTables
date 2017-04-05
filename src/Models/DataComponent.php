@@ -54,12 +54,15 @@ abstract class DataComponent {
      *
      * @return int
      */
-    protected function _getQueryCount()
+    protected function _getQueryCount(): int
     {
-        $oldOrders = $this->_queryBuilder->getQuery()->orders;
-        $this->_queryBuilder->getQuery()->orders = null;
-        $dataCount = $this->_queryBuilder->count();
-        $this->_queryBuilder->getQuery()->orders = $oldOrders;
+        /** @var \Illuminate\Database\Query\Builder $query */
+        $query = $this->_queryBuilder->getQuery();
+
+        $oldOrders = $query->orders;
+        $query->orders = null;
+        $dataCount = $query->count();
+        $query->orders = $oldOrders;
 
         return $dataCount;
     }
@@ -82,16 +85,27 @@ abstract class DataComponent {
 
     /**
      * Remember the state of the data component.
+     *
+     * @return $this
      */
     public function remember()
     {
         $this->_rememberState = true;
+
+        return $this;
     }
 
+    /**
+     * Forget the state of the data component.
+     *
+     * @return $this
+     */
     public function forget()
     {
         $this->_rememberState = false;
         SessionHelper::removeState($this->_request, $this->_rememberKey);
+
+        return $this;
     }
 
     public function transformData()
