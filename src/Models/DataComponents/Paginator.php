@@ -18,9 +18,6 @@ class Paginator extends DataComponent {
     /** @var int */
     private $_currentPage;
 
-    /** @var int */
-    private $_totalItemCount;
-
     /** @var string */
     private $_previousPageSymbol = '←';
 
@@ -39,7 +36,6 @@ class Paginator extends DataComponent {
 
     protected function _afterInit()
     {
-        $this->_totalItemCount = $this->_queryBuilder->count();
         $this->_currentPage = + $this->_request->get('page', 1);
     }
 
@@ -79,7 +75,7 @@ class Paginator extends DataComponent {
             return 1;
         }
 
-        return (int) \floor($this->_totalItemCount / $this->_perPage);
+        return (int) \floor($this->_getQueryCount() / $this->_perPage);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
+use hamburgscleanest\DataTables\Helpers\SessionHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,9 @@ abstract class DataComponent {
 
     /** @var bool */
     protected $_rememberState = false;
+
+    /** @var string */
+    protected $_rememberKey = 'global';
 
     /**
      * Everything that needs to be read when the state is remembered.
@@ -45,6 +49,22 @@ abstract class DataComponent {
     }
 
     /**
+     * You cannot count the data when ordering.
+     * Disables ordering temporary.
+     *
+     * @return int
+     */
+    protected function _getQueryCount()
+    {
+        $oldOrders = $this->_queryBuilder->getQuery()->orders;
+        $this->_queryBuilder->getQuery()->orders = null;
+        $dataCount = $this->_queryBuilder->count();
+        $this->_queryBuilder->getQuery()->orders = $oldOrders;
+
+        return $dataCount;
+    }
+
+    /**
      * @param Request $request
      * @param Builder $queryBuilder
      */
@@ -68,9 +88,18 @@ abstract class DataComponent {
         $this->_rememberState = true;
     }
 
+    public function forget()
+    {
+        $this->_rememberState = false;
+        SessionHelper::removeState($this->_request, $this->_rememberKey);
+    }
+
     public function transformData()
     {
-        $this->_storeInSession();
+        if ($this->_rememberState)
+        {
+            $this->_storeInSession();
+        }
         $this->shapeData();
     }
 

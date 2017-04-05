@@ -26,6 +26,7 @@ class Sorter extends DataComponent {
      */
     public function __construct(array $fields = null, bool $remember = false)
     {
+        $this->_rememberKey = 'sort';
         $this->_rememberState = $remember;
 
         if ($fields !== null)
@@ -59,7 +60,7 @@ class Sorter extends DataComponent {
 
             if ($sortParts[1] === 'none')
             {
-                SessionHelper::removeState($this->_request, 'sort.' . $sortParts[0]);
+                SessionHelper::removeState($this->_request, $this->_rememberKey . '.' . $sortParts[0]);
             }
 
             $this->_sortFields[$sortParts[0]] = $sortParts[1];
@@ -68,12 +69,12 @@ class Sorter extends DataComponent {
 
     protected function _readFromSession()
     {
-        $this->_sortFields = SessionHelper::getState($this->_request, 'sort', []);
+        $this->_sortFields = SessionHelper::getState($this->_request, $this->_rememberKey, []);
     }
 
     protected function _storeInSession()
     {
-        SessionHelper::saveState($this->_request, 'sort', $this->_sortFields);
+        SessionHelper::saveState($this->_request, $this->_rememberKey, $this->_sortFields);
     }
 
     protected function _afterInit()
