@@ -98,6 +98,12 @@ class Sorter extends DataComponent {
         {
             foreach ($this->_sortFields as $fieldName => $direction)
             {
+                if ($direction === 'none')
+                {
+                    $this->removeField($fieldName);
+                    continue;
+                }
+
                 $this->_queryBuilder->orderBy($fieldName, $direction);
             }
         }
