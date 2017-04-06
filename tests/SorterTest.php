@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
-use hamburgscleanest\DataTables\Models\Sorter;
+use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /**

@@ -75,7 +75,7 @@ class Paginator extends DataComponent {
             return 1;
         }
 
-        return (int) \floor($this->_getQueryCount() / $this->_perPage);
+        return (int) \floor($this->getQueryCount() / $this->_perPage);
     }
 
     /**

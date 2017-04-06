@@ -54,7 +54,7 @@ abstract class DataComponent {
      *
      * @return int
      */
-    protected function _getQueryCount(): int
+    public function getQueryCount(): int
     {
         /** @var \Illuminate\Database\Query\Builder $query */
         $query = $this->_queryBuilder->getQuery();

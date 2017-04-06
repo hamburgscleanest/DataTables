@@ -3,7 +3,7 @@
 namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
-use hamburgscleanest\DataTables\Models\Paginator;
+use hamburgscleanest\DataTables\Models\DataComponents\Paginator;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /**
