@@ -60,9 +60,18 @@ abstract class DataComponent {
         $query = $this->_queryBuilder->getQuery();
 
         $oldOrders = $query->orders;
+        $oldLimit = $query->limit;
+        $oldOffset = $query->offset;
+
         $query->orders = null;
+        $query->limit = null;
+        $query->offset = null;
+
         $dataCount = $query->count();
+
         $query->orders = $oldOrders;
+        $query->limit = $oldLimit;
+        $query->offset = $oldOffset;
 
         return $dataCount;
     }

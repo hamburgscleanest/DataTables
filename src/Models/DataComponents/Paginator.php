@@ -24,6 +24,9 @@ class Paginator extends DataComponent {
     /** @var string */
     private $_nextPageSymbol = '→';
 
+    /** @var int */
+    private $_surroundingPages = 2;
+
 
     /**
      * Paginator constructor.
@@ -53,6 +56,19 @@ class Paginator extends DataComponent {
     }
 
     /**
+     * How many surrounding pages should be shown?
+     *
+     * @param int $count
+     * @return $this
+     */
+    public function surroundingPages($count = 2)
+    {
+        $this->_surroundingPages = $count;
+
+        return $this;
+    }
+
+    /**
      * @return Builder
      */
     public function shapeData(): Builder
@@ -68,14 +84,20 @@ class Paginator extends DataComponent {
     /**
      * @return int
      */
-    public function pageCount()
+    public function pageCount(): int
     {
         if ($this->_perPage === 0)
         {
             return 1;
         }
 
-        return (int) \floor($this->getQueryCount() / $this->_perPage);
+        $queryCount = $this->getQueryCount();
+        if ($queryCount < $this->_perPage)
+        {
+            return 1;
+        }
+
+        return (int) \floor($queryCount / $this->_perPage);
     }
 
     /**
@@ -85,7 +107,7 @@ class Paginator extends DataComponent {
     private function _getPreviousPageUrl()
     {
         $previousPage = $this->_currentPage - 1;
-        if ($previousPage <= 0)
+        if ($previousPage < 1)
         {
             return null;
         }
@@ -100,7 +122,7 @@ class Paginator extends DataComponent {
     private function _getNextPageUrl()
     {
         $nextPage = $this->_currentPage + 1;
-        if ($nextPage >= $this->pageCount())
+        if ($nextPage > $this->pageCount())
         {
             return null;
         }
@@ -116,7 +138,7 @@ class Paginator extends DataComponent {
      *
      * @throws \RuntimeException
      */
-    private function _buildPageUrl(int $pageNumber)
+    private function _buildPageUrl(int $pageNumber): string
     {
         $parameters = UrlHelper::parameterizeQuery($this->_request->getQueryString());
         $parameters['page'] = $pageNumber;
@@ -133,7 +155,7 @@ class Paginator extends DataComponent {
      *
      * @return string
      */
-    private function _renderListItem(string $pagenumber, ?string $url, ?string $symbol = null)
+    private function _renderListItem(string $pagenumber, ?string $url, ?string $symbol = null): string
     {
         if ($url === null)
         {
@@ -145,7 +167,43 @@ class Paginator extends DataComponent {
             $symbol = $pagenumber;
         }
 
-        return '<li><a href="' . $url . '">' . $symbol . '</a></li>';
+        $class = '';
+        if (+ $pagenumber === $this->_currentPage)
+        {
+            $class = ' class="active"';
+        }
+
+        return '<li' . $class . '><a href="' . $url . '">' . $symbol . '</a></li>';
+    }
+
+    /**
+     * Renders a list of pages.
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    private function _renderPageList(): string
+    {
+        $start = $this->_currentPage - $this->_surroundingPages;
+        if ($start < 1)
+        {
+            $start = 1;
+        }
+
+        $pageCount = $this->pageCount();
+        $end = $this->_currentPage + $this->_surroundingPages;
+        if ($end > $pageCount)
+        {
+            $end = $pageCount;
+        }
+
+        $pageList = '';
+        for ($i = $start; $i <= $end; $i ++)
+        {
+            $pageList .= $this->_renderListItem($i, $this->_buildPageUrl($i));
+        }
+
+        return $pageList;
     }
 
     /**
@@ -161,8 +219,9 @@ class Paginator extends DataComponent {
             return '';
         }
 
-        return '<ul class="list-group" style="list-style: none;">' .
+        return '<ul class="pagination">' .
                $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
+               $this->_renderPageList() .
                $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
                '</ul>';
     }

@@ -14,6 +14,12 @@ class DataScout extends DataComponent {
     /** @var array */
     private $_searchableFields = [];
 
+    /** @var string */
+    private $_buttonText = 'Search';
+
+    /** @var string */
+    private $_placeholder = 'Search..';
+
     /**
      * DataScout constructor.
      * @param array $searchableFields
@@ -73,6 +79,32 @@ class DataScout extends DataComponent {
     }
 
     /**
+     * Set the text for the search button.
+     *
+     * @param string $text
+     * @return $this
+     */
+    public function buttonText(string $text)
+    {
+        $this->_buttonText = $text;
+
+        return $this;
+    }
+
+    /**
+     * Set the placeholder for the input.
+     *
+     * @param string $text
+     * @return $this
+     */
+    public function placeholder(string $text)
+    {
+        $this->_placeholder = $text;
+
+        return $this;
+    }
+
+    /**
      * @param string $field
      * @return $this
      */
@@ -96,6 +128,9 @@ class DataScout extends DataComponent {
      */
     public function render(): string
     {
-        return '<form method="get" action="' . $this->_buildSearchUrl() . '"><input name="search" class="data-scout-input" placeholder="Search.." /><button type="submit" class="btn btn-primary">Search</button></form>';
+        return '<form method="get" action="' . $this->_buildSearchUrl() .
+               '"><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
+               $this->_placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
+               $this->_buttonText . '</button></div></div></form>';
     }
 }
