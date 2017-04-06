@@ -2,6 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
+use hamburgscleanest\DataTables\Facades\DataTable;
 use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -19,9 +20,18 @@ class SorterTest extends TestCase {
     public function sorting_initialized_in_constructor_works()
     {
         /** @var Sorter $sorter */
-        $sorter = new Sorter(['name' => 'desc']);
+        $sorter = new Sorter(['created_at' => 'asc']);
 
-        // TODO
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($sorter);
+
+        $date = '1991-08-03 00:00:00';
+        TestModel::create(['name' => 'test', 'created_at' => $date]);
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
+            \mb_substr($dataTable->render(), 0, 139)
+        );
     }
 
     /**
@@ -31,8 +41,17 @@ class SorterTest extends TestCase {
     {
         /** @var Sorter $sorter */
         $sorter = new Sorter();
-        $sorter->addField('name', 'desc');
+        $sorter->addField('created_at', 'asc');
 
-        // TODO
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($sorter);
+
+        $date = '1991-08-03 00:00:00';
+        TestModel::create(['name' => 'test', 'created_at' => $date]);
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
+            \mb_substr($dataTable->render(), 0, 139)
+        );
     }
 }
