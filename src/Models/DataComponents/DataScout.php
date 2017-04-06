@@ -35,7 +35,7 @@ class DataScout extends DataComponent {
     protected function _afterInit()
     {
         $search = $this->_request->get('search');
-        if ($search !== null)
+        if (!empty($search))
         {
             $this->_searchQueries += \explode(',', $search);
         }
