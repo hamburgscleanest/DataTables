@@ -19,10 +19,16 @@ class Paginator extends DataComponent {
     private $_currentPage;
 
     /** @var string */
+    private $_firstPageSymbol = 'first';
+
+    /** @var string */
     private $_previousPageSymbol = '←';
 
     /** @var string */
     private $_nextPageSymbol = '→';
+
+    /** @var string */
+    private $_lastPageSymbol = 'last';
 
     /** @var int */
     private $_surroundingPages = 2;
@@ -104,6 +110,20 @@ class Paginator extends DataComponent {
      * @return string
      * @throws \RuntimeException
      */
+    private function _getFirstPageUrl()
+    {
+        if ($this->_currentPage === 1)
+        {
+            return null;
+        }
+
+        return $this->_buildPageUrl(1);
+    }
+
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
     private function _getPreviousPageUrl()
     {
         $previousPage = $this->_currentPage - 1;
@@ -122,12 +142,27 @@ class Paginator extends DataComponent {
     private function _getNextPageUrl()
     {
         $nextPage = $this->_currentPage + 1;
-        if ($nextPage > $this->pageCount())
+        if ($nextPage >= $this->pageCount())
         {
             return null;
         }
 
         return $this->_buildPageUrl($nextPage);
+    }
+
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
+    private function _getLastPageUrl()
+    {
+        $lastPage = $this->pageCount();
+        if ($lastPage === $this->_currentPage)
+        {
+            return null;
+        }
+
+        return $this->_buildPageUrl($lastPage);
     }
 
     /**
@@ -220,9 +255,11 @@ class Paginator extends DataComponent {
         }
 
         return '<ul class="pagination">' .
+               $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
                $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
                $this->_renderPageList() .
                $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
+               $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
                '</ul>';
     }
 }
