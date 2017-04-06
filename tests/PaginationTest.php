@@ -26,7 +26,7 @@ class PaginationTest extends TestCase {
         DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($paginator);
 
         $this->assertEquals(
-            '<ul><li><a href="' . $this->baseUrl . '?page=2">→</a></li></ul>',
+            '<ul class="list-group" style="list-style: none;"><li><a href="' . $this->baseUrl . '?page=2">→</a></li></ul>',
             $paginator->render()
         );
     }
@@ -47,7 +47,7 @@ class PaginationTest extends TestCase {
         $this->get($this->baseUrl . '?page=' . $pageCount);
 
         $this->assertEquals(
-            '<ul><li><a href="' . $this->baseUrl . '?page="' . ($pageCount - 1) . '>←</a></li></ul>',
+            '<ul class="list-group" style="list-style: none;"><a href="' . $this->baseUrl . '?page="' . ($pageCount - 1) . '>←</a></li></ul>',
             $paginator->render()
         );
     }
@@ -66,7 +66,7 @@ class PaginationTest extends TestCase {
         $this->get($this->baseUrl . '?page=2');
 
         $this->assertEquals(
-            '<ul><li><a href="' . $this->baseUrl . '?page=1">←</a></li><li><a href="' . $this->baseUrl . '?page=3">→</a></li></ul>',
+            '<ul class="list-group" style="list-style: none;"><a href="' . $this->baseUrl . '?page=1">←</a></li><li><a href="' . $this->baseUrl . '?page=3">→</a></li></ul>',
             $paginator->render()
         );
     }
