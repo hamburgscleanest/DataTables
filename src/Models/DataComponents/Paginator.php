@@ -112,7 +112,7 @@ class Paginator extends DataComponent {
      */
     private function _getFirstPageUrl()
     {
-        if ($this->_currentPage === 1)
+        if ($this->_currentPage <= $this->_surroundingPages + 1)
         {
             return null;
         }
@@ -141,13 +141,12 @@ class Paginator extends DataComponent {
      */
     private function _getNextPageUrl()
     {
-        $nextPage = $this->_currentPage + 1;
-        if ($nextPage >= $this->pageCount())
+        if ($this->_currentPage >= $this->pageCount())
         {
             return null;
         }
 
-        return $this->_buildPageUrl($nextPage);
+        return $this->_buildPageUrl($this->_currentPage + 1);
     }
 
     /**
@@ -157,7 +156,7 @@ class Paginator extends DataComponent {
     private function _getLastPageUrl()
     {
         $lastPage = $this->pageCount();
-        if ($lastPage === $this->_currentPage)
+        if ($this->_currentPage + $this->_surroundingPages >= $lastPage)
         {
             return null;
         }
