@@ -34,8 +34,7 @@ $ composer require hamburgscleanest/data-tables
 ## Usage
 
 ``` php
-$skeleton = new hamburgscleanest\DataTables();
-echo $skeleton->echoPhrase('Hello, League!');
+// TODO
 ```
 
 ## Change log
@@ -66,18 +65,18 @@ If you discover any security related issues, please email chroma91@gmail.com ins
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/hamburgscleanest/DataTables.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/hamburgscleanest/data-tables.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/hamburgscleanest/DataTables/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/hamburgscleanest/DataTables.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/hamburgscleanest/DataTables.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/hamburgscleanest/DataTables.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/hamburgscleanest/data-tables/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/hamburgscleanest/data-tables.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/hamburgscleanest/data-tables.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/hamburgscleanest/data-tables.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/hamburgscleanest/DataTables
-[link-travis]: https://travis-ci.org/hamburgscleanest/DataTables
+[link-packagist]: https://packagist.org/packages/hamburgscleanest/data-tables
+[link-travis]: https://travis-ci.org/hamburgscleanest/data-tables
 [link-scrutinizer]: https://scrutinizer-ci.com/g/hamburgscleanest/DataTables/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/hamburgscleanest/DataTables
-[link-downloads]: https://packagist.org/packages/hamburgscleanest/DataTables
+[link-code-quality]: https://scrutinizer-ci.com/g/hamburgscleanest/data-tables
+[link-downloads]: https://packagist.org/packages/hamburgscleanest/data-tables
 [link-author]: https://github.com/Chroma91
 [link-andre]: https://github.com/karllson
 [link-contributors]: ../../contributors
