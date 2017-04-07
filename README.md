@@ -7,8 +7,9 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
-PSRs you support to avoid any confusion with users and contributors.
+Data tables whose behavior and appearance can be extended by components. 
+For example sorting, pagination or searching the table. 
+No JavaScript is required.
 
 ## Structure
 
