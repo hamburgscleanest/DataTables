@@ -22,4 +22,9 @@ class TestModel extends Model {
     protected $dates = ['created_at'];
 
     public $timestamps = false;
+
+    public function getCustomColumnAttribute()
+    {
+        return 'custom-column';
+    }
 }

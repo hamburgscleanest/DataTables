@@ -78,6 +78,11 @@ class DataTable {
         return $this;
     }
 
+    public function query()
+    {
+        return $this->_queryBuilder;
+    }
+
     /**
      * Displayed columns
      *
@@ -259,10 +264,12 @@ class DataTable {
             $rowModel = $this->_rowRenderer->call($this, $rowModel);
         }
 
+        $attributes = $rowModel->getAttributes() + $this->_getMutatedAttributes($rowModel, $this->_columns);
+
         $html = '<tr>';
-        foreach (\array_intersect_key($rowModel->getAttributes() + $this->_getMutatedAttributes($rowModel, $this->_columns), \array_flip($this->_columns)) as $column)
+        foreach ($this->_columns as $column)
         {
-            $html .= '<td>' . $column . '</td>';
+            $html .= '<td>' . ($attributes[$column] ?? '') . '</td>';
         }
         $html .= '</tr>';
 
@@ -289,7 +296,7 @@ class DataTable {
      */
     private function _open()
     {
-        return '<table class="table' . ($this->_classes ?? 'table') . '">';
+        return '<table class="' . ($this->_classes ?? 'table') . '">';
     }
 
     /**

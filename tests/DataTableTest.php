@@ -3,7 +3,6 @@
 namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
-use hamburgscleanest\DataTables\Models\DataComponents\Paginator;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /**
@@ -19,7 +18,8 @@ class DataTableTest extends TestCase {
      */
     public function empty_data_is_properly_displayed()
     {
-        $dataTable = DataTable::query(TestModel::where('created_at', '1991-08-03'));
+        $dataTable = DataTable::model(TestModel::class);
+        $dataTable->query()->where('created_at', '1991-08-03');
 
         $this->assertEquals(
             '<div>no data</div>',
@@ -32,7 +32,8 @@ class DataTableTest extends TestCase {
      */
     public function renders_custom_no_data()
     {
-        $dataTable = DataTable::query(TestModel::where('created_at', '1991-08-03'));
+        $dataTable = DataTable::model(TestModel::class);
+        $dataTable->query()->where('created_at', '1991-08-03');
 
         $view = '<p>Nothing here</p>';
 
@@ -53,10 +54,11 @@ class DataTableTest extends TestCase {
             'created_at' => '2017-01-01 12:00:00'
         ]);
 
-        $dataTable = DataTable::query(TestModel::where('name', 'test')->select(['id', 'created_at', 'name']));
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name']);
+        $dataTable->query()->where('name', 'test');
 
         $this->assertEquals(
-            '<table><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>' .
+            '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>' .
             $testmodel->id . '</td><td>' .
             $testmodel->created_at->format('Y-m-d H:i:s') . '</td><td>' .
             $testmodel->name . '</td></tr></table>',
@@ -75,20 +77,21 @@ class DataTableTest extends TestCase {
             'created_at' => '2017-01-01 12:00:00'
         ]);
 
-        $dataTable = DataTable::query(
-            TestModel::where('name', 'test')->select(['id', 'created_at', 'name']),
-            function ($row)
-            {
-                $row->id = 1337;
-                $row->created_at = '2017-01-01 13:37:00';
-                $row->name = 'Test';
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+            ->renderRow(
+                function ($row)
+                {
+                    $row->id = 1337;
+                    $row->created_at = '2017-01-01 13:37:00';
+                    $row->name = 'Test';
 
-                return $row;
-            }
-        );
+                    return $row;
+                }
+            );
+        $dataTable->query()->where('name', 'test');
 
         $this->assertEquals(
-            '<table><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>1337</td><td>2017-01-01 13:37:00</td><td>Test</td></tr></table>',
+            '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>1337</td><td>2017-01-01 13:37:00</td><td>Test</td></tr></table>',
             $dataTable->render()
         );
     }
@@ -104,7 +107,8 @@ class DataTableTest extends TestCase {
             'created_at' => '2017-01-01 12:00:00'
         ]);
 
-        $dataTable = DataTable::query(TestModel::where('name', 'test')->select(['id', 'created_at', 'name']))->classes('test-class');
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->classes('test-class');
+        $dataTable->query()->where('name', 'test');
 
         $this->assertEquals(
             '<table class="test-class"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>' .
@@ -118,57 +122,20 @@ class DataTableTest extends TestCase {
     /**
      * @test
      */
-    public function pagination_is_rendered_correctly_for_first_page()
+    public function table_renders_mutated_attributes()
     {
-        /** @var Paginator $paginator */
-        $paginator = new Paginator();
+        /** @var TestModel $testmodel */
+        $testmodel = TestModel::create([
+            'name'       => 'test',
+            'created_at' => '2017-01-01 12:00:00'
+        ]);
 
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($paginator);
+        $dataTable = DataTable::model(TestModel::class, ['custom_column']);
+        $dataTable->query()->where('name', 'test');
 
         $this->assertEquals(
-            '<ul><li><a href="' . $this->baseUrl . '?page=2">→</a></li></ul>',
-            $paginator->render()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function pagination_is_rendered_correctly_for_last_page()
-    {
-        /** @var Paginator $paginator */
-        $paginator = new Paginator();
-
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($paginator);
-
-        $pageCount = $paginator->pageCount();
-
-        $this->get($this->baseUrl . '?page=' . $pageCount);
-
-        $this->assertEquals(
-            '<ul><li><a href="' . $this->baseUrl . '?page="' . ($pageCount - 1) . '>←</a></li></ul>',
-            $paginator->render()
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function pagination_is_rendered_correctly_for_other_pages()
-    {
-        /** @var Paginator $paginator */
-        $paginator = new Paginator();
-
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($paginator);
-
-        $this->get($this->baseUrl . '?page=2');
-
-        $this->assertEquals(
-            '<ul><li><a href="' . $this->baseUrl . '?page=1">←</a></li><li><a href="' . $this->baseUrl . '?page=3">→</a></li></ul>',
-            $paginator->render()
+            '<table class="table"><tr><th>custom_column</th></tr><tr><td>custom-column</td></tr></table>',
+            $dataTable->render()
         );
     }
 }
