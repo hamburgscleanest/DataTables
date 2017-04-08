@@ -3,6 +3,7 @@
 namespace hamburgscleanest\DataTables\Models\HeaderFormatters;
 
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
+use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Http\Request;
 
 /**
@@ -28,14 +29,16 @@ class TranslateHeader implements HeaderFormatter {
      * Format the given header.
      * For example add a link to sort by this header/column.
      *
-     * @param array $header
+     * @param Header $header
      * @param Request $request
      */
-    public function format(array &$header, Request $request)
+    public function format(Header $header, Request $request)
     {
-        if (isset($this->_translations[$header['attribute']]))
+        $headerAttributeName = $header->getOriginalName();
+
+        if (isset($this->_translations[$headerAttributeName]))
         {
-            $header['name'] = $this->_translations[$header['attribute']];
+            $header->name = $this->_translations[$headerAttributeName];
         }
     }
 }

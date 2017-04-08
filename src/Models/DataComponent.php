@@ -112,7 +112,10 @@ abstract class DataComponent {
     public function forget()
     {
         $this->_rememberState = false;
-        SessionHelper::removeState($this->_request, $this->_rememberKey);
+        if ($this->_request !== null)
+        {
+            SessionHelper::removeState($this->_request, $this->_rememberKey);
+        }
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace hamburgscleanest\DataTables\Models\HeaderFormatters;
 use hamburgscleanest\DataTables\Helpers\SessionHelper;
 use hamburgscleanest\DataTables\Helpers\UrlHelper;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
+use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Http\Request;
 
 /**
@@ -171,19 +172,21 @@ class SortableHeader implements HeaderFormatter {
      * Adds a link to sort by this header/column.
      * Also indicates how the columns are sorted (when sorted).
      *
-     * @param array $header
+     * @param Header $header
      * @param Request $request
      * @throws \RuntimeException
      */
-    public function format(array &$header, Request $request)
+    public function format(Header $header, Request $request)
     {
-        $sortFields = $this->_extractSortFields($request);
-        $direction = $sortFields[$header['attribute']] ?? 'none';
-        $header['name'] .= ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span>';
+        $headerAttributeName = $header->getOriginalName();
 
-        if (\count($this->_sortableHeaders) === 0 || \in_array($header['attribute'], $this->_sortableHeaders, true))
+        $sortFields = $this->_extractSortFields($request);
+        $direction = $sortFields[$headerAttributeName] ?? 'none';
+        $header->name .= ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span>';
+
+        if (\count($this->_sortableHeaders) === 0 || \in_array($headerAttributeName, $this->_sortableHeaders, true))
         {
-            $header['name'] = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $header['attribute'], $direction) . '">' . $header['name'] . '</a>';
+            $header->name = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $headerAttributeName, $direction) . '">' . $header->name . '</a>';
         }
     }
 }

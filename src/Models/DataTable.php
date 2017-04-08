@@ -37,6 +37,9 @@ class DataTable {
     /** @var string */
     private $_classes;
 
+    /** @var array */
+    private $_columns = [];
+
     /**
      * DataTable constructor.
      * @param Request $request
@@ -47,15 +50,50 @@ class DataTable {
     }
 
     /**
-     * Set the Query builder instance which is used to display the data.
+     * Set the base model whose data is displayed in the table.
      *
-     * @param Builder $queryBuilder
-     * @param Closure $customRowRenderer Custom function to manipulate the fetched rows.
+     * @param string $modelName
+     * @return $this
+     * @throws \RuntimeException
+     */
+    public function model(string $modelName)
+    {
+        if (!\class_exists($modelName))
+        {
+            throw new RuntimeException('Class "' . $modelName . '" does not exist!');
+        }
+
+        if (!\is_subclass_of($modelName, Model::class))
+        {
+            throw new RuntimeException('"' . $modelName . '" is not an active record!');
+        }
+
+        $this->_queryBuilder = (new $modelName)->newQuery();
+
+        return $this;
+    }
+
+    /**
+     * Displayed columns
+     *
+     * @param array $columns
      * @return $this
      */
-    public function query(Builder $queryBuilder, Closure $customRowRenderer = null)
+    public function columns(array $columns)
     {
-        $this->_queryBuilder = $queryBuilder;
+        $this->_columns += $columns;
+
+        return $this;
+    }
+
+    /**
+     * Manipulate each rendered row.
+     *
+     * @param Closure $customRowRenderer
+     * @return $this
+     */
+    public function renderRow(Closure $customRowRenderer)
+    {
         $this->_rowRenderer = $customRowRenderer;
 
         return $this;
@@ -128,58 +166,33 @@ class DataTable {
     }
 
     /**
-     * @param array $columns
-     * @return array
-     */
-    private function _extractColumnNames(array $columns)
-    {
-        return array_map(
-            function ($column)
-            {
-                return $this->_getColumnAlias($column);
-            },
-            \explode(',', \implode(',', $columns)));
-    }
-
-    /**
-     * @param string $column
-     * @return string
-     */
-    private function _getColumnAlias(string $column)
-    {
-        $aliasPos = mb_strpos($column, ' as ');
-
-        return $aliasPos !== false ? mb_substr($column, $aliasPos + 4) : $column;
-    }
-
-    /**
      * Renders the column headers.
      *
      * @return string
      */
     private function _renderHeaders()
     {
-        $query = $this->_queryBuilder->getQuery();
-        $headers = $query->columns !== null ? $this->_extractColumnNames($query->columns) : Schema::getColumnListing($query->from);
+        if (\count($this->_columns) === 0)
+        {
+            $this->_columns = Schema::getColumnListing($this->_queryBuilder->getQuery()->from);
+        }
 
         $headers = array_map(
-            function ($original)
+            function ($name)
             {
-                return ['attribute' => $original, 'name' => $original];
+                return new Header($name);
             },
-            $headers
+            $this->_columns
         );
 
         $html = '<tr>';
+
+        /** @var Header $header */
         foreach ($headers as $header)
         {
-            /** @var HeaderFormatter $headerFormatter */
-            foreach ($this->_headerFormatters as $headerFormatter)
-            {
-                $headerFormatter->format($header, $this->_request);
-            }
+            $header->formatArray($this->_headerFormatters, $this->_request);
 
-            $html .= '<th>' . $header['name'] . '</th>';
+            $html .= '<th>' . $header->name . '</th>';
         }
         $html .= '</tr>';
 
@@ -219,7 +232,7 @@ class DataTable {
         }
 
         $html = '<tr>';
-        foreach ($rowModel->getAttributes() as $column)
+        foreach (\array_intersect_key($rowModel->getAttributes(), \array_flip($this->_columns)) as $column)
         {
             $html .= '<td>' . $column . '</td>';
         }
@@ -235,9 +248,7 @@ class DataTable {
      */
     private function _open()
     {
-        $class = !empty($this->_classes) ? ' ' . $this->_classes : '';
-
-        return '<table class="table' . $class . '">';
+        return '<table class="table' . ($this->_classes ?? 'table') . '">';
     }
 
     /**
