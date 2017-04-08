@@ -24,7 +24,8 @@ class DataScoutTest extends TestCase {
         $scout = new DataScout(['name']);
 
         /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($scout);
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+            ->addComponent($scout);
 
         $countBeforeSearch = $scout->getQueryCount();
 

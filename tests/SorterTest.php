@@ -23,7 +23,8 @@ class SorterTest extends TestCase {
         $sorter = new Sorter(['created_at' => 'asc']);
 
         /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($sorter);
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+            ->addComponent($sorter);
 
         $date = '1991-08-03 00:00:00';
         TestModel::create(['name' => 'test', 'created_at' => $date]);
@@ -44,7 +45,8 @@ class SorterTest extends TestCase {
         $sorter->addField('created_at', 'asc');
 
         /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        $dataTable = DataTable::query(TestModel::select(['id', 'created_at', 'name']))->addComponent($sorter);
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+            ->addComponent($sorter);
 
         $date = '1991-08-03 00:00:00';
         TestModel::create(['name' => 'test', 'created_at' => $date]);
