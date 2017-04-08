@@ -53,10 +53,11 @@ class DataTable {
      * Set the base model whose data is displayed in the table.
      *
      * @param string $modelName
+     * @param array $columns
      * @return $this
      * @throws \RuntimeException
      */
-    public function model(string $modelName)
+    public function model(string $modelName, array $columns = [])
     {
         if (!\class_exists($modelName))
         {
@@ -69,6 +70,7 @@ class DataTable {
         }
 
         $this->_queryBuilder = (new $modelName)->newQuery();
+        $this->_columns = $columns;
 
         return $this;
     }
@@ -218,6 +220,24 @@ class DataTable {
     }
 
     /**
+     * Get all the mutated attributes which are needed.
+     *
+     * @param Model $model
+     * @param array $columns
+     * @return array
+     */
+    private function _getMutatedAttributes(Model $model, array $columns = []): array
+    {
+        $attributes = [];
+        foreach (\array_intersect_key($model->getMutatedAttributes(), $columns) as $attribute)
+        {
+            $attributes[$attribute] = $model->{$attribute};
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Displays a single row.
      *
      * @param Model $rowModel
@@ -232,7 +252,7 @@ class DataTable {
         }
 
         $html = '<tr>';
-        foreach (\array_intersect_key($rowModel->getAttributes(), \array_flip($this->_columns)) as $column)
+        foreach (\array_intersect_key($rowModel->getAttributes() + $this->_getMutatedAttributes($rowModel, $this->_columns), \array_flip($this->_columns)) as $column)
         {
             $html .= '<td>' . $column . '</td>';
         }
