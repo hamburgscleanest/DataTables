@@ -40,6 +40,9 @@ class DataTable {
     /** @var array */
     private $_columns = [];
 
+    /** @var array */
+    private $_relations = [];
+
     /**
      * DataTable constructor.
      * @param Request $request
@@ -141,7 +144,12 @@ class DataTable {
     {
         if ($this->_queryBuilder === null)
         {
-            throw new RuntimeException('No query builder instance set!');
+            throw new RuntimeException('Unknown base model!');
+        }
+
+        if (\count($this->_relations) > 0)
+        {
+            $this->_queryBuilder->with($this->_relations);
         }
 
         /** @var DataComponent $component */
@@ -259,6 +267,19 @@ class DataTable {
         $html .= '</tr>';
 
         return $html;
+    }
+
+    /**
+     * Add a relation to the table.
+     *
+     * @param array $relations
+     * @return $this
+     */
+    public function with(array $relations)
+    {
+        $this->_relations += $relations;
+
+        return $this;
     }
 
     /**
