@@ -144,7 +144,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [link-packagist]: https://packagist.org/packages/hamburgscleanest/data-tables
 [link-travis]: https://travis-ci.org/hamburgscleanest/data-tables
-[link-scrutinizer]: https://scrutinizer-ci.com/g/hamburgscleanest/DataTables/code-structure
+[link-scrutinizer]: https://scrutinizer-ci.com/g/hamburgscleanest/data-tables/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/hamburgscleanest/data-tables
 [link-downloads]: https://packagist.org/packages/hamburgscleanest/data-tables
 [link-author]: https://github.com/Chroma91
