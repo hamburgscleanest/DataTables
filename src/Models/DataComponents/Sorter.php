@@ -21,7 +21,7 @@ class Sorter extends DataComponent {
 
     /**
      * Sorter constructor.
-     * @param array $fields
+     * @param null|array $fields
      * @param bool $remember
      */
     public function __construct(array $fields = null, bool $remember = false)
@@ -69,7 +69,7 @@ class Sorter extends DataComponent {
 
     protected function _readFromSession()
     {
-        $this->_sortFields = SessionHelper::getState($this->_request, $this->_rememberKey, []);
+        $this->_sortFields = (array) SessionHelper::getState($this->_request, $this->_rememberKey, []);
     }
 
     protected function _storeInSession()
