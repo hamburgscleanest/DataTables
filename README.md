@@ -32,21 +32,21 @@ Add the service provider to your providers array
 
 ## Usage
 
-###Creating a simple table
+### Creating a simple table
 
 ``` php
     /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
     $dataTable = DataTable::model(User::class, ['created_at', 'name']);
 ```
 
-###Alternative way to specify the columns
+### Alternative way to specify the columns
 
 ``` php
     /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
     $dataTable = DataTable::model(User::class)->columns(['created_at', 'name']);
 ```
 
-###Rendering the table in your view
+### Rendering the table in your view
 
 ``` php
     ...
@@ -61,7 +61,7 @@ Add the service provider to your providers array
 You can extend the behaviour of the table via data components.
 Just create a new Component and add it to the table.
 
-###Adding pagination
+### Adding pagination
 
 ``` php
 
@@ -71,7 +71,7 @@ Just create a new Component and add it to the table.
     $dataTable->addComponent($paginator);
 ```
 
-###Rendering the pagination in your view (page links)
+### Rendering the pagination in your view (page links)
 
 ``` php   
     ...
@@ -83,7 +83,7 @@ Just create a new Component and add it to the table.
 
 ## Altering appearance
 
-###Modifying table headers, e.g. translating headers
+### Modifying table headers, e.g. translating headers
 
 ``` php   
     ...
