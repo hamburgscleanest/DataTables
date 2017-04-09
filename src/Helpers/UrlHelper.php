@@ -13,7 +13,7 @@ use RuntimeException;
 class UrlHelper {
 
     /**
-     * @param string $queryString
+     * @param string|null $queryString
      *
      * @return array
      * @throws \RuntimeException

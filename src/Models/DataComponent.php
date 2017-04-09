@@ -136,10 +136,10 @@ abstract class DataComponent {
     /**
      * @return Builder
      */
-    public abstract function shapeData(): Builder;
+    abstract public function shapeData(): Builder;
 
     /**
      * @return string
      */
-    public abstract function render(): string;
+    abstract public function render(): string;
 }

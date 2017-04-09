@@ -107,7 +107,7 @@ class Paginator extends DataComponent {
     }
 
     /**
-     * @return string
+     * @return null|string
      * @throws \RuntimeException
      */
     private function _getFirstPageUrl()
@@ -121,7 +121,7 @@ class Paginator extends DataComponent {
     }
 
     /**
-     * @return string
+     * @return null|string
      * @throws \RuntimeException
      */
     private function _getPreviousPageUrl()
@@ -136,7 +136,7 @@ class Paginator extends DataComponent {
     }
 
     /**
-     * @return string
+     * @return null|string
      * @throws \RuntimeException
      */
     private function _getNextPageUrl()
@@ -150,7 +150,7 @@ class Paginator extends DataComponent {
     }
 
     /**
-     * @return string
+     * @return null|string
      * @throws \RuntimeException
      */
     private function _getLastPageUrl()
@@ -185,7 +185,7 @@ class Paginator extends DataComponent {
      *
      * @param string $pagenumber
      * @param string $url
-     * @param string $symbol
+     * @param string|null $symbol
      *
      * @return string
      */

@@ -142,7 +142,7 @@ class DataTable {
     /**
      * Get data which should be displayed in the table.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      *
      * @throws \RuntimeException
      */
@@ -313,9 +313,9 @@ class DataTable {
     /**
      * Renders the table.
      *
-     * @param Closure $noDataView
+     * @param null|Closure $noDataView
      *
-     * @return mixed|string
+     * @return string
      * @throws \RuntimeException
      */
     public function render(Closure $noDataView = null)
