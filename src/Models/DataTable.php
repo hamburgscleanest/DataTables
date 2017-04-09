@@ -194,7 +194,7 @@ class DataTable {
         }
 
         $headers = array_map(
-            function ($name)
+            function($name)
             {
                 return new Header($name);
             },
