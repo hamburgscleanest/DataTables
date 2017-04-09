@@ -30,12 +30,12 @@ class DataTablesServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app->bind('datatable', function ($app)
+        $this->app->bind('datatable', function($app)
         {
             return new DataTable($app->request);
         });
 
-        $this->app->booting(function ()
+        $this->app->booting(function()
         {
             $loader = AliasLoader::getInstance();
             $loader->alias('DataTable', DataTableFacade::class);
