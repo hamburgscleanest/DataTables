@@ -3,7 +3,9 @@
 namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
+use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use RuntimeException;
 
 /**
  * Class DataTableTest
@@ -125,7 +127,7 @@ class DataTableTest extends TestCase {
     public function table_renders_mutated_attributes()
     {
         /** @var TestModel $testmodel */
-        $testmodel = TestModel::create([
+        TestModel::create([
             'name'       => 'test',
             'created_at' => '2017-01-01 12:00:00'
         ]);
@@ -137,5 +139,25 @@ class DataTableTest extends TestCase {
             '<table class="table"><tr><th>custom_column</th></tr><tr><td>custom-column</td></tr></table>',
             $dataTable->render()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function handles_not_existing_class()
+    {
+        $this->expectException(RuntimeException::class);
+
+        DataTable::model('non-existing');
+    }
+
+    /**
+     * @test
+     */
+    public function handles_class_which_is_no_active_record()
+    {
+        $this->expectException(RuntimeException::class);
+
+        DataTable::model(Header::class);
     }
 }
