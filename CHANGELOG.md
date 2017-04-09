@@ -1,10 +1,29 @@
 # Changelog
 
-All Notable changes to `DataTables` will be documented in this file.
+All Notable changes to `data-tables` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## NEXT - YYYY-MM-DD
+## Next
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
+## 0.6.0
+
+initial beta version
 
 ### Added
 - Nothing

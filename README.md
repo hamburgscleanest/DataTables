@@ -7,21 +7,9 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-Data tables whose behavior and appearance can be extended by components. 
+Data tables whose behavior and appearance can be extended by components.
 For example sorting, pagination or searching the table. 
 No JavaScript is required.
-
-## Structure
-
-If any of the following are applicable to your project, then the directory structure should follow industry best practises by being named the following.
-
-```
-bin/        
-config/
-src/
-tests/
-vendor/
-```
 
 
 ## Install
@@ -32,13 +20,94 @@ Via Composer
 $ composer require hamburgscleanest/data-tables
 ```
 
-## Usage
-
+Add the service provider to your providers array
 ``` php
-// TODO
+    'providers' => [
+                
+                ...
+           
+            DataTablesServiceProvider::class,
+        ],
 ```
 
-## Change log
+## Usage
+
+###Creating a simple table
+
+``` php
+    /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+    $dataTable = DataTable::model(User::class, ['created_at', 'name']);
+```
+
+###Alternative way to specify the columns
+
+``` php
+    /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+    $dataTable = DataTable::model(User::class)->columns(['created_at', 'name']);
+```
+
+###Rendering the table in your view
+
+``` php
+    ...
+    
+    {!! $dataTable->render() !!}
+    
+    ...
+```
+
+## Extending behaviour
+
+You can extend the behaviour of the table via data components.
+Just create a new Component and add it to the table.
+
+###Adding pagination
+
+``` php
+
+    /** @var Paginator $paginator */
+    $paginator = new Paginator();
+    
+    $dataTable->addComponent($paginator);
+```
+
+###Rendering the pagination in your view (page links)
+
+``` php   
+    ...
+    
+    {!! $paginator->render() !!}
+    
+    ...
+```
+
+## Altering appearance
+
+###Modifying table headers, e.g. translating headers
+
+``` php   
+    ...
+    
+     $dataTable->formatHeaders(new TranslateHeader(trans('my.translations')));
+    
+    ...
+```
+
+## Combine components and formatters
+
+You can add sorting to the table via a data component and make your table headers sortable with a header formatter.
+
+``` php   
+    ...
+    
+     $dataTable
+        ->addComponent(new Sorter)
+        ->formatHeaders(new SortableHeader(['name']));
+    
+    ...
+```
+
+## Changes
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
