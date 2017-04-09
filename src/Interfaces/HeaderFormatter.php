@@ -17,7 +17,7 @@ interface HeaderFormatter {
      *
      * @param Header $header
      * @param Request $request
-     * @return
-     void
+     * @return void
+     */
     public function format(Header $header, Request $request);
 }
