@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3ed6e978ab6e2e415da3d3516613f605",
+    "content-hash": "f5eba70018214c39dc6841fe5c701718",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -1848,7 +1848,7 @@
                 "cli",
                 "microframework"
             ],
-            "time": "2014-03-29T14:03:13+00:00"
+            "time": "2014-03-29 14:03:13"
         },
         {
             "name": "cilex/console-service-provider",
@@ -2006,7 +2006,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2017-02-24T16:22:25+00:00"
+            "time": "2017-02-24 16:22:25"
         },
         {
             "name": "doctrine/instantiator",
@@ -2114,7 +2114,7 @@
                 "lexer",
                 "parser"
             ],
-            "time": "2014-09-09T13:34:57+00:00"
+            "time": "2014-09-09 13:34:57"
         },
         {
             "name": "erusev/parsedown",
@@ -2206,7 +2206,58 @@
                 "faker",
                 "fixtures"
             ],
-            "time": "2017-04-07T07:05:49+00:00"
+            "time": "2017-04-07 07:05:49"
+        },
+        {
+            "name": "hamcrest/hamcrest-php",
+            "version": "1.2.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hamcrest/hamcrest-php.git",
+                "reference": "b72949ccf2f640e7de66ff7dd92d83f577ce782e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hamcrest/hamcrest-php/zipball/b72949ccf2f640e7de66ff7dd92d83f577ce782e",
+                "reference": "b72949ccf2f640e7de66ff7dd92d83f577ce782e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3|^7.0"
+            },
+            "replace": {
+                "cordoval/hamcrest-php": "*",
+                "davedevelopment/hamcrest-php": "*",
+                "kodova/hamcrest-php": "*"
+            },
+            "require-dev": {
+                "phpunit/php-file-iterator": "1.3.3",
+                "phpunit/phpunit": "~4.0",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "hamcrest"
+                ],
+                "files": [
+                    "hamcrest/Hamcrest.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD"
+            ],
+            "description": "This is the PHP port of Hamcrest Matchers",
+            "keywords": [
+                "test"
+            ],
+            "time": "2016-01-19T12:08:55+00:00"
         },
         {
             "name": "herrera-io/json",
@@ -2267,7 +2318,7 @@
                 "validate"
             ],
             "abandoned": "kherge/json",
-            "time": "2013-10-30T16:51:34+00:00"
+            "time": "2013-10-30 16:51:34"
         },
         {
             "name": "herrera-io/phar-update",
@@ -2411,7 +2462,7 @@
                 "Apache2"
             ],
             "description": "A library for easily creating recursive-descent parsers.",
-            "time": "2014-07-08T16:40:41+00:00"
+            "time": "2014-07-08 16:40:41"
         },
         {
             "name": "jms/serializer",
@@ -2490,7 +2541,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2017-03-29T07:25:50+00:00"
+            "time": "2017-03-29 07:25:50"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2599,7 +2650,72 @@
             "description": "A parsing and comparison library for semantic versioning.",
             "homepage": "http://github.com/kherge/Version",
             "abandoned": true,
-            "time": "2013-05-17T14:37:21+00:00"
+            "time": "2013-05-17 14:37:21"
+        },
+        {
+            "name": "mockery/mockery",
+            "version": "0.9.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/padraic/mockery.git",
+                "reference": "483c43d92b6581ea7f8c330231d2dabf8b1ec51f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/483c43d92b6581ea7f8c330231d2dabf8b1ec51f",
+                "reference": "483c43d92b6581ea7f8c330231d2dabf8b1ec51f",
+                "shasum": ""
+            },
+            "require": {
+                "hamcrest/hamcrest-php": "~1.1",
+                "lib-pcre": ">=7.0",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.9.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Mockery": "library/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Pádraic Brady",
+                    "email": "padraic.brady@gmail.com",
+                    "homepage": "http://blog.astrumfutura.com"
+                },
+                {
+                    "name": "Dave Marshall",
+                    "email": "dave.marshall@atstsolutions.co.uk",
+                    "homepage": "http://davedevelopment.co.uk"
+                }
+            ],
+            "description": "Mockery is a simple yet flexible PHP mock object framework for use in unit testing with PHPUnit, PHPSpec or any other testing framework. Its core goal is to offer a test double framework with a succinct API capable of clearly defining all possible object operations and interactions using a human readable Domain Specific Language (DSL). Designed as a drop in alternative to PHPUnit's phpunit-mock-objects library, Mockery is easy to integrate with PHPUnit and can operate alongside phpunit-mock-objects without the World ending.",
+            "homepage": "http://github.com/padraic/mockery",
+            "keywords": [
+                "BDD",
+                "TDD",
+                "library",
+                "mock",
+                "mock objects",
+                "mockery",
+                "stub",
+                "test",
+                "test double",
+                "testing"
+            ],
+            "time": "2017-04-07T09:06:30+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2695,7 +2811,7 @@
                 "orchestra-platform",
                 "orchestral"
             ],
-            "time": "2017-02-08T02:33:21+00:00"
+            "time": "2017-02-08 02:33:21"
         },
         {
             "name": "orchestra/testbench",
@@ -2758,7 +2874,7 @@
                 "orchestral",
                 "testing"
             ],
-            "time": "2017-03-10T06:53:00+00:00"
+            "time": "2017-03-10 06:53:00"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -3258,7 +3374,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-04-02T07:44:40+00:00"
+            "time": "2017-04-02 07:44:40"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3526,7 +3642,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-04-03T02:22:27+00:00"
+            "time": "2017-04-03 02:22:27"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -3631,7 +3747,7 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2016-09-10T19:35:52+00:00"
+            "time": "2016-09-10 19:35:52"
         },
         {
             "name": "psr/cache",
@@ -3677,7 +3793,7 @@
                 "psr",
                 "psr-6"
             ],
-            "time": "2016-10-13T14:48:10+00:00"
+            "time": "2016-10-13 14:48:10"
         },
         {
             "name": "psr/container",
@@ -3726,7 +3842,7 @@
                 "container-interop",
                 "psr"
             ],
-            "time": "2017-02-14T16:28:37+00:00"
+            "time": "2017-02-14 16:28:37"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -4366,7 +4482,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2017-04-06T22:59:41+00:00"
+            "time": "2017-04-06 22:59:41"
         },
         {
             "name": "symfony/config",
@@ -4422,7 +4538,7 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-04T15:24:26+00:00"
+            "time": "2017-04-04 15:24:26"
         },
         {
             "name": "symfony/css-selector",
@@ -4475,7 +4591,7 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2016-06-29T05:40:00+00:00"
+            "time": "2016-06-29 05:40:00"
         },
         {
             "name": "symfony/dom-crawler",
@@ -4531,7 +4647,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-30T07:22:48+00:00"
+            "time": "2016-07-30 07:22:48"
         },
         {
             "name": "symfony/filesystem",
@@ -4580,7 +4696,7 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
-            "time": "2016-07-20T05:43:46+00:00"
+            "time": "2016-07-20 05:43:46"
         },
         {
             "name": "symfony/stopwatch",
@@ -4629,7 +4745,7 @@
             ],
             "description": "Symfony Stopwatch Component",
             "homepage": "https://symfony.com",
-            "time": "2017-02-18T17:06:33+00:00"
+            "time": "2017-02-18 17:06:33"
         },
         {
             "name": "symfony/validator",
@@ -4702,7 +4818,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-05T21:34:00+00:00"
+            "time": "2017-04-05 21:34:00"
         },
         {
             "name": "symfony/yaml",
@@ -4757,7 +4873,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-05T15:20:10+00:00"
+            "time": "2017-04-05 15:20:10"
         },
         {
             "name": "twig/twig",
@@ -4819,7 +4935,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-04-05T23:23:01+00:00"
+            "time": "2017-04-05 23:23:01"
         },
         {
             "name": "zendframework/zend-cache",
@@ -4890,7 +5006,7 @@
                 "cache",
                 "zf2"
             ],
-            "time": "2017-02-11T10:35:02+00:00"
+            "time": "2017-02-11 10:35:02"
         },
         {
             "name": "zendframework/zend-config",
@@ -5000,7 +5116,7 @@
                 "events",
                 "zf2"
             ],
-            "time": "2017-03-05T07:56:37+00:00"
+            "time": "2017-03-05 07:56:37"
         },
         {
             "name": "zendframework/zend-filter",
@@ -5060,7 +5176,7 @@
                 "filter",
                 "zf2"
             ],
-            "time": "2016-04-18T18:33:57+00:00"
+            "time": "2016-04-18 18:33:57"
         },
         {
             "name": "zendframework/zend-hydrator",
@@ -5118,7 +5234,7 @@
                 "hydrator",
                 "zf2"
             ],
-            "time": "2016-02-18T22:38:26+00:00"
+            "time": "2016-02-18 22:38:26"
         },
         {
             "name": "zendframework/zend-i18n",
@@ -5185,7 +5301,7 @@
                 "i18n",
                 "zf2"
             ],
-            "time": "2016-06-07T21:11:51+00:00"
+            "time": "2016-06-07 21:11:51"
         },
         {
             "name": "zendframework/zend-json",
@@ -5235,7 +5351,7 @@
                 "json",
                 "zf2"
             ],
-            "time": "2016-04-12T21:11:28+00:00"
+            "time": "2016-04-12 21:11:28"
         },
         {
             "name": "zendframework/zend-serializer",
@@ -5292,7 +5408,7 @@
                 "serializer",
                 "zf2"
             ],
-            "time": "2016-07-19T19:51:49+00:00"
+            "time": "2016-07-19 19:51:49"
         },
         {
             "name": "zendframework/zend-servicemanager",
@@ -5403,7 +5519,7 @@
                 "stdlib",
                 "zf2"
             ],
-            "time": "2016-04-12T21:17:31+00:00"
+            "time": "2016-04-12 21:17:31"
         },
         {
             "name": "zetacomponents/base",
@@ -5517,7 +5633,7 @@
             ],
             "description": "The Document components provides a general conversion framework for different semantic document markup languages like XHTML, Docbook, RST and similar.",
             "homepage": "https://github.com/zetacomponents",
-            "time": "2015-06-03T14:25:43+00:00"
+            "time": "2015-06-03 14:25:43"
         }
     ],
     "aliases": [],
