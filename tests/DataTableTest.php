@@ -147,7 +147,6 @@ class DataTableTest extends TestCase {
     public function handles_not_existing_class()
     {
         $this->expectException(RuntimeException::class);
-
         DataTable::model('non-existing');
     }
 
@@ -157,7 +156,17 @@ class DataTableTest extends TestCase {
     public function handles_class_which_is_no_active_record()
     {
         $this->expectException(RuntimeException::class);
-
         DataTable::model(Header::class);
+    }
+
+    /**
+     * @test
+     */
+    public function handles_no_model_set()
+    {
+        $this->expectException(RuntimeException::class);
+
+        $dataTable = DataTable::columns(['id', 'created_at', 'name']);
+        $dataTable->render();
     }
 }
