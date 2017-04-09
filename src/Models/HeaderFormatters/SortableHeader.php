@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
  *
  * If nothing is specified, all headers are sortable.
  *
- * @package hamburgscleanest\DataTables\Models
+ * @package hamburgscleanest\DataTables\Models\HeaderFormatters
  */
 class SortableHeader implements HeaderFormatter {
 
@@ -30,11 +30,7 @@ class SortableHeader implements HeaderFormatter {
     private $_dontSort;
 
     /** @var array */
-    private $_sortingSymbols = [
-        'asc'  => '&#x25B2;',
-        'desc' => '&#x25BC;',
-        'none' => '⇵'
-    ];
+    private $_sortingSymbols = ['asc' => '&#x25B2;', 'desc' => '&#x25BC;', 'none' => '⇵'];
 
     /**
      * SortableHeader constructor.
@@ -46,6 +42,18 @@ class SortableHeader implements HeaderFormatter {
     {
         $this->_sortableHeaders = $sortableHeaders;
         $this->_dontSort = $dontSort;
+
+    }
+
+    /**
+     * @param array $sortingSymbols
+     * @return $this
+     */
+    public function sortingSymbols(array $sortingSymbols)
+    {
+        $this->_sortingSymbols = $sortingSymbols;
+
+        return $this;
     }
 
     /**

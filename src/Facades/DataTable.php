@@ -4,6 +4,10 @@ namespace hamburgscleanest\DataTables\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * Class DataTable
+ * @package hamburgscleanest\DataTables\Facades
+ */
 class DataTable extends Facade {
 
     /**

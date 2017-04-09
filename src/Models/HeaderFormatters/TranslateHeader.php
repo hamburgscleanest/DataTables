@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 /**
  * Class TranslateHeader
  *
- * @package hamburgscleanest\DataTables\Models
+ * @package hamburgscleanest\DataTables\Models\HeaderFormatters
  */
 class TranslateHeader implements HeaderFormatter {
 

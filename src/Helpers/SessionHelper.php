@@ -3,7 +3,6 @@
 namespace hamburgscleanest\DataTables\Helpers;
 
 use Illuminate\Http\Request;
-use function is_array;
 
 /**
  * Class SessionHelper
@@ -15,6 +14,11 @@ class SessionHelper {
 
     const SESSION_STORAGE = 'data-tables.';
 
+    /**
+     * @param Request $request
+     * @param string $key
+     * @return string
+     */
     private static function getFormattedKey(Request $request, string $key)
     {
         return

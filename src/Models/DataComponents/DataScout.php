@@ -6,13 +6,17 @@ use hamburgscleanest\DataTables\Helpers\UrlHelper;
 use hamburgscleanest\DataTables\Models\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * Class DataScout
+ * @package hamburgscleanest\DataTables\Models\DataComponents
+ */
 class DataScout extends DataComponent {
 
     /** @var array */
     private $_searchQueries = [];
 
     /** @var array */
-    private $_searchableFields = [];
+    private $_searchableFields;
 
     /** @var string */
     private $_buttonText = 'Search';
@@ -115,6 +119,9 @@ class DataScout extends DataComponent {
         return $this;
     }
 
+    /**
+     * @return string
+     */
     private function _buildSearchUrl()
     {
         $parameters = UrlHelper::parameterizeQuery($this->_request->getQueryString());

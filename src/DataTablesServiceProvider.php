@@ -2,12 +2,15 @@
 
 namespace hamburgscleanest\DataTables;
 
-use hamburgscleanest\DataTables\Models\DataTable;
 use hamburgscleanest\DataTables\Facades\DataTable as DataTableFacade;
+use hamburgscleanest\DataTables\Models\DataTable;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Class DataTablesServiceProvider
+ * @package hamburgscleanest\DataTables
+ */
 class DataTablesServiceProvider extends ServiceProvider {
 
     /**

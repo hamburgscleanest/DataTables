@@ -6,6 +6,10 @@ use hamburgscleanest\DataTables\Helpers\SessionHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
+/**
+ * Class DataComponent
+ * @package hamburgscleanest\DataTables\Models
+ */
 abstract class DataComponent {
 
     /** @var Builder */
@@ -77,8 +81,8 @@ abstract class DataComponent {
     }
 
     /**
-     * @param Request $request
      * @param Builder $queryBuilder
+     * @param Request $request
      */
     public function init(Builder $queryBuilder, Request $request)
     {

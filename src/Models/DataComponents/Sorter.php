@@ -9,7 +9,7 @@ use function implode;
 
 /**
  * Class Sorter
- * @package hamburgscleanest\DataTables\Models
+ * @package hamburgscleanest\DataTables\Models\DataComponents
  */
 class Sorter extends DataComponent {
 

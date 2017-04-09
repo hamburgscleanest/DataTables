@@ -14,8 +14,6 @@ use RuntimeException;
 /**
  * Class DataTable
  * @package hamburgscleanest\DataTables\Models
- *
- * TODO: remember sorting (multiple columns) / pagination
  */
 class DataTable {
 
@@ -78,6 +76,9 @@ class DataTable {
         return $this;
     }
 
+    /**
+     * @return Builder
+     */
     public function query()
     {
         return $this->_queryBuilder;
