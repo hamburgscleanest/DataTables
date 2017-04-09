@@ -189,7 +189,7 @@ class Paginator extends DataComponent {
      *
      * @return string
      */
-    private function _renderListItem(string $pagenumber, ? string $url, ? string $symbol = null): string
+    private function _renderListItem(string $pagenumber, ? string $url, ? string $symbol = null) : string
     {
         if ($url === null)
         {
@@ -202,7 +202,7 @@ class Paginator extends DataComponent {
         }
 
         $class = '';
-        if (+ $pagenumber === $this->_currentPage)
+        if (+$pagenumber === $this->_currentPage)
         {
             $class = ' class="active"';
         }
@@ -232,7 +232,7 @@ class Paginator extends DataComponent {
         }
 
         $pageList = '';
-        for ($i = $start; $i <= $end; $i ++)
+        for ($i = $start; $i <= $end; $i++)
         {
             $pageList .= $this->_renderListItem($i, $this->_buildPageUrl($i));
         }
@@ -254,11 +254,11 @@ class Paginator extends DataComponent {
         }
 
         return '<ul class="pagination">' .
-               $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
-               $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
-               $this->_renderPageList() .
-               $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
-               $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
-               '</ul>';
+                $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
+                $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
+                $this->_renderPageList() .
+                $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
+                $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
+                '</ul>';
     }
 }
