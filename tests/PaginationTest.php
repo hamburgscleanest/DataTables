@@ -40,6 +40,54 @@ class PaginationTest extends TestCase {
     /**
      * @test
      */
+    public function has_only_one_page_when_per_page_is_zero()
+    {
+        /** @var Paginator $paginator */
+        $paginator = new Paginator(0);
+
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+            ->addComponent($paginator);
+
+        $this->assertEquals(1, $paginator->pageCount());
+    }
+
+    /**
+     * @est
+     */
+    public function has_only_one_page_when_data_count_is_less_than_per_page()
+    {
+        /** @var Paginator $paginator */
+        $paginator = new Paginator(150);
+
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+            ->addComponent($paginator);
+
+        $this->assertEquals(1, $paginator->pageCount());
+    }
+
+    /**
+     * @test
+     */
+    public function pagination_is_rendered_correctly_when_per_page_is_zero()
+    {
+        /** @var Paginator $paginator */
+        $paginator = new Paginator(0);
+
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+            ->addComponent($paginator);
+
+        $this->assertEquals(
+            '<ul class="pagination"><li class="active">1</li></ul>',
+            $paginator->render()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function pagination_is_rendered_correctly_for_last_page()
     {
         // TODO
