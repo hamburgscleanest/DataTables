@@ -126,13 +126,12 @@ class SortableHeader implements HeaderFormatter {
     }
 
     /**
-     * @param Request $request
-     * @param string $column
+     * Get the next sorting direction.
+     *
      * @param string $oldDirection
      * @return string
-     * @throws \RuntimeException
      */
-    private function _buildSortUrl(Request $request, string $column, string $oldDirection = 'asc')
+    private function _getNewDirection(string $oldDirection): string
     {
         switch ($oldDirection)
         {
@@ -145,6 +144,20 @@ class SortableHeader implements HeaderFormatter {
             default:
                 $newDirection = 'asc';
         }
+
+        return $newDirection;
+    }
+
+    /**
+     * @param Request $request
+     * @param string $column
+     * @param string $oldDirection
+     * @return string
+     * @throws \RuntimeException
+     */
+    private function _buildSortUrl(Request $request, string $column, string $oldDirection = 'asc')
+    {
+        $newDirection = $this->_getNewDirection($oldDirection);
 
         $newSorting = $column . self::SORTING_SEPARATOR . $newDirection;
         $parameters = UrlHelper::parameterizeQuery($request->getQueryString());
