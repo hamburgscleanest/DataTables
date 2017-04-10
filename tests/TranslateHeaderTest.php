@@ -17,13 +17,14 @@ class TranslateHeaderTest extends TestCase {
      */
     public function headers_are_translated()
     {
-        TestModel::create(['name' => 'trans-test', 'created_at' => Carbon::now()]);
+        $fieldName = 'trans-test';
+        TestModel::create(['name' => $fieldName, 'created_at' => Carbon::now()]);
 
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatHeaders(new TranslateHeader(['name' => 'TheName']));
-        $dataTable->query()->where('name', 'trans-test');
+        $dataTable->query()->where('name', $fieldName);
 
         $this->assertEquals(
-            '<table class="table"><tr><th>TheName</th></tr><tr><td>trans-test</td></tr></table>',
+            '<table class="table"><tr><th>TheName</th></tr><tr><td>' . $fieldName . '</td></tr></table>',
             $dataTable->render()
         );
     }
