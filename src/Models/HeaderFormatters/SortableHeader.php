@@ -2,8 +2,8 @@
 
 namespace hamburgscleanest\DataTables\Models\HeaderFormatters;
 
-use hamburgscleanest\DataTables\Helpers\SessionHelper;
-use hamburgscleanest\DataTables\Helpers\UrlHelper;
+use hamburgscleanest\DataTables\Facades\SessionHelper;
+use hamburgscleanest\DataTables\Facades\UrlHelper;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Http\Request;
@@ -101,16 +101,26 @@ class SortableHeader implements HeaderFormatter {
      * @param Request $request
      * @return array
      */
-    private function _extractSortFields(Request $request)
+    private function _getRememberedState(Request $request): array
     {
-        $sorting = SessionHelper::getState($request, 'sort', []);
+        return SessionHelper::getState($request, 'sort', []);
+    }
 
+    /**
+     * Get the sorted fields from the request.
+     *
+     * @param Request $request
+     * @return array
+     */
+    private function _getSortFields(Request $request): array
+    {
         $sortFields = $request->get('sort');
-        if (empty($sortFields))
+        if ($sortFields === null)
         {
-            return $sorting;
+            return [];
         }
 
+        $sorting = [];
         foreach (\explode(self::COLUMN_SEPARATOR, $sortFields) as $field)
         {
             $sortParts = \explode(self::SORTING_SEPARATOR, $field);
@@ -123,6 +133,15 @@ class SortableHeader implements HeaderFormatter {
         }
 
         return $sorting;
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    private function _extractSortFields(Request $request)
+    {
+        return \array_diff($this->_sortableHeaders + $this->_getRememberedState($request) + $this->_getSortFields($request), $this->_dontSort);
     }
 
     /**
@@ -190,6 +209,16 @@ class SortableHeader implements HeaderFormatter {
     }
 
     /**
+     * @param $headerAttributeName
+     * @return bool
+     */
+    private function _showSortLink(string $headerAttributeName): bool
+    {
+        return \count($this->_sortableHeaders + $this->_dontSort) === 0 ||
+               (\in_array($headerAttributeName, $this->_sortableHeaders, true) && !\in_array($headerAttributeName, $this->_dontSort, true));
+    }
+
+    /**
      * Adds a link to sort by this header/column.
      * Also indicates how the columns are sorted (when sorted).
      *
@@ -203,11 +232,11 @@ class SortableHeader implements HeaderFormatter {
 
         $sortFields = $this->_extractSortFields($request);
         $direction = $sortFields[$headerAttributeName] ?? 'none';
-        $header->name .= ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span>';
 
-        if (\count($this->_sortableHeaders) === 0 || \in_array($headerAttributeName, $this->_sortableHeaders, true))
+        if ($this->_showSortLink($headerAttributeName))
         {
-            $header->name = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $headerAttributeName, $direction) . '">' . $header->name . '</a>';
+            $header->name = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $headerAttributeName, $direction) . '">' . $header->name .
+                            ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
         }
     }
 }

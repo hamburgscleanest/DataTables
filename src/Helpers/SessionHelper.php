@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 /**
  * Class SessionHelper
  * @package hamburgscleanest\DataTables\Helpers
- *
- * TODO: Facade?
  */
 class SessionHelper {
 
@@ -19,7 +17,7 @@ class SessionHelper {
      * @param string $key
      * @return string
      */
-    private static function getFormattedKey(Request $request, string $key)
+    private function getFormattedKey(Request $request, string $key)
     {
         return
             self::SESSION_STORAGE .
@@ -36,7 +34,7 @@ class SessionHelper {
      * @param string $key
      * @param mixed $sessionValue
      */
-    public static function saveState(Request $request, string $key, $sessionValue)
+    public function saveState(Request $request, string $key, $sessionValue)
     {
         $request->session()->put(self::getFormattedKey($request, $key), $sessionValue);
     }
@@ -47,7 +45,7 @@ class SessionHelper {
      * @param null $default
      * @return mixed
      */
-    public static function getState(Request $request, string $key, $default = null)
+    public function getState(Request $request, string $key, $default = null)
     {
         return $request->session()->get(self::getFormattedKey($request, $key)) ?? $default;
     }
@@ -56,7 +54,7 @@ class SessionHelper {
      * @param Request $request
      * @param string $key
      */
-    public static function removeState(Request $request, string $key)
+    public function removeState(Request $request, string $key)
     {
         $request->session()->remove(self::getFormattedKey($request, $key));
     }

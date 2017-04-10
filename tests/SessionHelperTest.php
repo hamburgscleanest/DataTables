@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
-use hamburgscleanest\DataTables\Helpers\SessionHelper;
+use hamburgscleanest\DataTables\Facades\SessionHelper;
 use Illuminate\Http\Request;
 use Mockery;
 

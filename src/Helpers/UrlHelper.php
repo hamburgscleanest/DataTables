@@ -7,8 +7,6 @@ use RuntimeException;
 /**
  * Class UrlHelper
  * @package hamburgscleanest\DataTables\Helpers
- *
- * TODO: Facade?
  */
 class UrlHelper {
 
@@ -18,7 +16,7 @@ class UrlHelper {
      * @return array
      * @throws \RuntimeException
      */
-    public static function parameterizeQuery(? string $queryString = null)
+    public function parameterizeQuery(? string $queryString = null)
     {
         if (empty($queryString))
         {

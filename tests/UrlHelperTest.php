@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
-use hamburgscleanest\DataTables\Helpers\UrlHelper;
+use hamburgscleanest\DataTables\Facades\UrlHelper;
 use RuntimeException;
 
 /**
