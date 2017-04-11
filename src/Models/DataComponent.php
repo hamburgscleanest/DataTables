@@ -136,7 +136,7 @@ abstract class DataComponent {
     /**
      * @return Builder
      */
-    protected abstract function _shapeData(): Builder;
+    abstract protected function _shapeData(): Builder;
 
     /**
      * @return string
