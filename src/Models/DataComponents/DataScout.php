@@ -36,15 +36,6 @@ class DataScout extends DataComponent {
         $this->_rememberState = $remember;
     }
 
-    protected function _afterInit()
-    {
-        $search = $this->_request->get('search');
-        if (!empty($search))
-        {
-            $this->_searchQueries += \explode(',', $search);
-        }
-    }
-
     /**
      * @return Builder
      */
@@ -55,7 +46,7 @@ class DataScout extends DataComponent {
             return $this->_queryBuilder;
         }
 
-        $this->_queryBuilder->where(function($query)
+        $this->_queryBuilder->where(function ($query)
         {
             foreach ($this->_searchQueries as $value)
             {
@@ -73,9 +64,9 @@ class DataScout extends DataComponent {
      * Add a query programmatically.
      *
      * @param string $value
-     * @return $this
+     * @return DataScout
      */
-    public function addQuery(string $value)
+    public function addQuery(string $value): DataScout
     {
         $this->_searchQueries[] = $value;
 
@@ -86,9 +77,9 @@ class DataScout extends DataComponent {
      * Set the text for the search button.
      *
      * @param string $text
-     * @return $this
+     * @return DataScout
      */
-    public function buttonText(string $text)
+    public function buttonText(string $text): DataScout
     {
         $this->_buttonText = $text;
 
@@ -99,9 +90,9 @@ class DataScout extends DataComponent {
      * Set the placeholder for the input.
      *
      * @param string $text
-     * @return $this
+     * @return DataScout
      */
-    public function placeholder(string $text)
+    public function placeholder(string $text): DataScout
     {
         $this->_placeholder = $text;
 
@@ -109,14 +100,27 @@ class DataScout extends DataComponent {
     }
 
     /**
+     * Make the field searchable.
+     *
      * @param string $field
-     * @return $this
+     * @return DataScout
      */
-    public function makeSearchable(string $field)
+    public function makeSearchable(string $field): DataScout
     {
         $this->_searchableFields[] = $field;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function render(): string
+    {
+        return '<form method="get" action="' . $this->_buildSearchUrl() .
+               '"><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
+               $this->_placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
+               $this->_buttonText . '</button></div></div></form>';
     }
 
     /**
@@ -130,14 +134,12 @@ class DataScout extends DataComponent {
         return $this->_request->url() . '?' . \http_build_query($parameters);
     }
 
-    /**
-     * @return string
-     */
-    public function render(): string
+    protected function _afterInit()
     {
-        return '<form method="get" action="' . $this->_buildSearchUrl() .
-                '"><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
-                $this->_placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
-                $this->_buttonText . '</button></div></div></form>';
+        $search = $this->_request->get('search');
+        if (!empty($search))
+        {
+            $this->_searchQueries += \explode(',', $search);
+        }
     }
 }

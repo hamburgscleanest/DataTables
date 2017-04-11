@@ -50,9 +50,9 @@ class SortableHeader implements HeaderFormatter {
 
     /**
      * @param array $sortingSymbols
-     * @return $this
+     * @return SortableHeader
      */
-    public function sortingSymbols(array $sortingSymbols)
+    public function sortingSymbols(array $sortingSymbols): SortableHeader
     {
         $this->_sortingSymbols = $sortingSymbols;
 
@@ -63,9 +63,9 @@ class SortableHeader implements HeaderFormatter {
      * Add a field to the sortable fields.
      *
      * @param string $header
-     * @return $this
+     * @return SortableHeader
      */
-    public function makeSortable(string $header)
+    public function makeSortable(string $header): SortableHeader
     {
         $this->_sortableHeaders[] = $header;
         $this->_removeIndex($this->_dontSort, $header);
@@ -90,9 +90,9 @@ class SortableHeader implements HeaderFormatter {
      * Remove the ability to sort by this column/header.
      *
      * @param string $header
-     * @return $this
+     * @return SortableHeader
      */
-    public function dontSort(string $header)
+    public function dontSort(string $header): SortableHeader
     {
         $this->_dontSort[] = $header;
         $this->_removeIndex($this->_sortableHeaders, $header);
@@ -126,7 +126,7 @@ class SortableHeader implements HeaderFormatter {
      * @param Request $request
      * @return array
      */
-    private function _extractSortFields(Request $request)
+    private function _extractSortFields(Request $request): array
     {
         return \array_diff(
             $this->_getSortFields($request) + $this->_getRememberedState($request) + $this->_getDefaultSorting($this->_sortableHeaders),

@@ -43,18 +43,13 @@ class Paginator extends DataComponent {
         $this->_perPage = $perPage;
     }
 
-    protected function _afterInit()
-    {
-        $this->_currentPage = + $this->_request->get('page', 1);
-    }
-
     /**
      * How many entries per page?
      *
      * @param int $perPage
-     * @return $this
+     * @return Paginator
      */
-    public function entriesPerPage($perPage = 15)
+    public function entriesPerPage($perPage = 15): Paginator
     {
         $this->_perPage = $perPage;
 
@@ -65,9 +60,9 @@ class Paginator extends DataComponent {
      * How many surrounding pages should be shown?
      *
      * @param int $count
-     * @return $this
+     * @return Paginator
      */
-    public function surroundingPages($count = 2)
+    public function surroundingPages($count = 2): Paginator
     {
         $this->_surroundingPages = $count;
 
@@ -85,6 +80,122 @@ class Paginator extends DataComponent {
         }
 
         return $this->_queryBuilder->limit($this->_perPage)->offset(($this->_currentPage - 1) * $this->_perPage);
+    }
+
+    /**
+     * Render the page links.
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function render(): string
+    {
+        if ($this->_perPage === 0)
+        {
+            return '<ul class="pagination"><li class="active">1</li></ul>';
+        }
+
+        return '<ul class="pagination">' .
+               $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
+               $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
+               $this->_renderPageList() .
+               $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
+               $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
+               '</ul>';
+    }
+
+    /**
+     * Renders a list item with a page link.
+     *
+     * @param int $pagenumber
+     * @param string $url
+     * @param string|null $symbol
+     *
+     * @return string
+     */
+    private function _renderListItem(int $pagenumber, ? string $url, ? string $symbol = null): string
+    {
+        if ($url === null)
+        {
+            return '';
+        }
+
+        return '<li' . ($pagenumber === $this->_currentPage ? ' class="active"' : '') . '><a href="' . $url . '">' . ($symbol ?? $pagenumber) . '</a></li>';
+    }
+
+    /**
+     * @return null|string
+     * @throws \RuntimeException
+     */
+    private function _getFirstPageUrl()
+    {
+        if ($this->_currentPage <= $this->_surroundingPages + 1)
+        {
+            return null;
+        }
+
+        return $this->_buildPageUrl(1);
+    }
+
+    /**
+     * Generate URL to jump to {$pageNumber}.
+     *
+     * @param int $pageNumber
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    private function _buildPageUrl(int $pageNumber): string
+    {
+        $parameters = UrlHelper::parameterizeQuery($this->_request->getQueryString());
+        $parameters['page'] = $pageNumber;
+
+        return $this->_request->url() . '?' . \http_build_query($parameters);
+    }
+
+    /**
+     * @return null|string
+     * @throws \RuntimeException
+     */
+    private function _getPreviousPageUrl()
+    {
+        $previousPage = $this->_currentPage - 1;
+        if ($previousPage < 1)
+        {
+            return null;
+        }
+
+        return $this->_buildPageUrl($previousPage);
+    }
+
+    /**
+     * Renders a list of pages.
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    private function _renderPageList(): string
+    {
+        $end = $this->_getEndPage();
+
+        $pageList = '';
+        for ($i = $this->_getStartPage(); $i <= $end; $i ++)
+        {
+            $pageList .= $this->_renderListItem($i, $this->_buildPageUrl($i));
+        }
+
+        return $pageList;
+    }
+
+    /**
+     * @return int
+     */
+    private function _getEndPage(): int
+    {
+        $end = $this->_currentPage + $this->_surroundingPages;
+        $pageCount = $this->pageCount();
+
+        return $end > $pageCount ? $pageCount : $end;
     }
 
     /**
@@ -107,32 +218,13 @@ class Paginator extends DataComponent {
     }
 
     /**
-     * @return null|string
-     * @throws \RuntimeException
+     * @return int
      */
-    private function _getFirstPageUrl()
+    private function _getStartPage(): int
     {
-        if ($this->_currentPage <= $this->_surroundingPages + 1)
-        {
-            return null;
-        }
+        $start = $this->_currentPage - $this->_surroundingPages;
 
-        return $this->_buildPageUrl(1);
-    }
-
-    /**
-     * @return null|string
-     * @throws \RuntimeException
-     */
-    private function _getPreviousPageUrl()
-    {
-        $previousPage = $this->_currentPage - 1;
-        if ($previousPage < 1)
-        {
-            return null;
-        }
-
-        return $this->_buildPageUrl($previousPage);
+        return $start < 1 ? 1 : $start;
     }
 
     /**
@@ -164,101 +256,8 @@ class Paginator extends DataComponent {
         return $this->_buildPageUrl($lastPage);
     }
 
-    /**
-     * Generate URL to jump to {$pageNumber}.
-     *
-     * @param int $pageNumber
-     * @return string
-     *
-     * @throws \RuntimeException
-     */
-    private function _buildPageUrl(int $pageNumber): string
+    protected function _afterInit()
     {
-        $parameters = UrlHelper::parameterizeQuery($this->_request->getQueryString());
-        $parameters['page'] = $pageNumber;
-
-        return $this->_request->url() . '?' . \http_build_query($parameters);
-    }
-
-    /**
-     * Renders a list item with a page link.
-     *
-     * @param string $pagenumber
-     * @param string $url
-     * @param string|null $symbol
-     *
-     * @return string
-     */
-    private function _renderListItem(string $pagenumber, ? string $url, ? string $symbol = null) : string
-    {
-        if ($url === null)
-        {
-            return '';
-        }
-
-        if ($symbol === null)
-        {
-            $symbol = $pagenumber;
-        }
-
-        $class = '';
-        if (+$pagenumber === $this->_currentPage)
-        {
-            $class = ' class="active"';
-        }
-
-        return '<li' . $class . '><a href="' . $url . '">' . $symbol . '</a></li>';
-    }
-
-    /**
-     * Renders a list of pages.
-     *
-     * @return string
-     * @throws \RuntimeException
-     */
-    private function _renderPageList(): string
-    {
-        $start = $this->_currentPage - $this->_surroundingPages;
-        if ($start < 1)
-        {
-            $start = 1;
-        }
-
-        $pageCount = $this->pageCount();
-        $end = $this->_currentPage + $this->_surroundingPages;
-        if ($end > $pageCount)
-        {
-            $end = $pageCount;
-        }
-
-        $pageList = '';
-        for ($i = $start; $i <= $end; $i++)
-        {
-            $pageList .= $this->_renderListItem($i, $this->_buildPageUrl($i));
-        }
-
-        return $pageList;
-    }
-
-    /**
-     * Render the page links.
-     *
-     * @return string
-     * @throws \RuntimeException
-     */
-    public function render(): string
-    {
-        if ($this->_perPage === 0)
-        {
-            return '<ul class="pagination"><li class="active">1</li></ul>';
-        }
-
-        return '<ul class="pagination">' .
-                $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
-                $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
-                $this->_renderPageList() .
-                $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
-                $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
-                '</ul>';
+        $this->_currentPage = + $this->_request->get('page', 1);
     }
 }

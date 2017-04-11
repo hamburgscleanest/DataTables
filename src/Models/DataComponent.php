@@ -25,34 +25,6 @@ abstract class DataComponent {
     protected $_rememberKey = 'global';
 
     /**
-     * Everything that needs to be read when the state is remembered.
-     * Is called before _afterInit(), so that session values can be overriden.
-     */
-    protected function _readFromSession()
-    {
-
-    }
-
-    /**
-     * Use this function to save your state in the session.
-     * This is called just before rendering, so all dynamically added stuff etc. is considered.
-     */
-    protected function _storeInSession()
-    {
-
-    }
-
-    /**
-     * Initalize fields after the query builder instance and the request is set.
-     *
-     * TODO: Refactor..
-     */
-    protected function _afterInit()
-    {
-
-    }
-
-    /**
      * You cannot count the data when ordering.
      * Disables ordering temporary.
      *
@@ -97,11 +69,30 @@ abstract class DataComponent {
     }
 
     /**
+     * Everything that needs to be read when the state is remembered.
+     * Is called before _afterInit(), so that session values can be overriden.
+     */
+    protected function _readFromSession()
+    {
+
+    }
+
+    /**
+     * Initalize fields after the query builder instance and the request is set.
+     *
+     * TODO: Refactor..
+     */
+    protected function _afterInit()
+    {
+
+    }
+
+    /**
      * Remember the state of the data component.
      *
-     * @return $this
+     * @return DataComponent
      */
-    public function remember()
+    public function remember(): DataComponent
     {
         $this->_rememberState = true;
 
@@ -111,9 +102,9 @@ abstract class DataComponent {
     /**
      * Forget the state of the data component.
      *
-     * @return $this
+     * @return DataComponent
      */
-    public function forget()
+    public function forget(): DataComponent
     {
         $this->_rememberState = false;
         if ($this->_request !== null)
@@ -131,6 +122,15 @@ abstract class DataComponent {
             $this->_storeInSession();
         }
         $this->_shapeData();
+    }
+
+    /**
+     * Use this function to save your state in the session.
+     * This is called just before rendering, so all dynamically added stuff etc. is considered.
+     */
+    protected function _storeInSession()
+    {
+
     }
 
     /**

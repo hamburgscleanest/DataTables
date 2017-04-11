@@ -71,9 +71,9 @@ class Sorter extends DataComponent {
      *
      * @param string $field
      *
-     * @return $this
+     * @return Sorter
      */
-    public function removeField(string $field)
+    public function removeField(string $field): Sorter
     {
         if (isset($this->_sortFields[$field]))
         {
@@ -89,9 +89,9 @@ class Sorter extends DataComponent {
      * @param string $field
      * @param string $direction
      *
-     * @return $this
+     * @return Sorter
      */
-    public function addField(string $field, string $direction = 'asc')
+    public function addField(string $field, string $direction = 'asc'): Sorter
     {
         $this->_sortFields[$field] = \mb_strtolower($direction);
 

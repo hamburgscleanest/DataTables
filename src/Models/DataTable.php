@@ -28,9 +28,6 @@ class DataTable {
     private $_headerFormatters = [];
 
     /** @var array */
-    private $_columnFormatters = [];
-
-    /** @var array */
     private $_components = [];
 
     /** @var string */
@@ -161,7 +158,7 @@ class DataTable {
         /** @var Column $column */
         $column = \array_first(
             $this->_columns,
-            function($index, $column) use ($columnName)
+            function ($index, $column) use ($columnName)
             {
                 return $column->name === $columnName;
             }
@@ -273,7 +270,7 @@ class DataTable {
         }
 
         $headers = array_map(
-            function($column)
+            function ($column)
             {
                 return Header::createFromColumn($column);
             },
@@ -359,7 +356,7 @@ class DataTable {
      */
     private function _getColumnNames(): array
     {
-        return \array_map(function($column) { return $column->name; }, $this->_columns);
+        return \array_map(function ($column) { return $column->name; }, $this->_columns);
     }
 
     /**
