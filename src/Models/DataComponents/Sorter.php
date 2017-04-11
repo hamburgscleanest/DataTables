@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Models\DataComponents;
 
-use hamburgscleanest\DataTables\Helpers\SessionHelper;
+use hamburgscleanest\DataTables\Facades\SessionHelper;
 use hamburgscleanest\DataTables\Models\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
 use function implode;
@@ -92,7 +92,7 @@ class Sorter extends DataComponent {
     /**
      * @return Builder
      */
-    public function shapeData(): Builder
+    public function _shapeData(): Builder
     {
         if (\count($this->_sortFields) > 0)
         {

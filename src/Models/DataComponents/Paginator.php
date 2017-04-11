@@ -77,7 +77,7 @@ class Paginator extends DataComponent {
     /**
      * @return Builder
      */
-    public function shapeData(): Builder
+    public function _shapeData(): Builder
     {
         if ($this->_perPage === 0)
         {

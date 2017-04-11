@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
-use hamburgscleanest\DataTables\Helpers\SessionHelper;
+use hamburgscleanest\DataTables\Facades\SessionHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -130,13 +130,13 @@ abstract class DataComponent {
         {
             $this->_storeInSession();
         }
-        $this->shapeData();
+        $this->_shapeData();
     }
 
     /**
      * @return Builder
      */
-    abstract public function shapeData(): Builder;
+    protected abstract function _shapeData(): Builder;
 
     /**
      * @return string

@@ -3,6 +3,8 @@
 namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
+use hamburgscleanest\DataTables\Facades\SessionHelper;
+use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use RuntimeException;
@@ -14,6 +16,13 @@ use RuntimeException;
 class DataTableTest extends TestCase {
 
     use DatabaseMigrations;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        SessionHelper::shouldReceive('getState')->andReturn([]);
+    }
 
     /**
      * @test
@@ -168,5 +177,34 @@ class DataTableTest extends TestCase {
 
         $dataTable = DataTable::columns(['id', 'created_at', 'name']);
         $dataTable->render();
+    }
+
+    /**
+     * @test
+     */
+    public function remembers_state()
+    {
+        /** @var Sorter $sorter */
+        $sorter = new Sorter(['name' => 'desc']);
+        $sorter->remember();
+
+        $dataTable = DataTable::model(TestModel::class)->addComponent($sorter);
+
+        SessionHelper::shouldReceive('saveState')->once();
+
+        $dataTable->render();
+    }
+
+    /**
+     * @test
+     */
+    public function forgets_state()
+    {
+        /** @var Sorter $sorter */
+        $sorter = new Sorter(['name' => 'desc']);
+        DataTable::model(TestModel::class)->addComponent($sorter);
+
+        SessionHelper::shouldReceive('removeState')->once();
+        $sorter->forget();
     }
 }

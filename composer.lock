@@ -524,12 +524,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "3266b6e257992887035c8952918607f5b858aaf8"
+                "reference": "4cdd014b809867f4c040523011d2c3607d55e6b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/3266b6e257992887035c8952918607f5b858aaf8",
-                "reference": "3266b6e257992887035c8952918607f5b858aaf8",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/4cdd014b809867f4c040523011d2c3607d55e6b4",
+                "reference": "4cdd014b809867f4c040523011d2c3607d55e6b4",
                 "shasum": ""
             },
             "require": {
@@ -594,7 +594,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2017-03-20 10:21:06"
+            "time": "2017-04-10 07:58:43"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -2257,7 +2257,7 @@
             "keywords": [
                 "test"
             ],
-            "time": "2016-01-19T12:08:55+00:00"
+            "time": "2016-01-19 12:08:55"
         },
         {
             "name": "herrera-io/json",
@@ -2470,12 +2470,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "e7a88dc7e93cf70a4f43aefdd649b59183ad6fa3"
+                "reference": "fb93c7272c0bd9f1eac541b7cb53158543b93f21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/e7a88dc7e93cf70a4f43aefdd649b59183ad6fa3",
-                "reference": "e7a88dc7e93cf70a4f43aefdd649b59183ad6fa3",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/fb93c7272c0bd9f1eac541b7cb53158543b93f21",
+                "reference": "fb93c7272c0bd9f1eac541b7cb53158543b93f21",
                 "shasum": ""
             },
             "require": {
@@ -2541,7 +2541,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2017-03-29 07:25:50"
+            "time": "2017-04-11T09:37:30+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2715,7 +2715,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2017-04-07T09:06:30+00:00"
+            "time": "2017-04-07 09:06:30"
         },
         {
             "name": "myclabs/deep-copy",
@@ -4412,12 +4412,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "d2e54c28d69a571503ff3902c9305c0968bb3404"
+                "reference": "f1511adad043edfd6d2e595e77385c32577eb2bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d2e54c28d69a571503ff3902c9305c0968bb3404",
-                "reference": "d2e54c28d69a571503ff3902c9305c0968bb3404",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/f1511adad043edfd6d2e595e77385c32577eb2bc",
+                "reference": "f1511adad043edfd6d2e595e77385c32577eb2bc",
                 "shasum": ""
             },
             "require": {
@@ -4482,7 +4482,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2017-04-06 22:59:41"
+            "time": "2017-04-10T05:00:20+00:00"
         },
         {
             "name": "symfony/config",
@@ -4826,12 +4826,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "6f50dd7f503d872769f0bd857a597dd3f2810d3f"
+                "reference": "192c21118ef5ea3c45e9982c81a718f629643440"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/6f50dd7f503d872769f0bd857a597dd3f2810d3f",
-                "reference": "6f50dd7f503d872769f0bd857a597dd3f2810d3f",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/192c21118ef5ea3c45e9982c81a718f629643440",
+                "reference": "192c21118ef5ea3c45e9982c81a718f629643440",
                 "shasum": ""
             },
             "require": {
@@ -4873,7 +4873,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-05 15:20:10"
+            "time": "2017-04-10T06:31:22+00:00"
         },
         {
             "name": "twig/twig",

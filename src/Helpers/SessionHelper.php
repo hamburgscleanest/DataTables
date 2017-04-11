@@ -17,7 +17,7 @@ class SessionHelper {
      * @param string $key
      * @return string
      */
-    private function getFormattedKey(Request $request, string $key)
+    private function _getFormattedKey(Request $request, string $key): string
     {
         return
             self::SESSION_STORAGE .
@@ -36,7 +36,7 @@ class SessionHelper {
      */
     public function saveState(Request $request, string $key, $sessionValue)
     {
-        $request->session()->put(self::getFormattedKey($request, $key), $sessionValue);
+        $request->session()->put($this->_getFormattedKey($request, $key), $sessionValue);
     }
 
     /**
@@ -47,7 +47,7 @@ class SessionHelper {
      */
     public function getState(Request $request, string $key, $default = null)
     {
-        return $request->session()->get(self::getFormattedKey($request, $key)) ?? $default;
+        return $request->session()->get($this->_getFormattedKey($request, $key)) ?? $default;
     }
 
     /**
@@ -56,6 +56,6 @@ class SessionHelper {
      */
     public function removeState(Request $request, string $key)
     {
-        $request->session()->remove(self::getFormattedKey($request, $key));
+        $request->session()->remove($this->_getFormattedKey($request, $key));
     }
 }
