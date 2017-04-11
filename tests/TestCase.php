@@ -20,6 +20,20 @@ class TestCase extends Orchestra {
         $this->setUpDb();
     }
 
+    protected function setUpDb()
+    {
+        $this->app['db']->connection()->getSchemaBuilder()->create('testmodels', function (Blueprint $table)
+        {
+            $table->increments('id');
+            $table->string('name');
+            $table->dateTime('created_at');
+            $table->unsignedInteger('test_model_id')->nullable();
+            $table->foreign('test_model_id')->references('id')->on('testmodels');
+        });
+        TestModel::truncate();
+        factory(TestModel::class, 100)->create();
+    }
+
     /**
      * @param \Illuminate\Foundation\Application $app
      * @return array
@@ -40,17 +54,5 @@ class TestCase extends Orchestra {
             'database' => ':memory:',
             'prefix'   => ''
         ]);
-    }
-
-    protected function setUpDb()
-    {
-        $this->app['db']->connection()->getSchemaBuilder()->create('testmodels', function (Blueprint $table)
-        {
-            $table->increments('id');
-            $table->string('name');
-            $table->dateTime('created_at');
-        });
-        TestModel::truncate();
-        factory(TestModel::class, 100)->create();
     }
 }

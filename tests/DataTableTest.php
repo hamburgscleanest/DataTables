@@ -217,4 +217,23 @@ class DataTableTest extends TestCase {
             $dataTable->render()
         );
     }
+
+    /**
+     * @test
+     */
+    public function relations_are_loaded()
+    {
+        $fieldName = 'test-relations';
+
+        $parent = TestModel::create(['name' => $fieldName, 'created_at' => '2017-01-01 00:00:00']);
+        TestModel::create(['name' => $fieldName, 'created_at' => '2017-02-02 00:00:00', 'test_model_id' => $parent->id]);
+
+        $dataTable = DataTable::model(TestModel::class, ['created_at', 'tester.created_at'])->with(['tester']);
+        $dataTable->query()->where('name', $fieldName);
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>created_at</th><th>tester.created_at</th></tr><tr><td>2017-01-01 00:00:00</td><td></td></tr><tr><td>2017-02-02 00:00:00</td><td></td></tr></table>',
+            $dataTable->render()
+        );
+    }
 }

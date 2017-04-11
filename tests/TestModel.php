@@ -15,16 +15,24 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TestModel extends Model {
 
+    public $timestamps = false;
     protected $table = 'testmodels';
-
     protected $guarded = [];
-
     protected $dates = ['created_at'];
 
-    public $timestamps = false;
-
-    public function getCustomColumnAttribute()
+    /**
+     * @return string
+     */
+    public function getCustomColumnAttribute(): string
     {
         return 'custom-column';
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function tester()
+    {
+        return $this->hasOne(TestModel::class);
     }
 }
