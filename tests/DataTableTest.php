@@ -197,4 +197,24 @@ class DataTableTest extends TestCase {
             $dataTable->render()
         );
     }
+
+    /**
+     * @test
+     */
+    public function column_formatters_are_set_when_using_columns_function()
+    {
+        $fieldName = 'formatters-test';
+        $date = '2017-01-01 00:00:00';
+        $dateFormat = 'd.m.Y';
+
+        TestModel::create(['name' => $fieldName, 'created_at' => $date]);
+
+        $dataTable = DataTable::model(TestModel::class)->columns(['created_at' => new DateColumn($dateFormat)]);
+        $dataTable->query()->where('name', $fieldName);
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>created_at</th></tr><tr><td>01.01.2017</td></tr></table>',
+            $dataTable->render()
+        );
+    }
 }

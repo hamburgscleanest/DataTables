@@ -93,9 +93,42 @@ Just create a new Component and add it to the table.
     ...
 ```
 
+### Formatting columns
+
+Format columns via column formatters. 
+For example you could format a column containing a date with the "DateColumn" formatter.
+
+``` php   
+    ...
+    
+     $dataTable->formatColumn('created_at', new DateColumn('d.m.Y'));
+    
+    ...
+```
+
+It is also possible to define the formatters in the data table constructor.
+
+``` php   
+    ...
+    
+     DataTable::model(User::class, ['created_at' => new DateColumn('d.m.Y')]);
+    
+    ...
+```
+
+Or even the "columns" function.
+
+``` php   
+    ...
+    
+     DataTable::model(User::class)->columns(['created_at' => new DateColumn('d.m.Y')]);
+    
+    ...
+```
+
 ## Combine components and formatters
 
-You can add sorting to the table via a data component and make your table headers sortable with a header formatter.
+Add sorting to the table via a data component and make your table headers sortable with a header formatter.
 
 ``` php   
     ...
