@@ -23,6 +23,9 @@ class SortableHeader implements HeaderFormatter {
     const SORTING_SEPARATOR = '~';
     const COLUMN_SEPARATOR  = '.';
 
+    /** @var string */
+    private $_defaultDirection = 'asc';
+
     /** @var array */
     private $_sortableHeaders;
 
@@ -57,19 +60,6 @@ class SortableHeader implements HeaderFormatter {
     }
 
     /**
-     * @param array $array
-     * @param string $key
-     */
-    private function _removeIndex(array $array, string $key)
-    {
-        $index = \array_search($key, $array, true);
-        if ($index !== false)
-        {
-            unset($array[$index]);
-        }
-    }
-
-    /**
      * Add a field to the sortable fields.
      *
      * @param string $header
@@ -81,6 +71,19 @@ class SortableHeader implements HeaderFormatter {
         $this->_removeIndex($this->_dontSort, $header);
 
         return $this;
+    }
+
+    /**
+     * @param array $array
+     * @param string $key
+     */
+    private function _removeIndex(array $array, string $key)
+    {
+        $index = \array_search($key, $array, true);
+        if ($index !== false)
+        {
+            unset($array[$index]);
+        }
     }
 
     /**
@@ -98,12 +101,37 @@ class SortableHeader implements HeaderFormatter {
     }
 
     /**
+     * Adds a link to sort by this header/column.
+     * Also indicates how the columns are sorted (when sorted).
+     *
+     * @param Header $header
+     * @param Request $request
+     * @throws \RuntimeException
+     */
+    public function format(Header $header, Request $request)
+    {
+        $headerAttributeName = $header->getOriginalName();
+
+        $sortFields = $this->_extractSortFields($request);
+        $direction = $sortFields[$headerAttributeName] ?? 'none';
+
+        if ($this->_showSortLink($headerAttributeName))
+        {
+            $header->name = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $headerAttributeName, $direction) . '">' . $header->name .
+                            ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
+        }
+    }
+
+    /**
      * @param Request $request
      * @return array
      */
-    private function _getRememberedState(Request $request): array
+    private function _extractSortFields(Request $request)
     {
-        return SessionHelper::getState($request, 'sort', []);
+        return \array_diff(
+            $this->_getSortFields($request) + $this->_getRememberedState($request) + $this->_getDefaultSorting($this->_sortableHeaders),
+            $this->_getDefaultSorting($this->_dontSort)
+        );
     }
 
     /**
@@ -123,12 +151,7 @@ class SortableHeader implements HeaderFormatter {
         $sorting = [];
         foreach (\explode(self::COLUMN_SEPARATOR, $sortFields) as $field)
         {
-            $sortParts = \explode(self::SORTING_SEPARATOR, $field);
-            if (\count($sortParts) === 1)
-            {
-                $sortParts[1] = 'asc';
-            }
-
+            $sortParts = $this->_getSortParts($field);
             $sorting[$sortParts[0]] = \mb_strtolower($sortParts[1]);
         }
 
@@ -136,35 +159,54 @@ class SortableHeader implements HeaderFormatter {
     }
 
     /**
-     * @param Request $request
+     * Get the name of the field and the sorting direction (default: "asc").
+     *
+     * @param string $field
      * @return array
      */
-    private function _extractSortFields(Request $request)
+    private function _getSortParts(string $field): array
     {
-        return \array_diff($this->_sortableHeaders + $this->_getRememberedState($request) + $this->_getSortFields($request), $this->_dontSort);
+        $sortParts = \explode(self::SORTING_SEPARATOR, $field);
+        if (\count($sortParts) === 1)
+        {
+            $sortParts[1] = $this->_defaultDirection;
+        }
+
+        return $sortParts;
     }
 
     /**
-     * Get the next sorting direction.
-     *
-     * @param string $oldDirection
-     * @return string
+     * @param Request $request
+     * @return array
      */
-    private function _getNewDirection(string $oldDirection): string
+    private function _getRememberedState(Request $request): array
     {
-        switch ($oldDirection)
+        return SessionHelper::getState($request, 'sort', []);
+    }
+
+    /**
+     * @param array $sortFields
+     * @return array
+     */
+    private function _getDefaultSorting(array $sortFields): array
+    {
+        $sorting = [];
+        foreach ($sortFields as $field)
         {
-            case 'asc':
-                $newDirection = 'desc';
-                break;
-            case 'desc':
-                $newDirection = 'none';
-                break;
-            default:
-                $newDirection = 'asc';
+            $sorting[$field] = 'none';
         }
 
-        return $newDirection;
+        return $sorting;
+    }
+
+    /**
+     * @param $headerAttributeName
+     * @return bool
+     */
+    private function _showSortLink(string $headerAttributeName): bool
+    {
+        return \count($this->_sortableHeaders + $this->_dontSort) === 0 ||
+               (\in_array($headerAttributeName, $this->_sortableHeaders, true) && !\in_array($headerAttributeName, $this->_dontSort, true));
     }
 
     /**
@@ -209,34 +251,25 @@ class SortableHeader implements HeaderFormatter {
     }
 
     /**
-     * @param $headerAttributeName
-     * @return bool
-     */
-    private function _showSortLink(string $headerAttributeName): bool
-    {
-        return \count($this->_sortableHeaders + $this->_dontSort) === 0 ||
-               (\in_array($headerAttributeName, $this->_sortableHeaders, true) && !\in_array($headerAttributeName, $this->_dontSort, true));
-    }
-
-    /**
-     * Adds a link to sort by this header/column.
-     * Also indicates how the columns are sorted (when sorted).
+     * Get the next sorting direction.
      *
-     * @param Header $header
-     * @param Request $request
-     * @throws \RuntimeException
+     * @param string $oldDirection
+     * @return string
      */
-    public function format(Header $header, Request $request)
+    private function _getNewDirection(string $oldDirection): string
     {
-        $headerAttributeName = $header->getOriginalName();
-
-        $sortFields = $this->_extractSortFields($request);
-        $direction = $sortFields[$headerAttributeName] ?? 'none';
-
-        if ($this->_showSortLink($headerAttributeName))
+        switch ($oldDirection)
         {
-            $header->name = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $headerAttributeName, $direction) . '">' . $header->name .
-                            ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
+            case 'asc':
+                $newDirection = 'desc';
+                break;
+            case 'desc':
+                $newDirection = 'none';
+                break;
+            default:
+                $newDirection = 'asc';
         }
+
+        return $newDirection;
     }
 }

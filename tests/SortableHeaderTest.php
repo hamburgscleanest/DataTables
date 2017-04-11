@@ -125,4 +125,22 @@ class SortableHeaderTest extends TestCase {
             $dataTable->render()
         );
     }
+
+    /**
+     * @test
+     */
+    public function sorting_parameters_are_considered()
+    {
+        request()->request->add(['sort' => 'created_at~asc']);
+
+        $date = '1970-01-01 00:00:00';
+        TestModel::create(['name' => 'sort-request-test', 'created_at' => $date]);
+
+        $dataTable = DataTable::model(TestModel::class, ['created_at'])->formatHeaders(new SortableHeader(['created_at']));
+
+        $this->assertEquals(
+            '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Edesc',
+            \mb_substr($dataTable->render(), 0, 101)
+        );
+    }
 }
