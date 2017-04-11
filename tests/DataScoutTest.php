@@ -20,23 +20,23 @@ class DataScoutTest extends TestCase {
      */
     public function searching_reduces_the_dataset()
     {
-        /** @var DataScout $scout */
-        $scout = new DataScout(['name']);
+        /** @var DataScout $dataScout */
+        $dataScout = new DataScout(['name']);
 
         /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
-            ->addComponent($scout);
+            ->addComponent($dataScout);
 
-        $countBeforeSearch = $scout->getQueryCount();
+        $countBeforeSearch = $dataScout->getQueryCount();
 
         $queryString = 'test-123';
 
         TestModel::create(['name' => $queryString, 'created_at' => Carbon::now()]);
 
-        $scout->addQuery($queryString);
+        $dataScout->addQuery($queryString);
         $dataTable->render();
 
-        $this->assertLessThan($countBeforeSearch, $scout->getQueryCount());
+        $this->assertLessThan($countBeforeSearch, $dataScout->getQueryCount());
     }
 
     /**
@@ -51,6 +51,27 @@ class DataScoutTest extends TestCase {
         TestModel::create(['name' => $queryString, 'created_at' => Carbon::now()]);
 
         $dataTable = DataTable::model(TestModel::class, ['name'])->addComponent(new DataScout(['name']));
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>name</th></tr><tr><td>' . $queryString . '</td></tr></table>',
+            $dataTable->render()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function can_make_field_searchable()
+    {
+        /** @var DataScout $dataScout */
+        $dataScout = new DataScout();
+        $dataScout->makeSearchable('name');
+        $dataTable = DataTable::model(TestModel::class, ['name'])->addComponent($dataScout);
+
+        $queryString = 'test-123';
+        $dataScout->addQuery($queryString);
+
+        TestModel::create(['name' => $queryString, 'created_at' => Carbon::now()]);
 
         $this->assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td>' . $queryString . '</td></tr></table>',
@@ -88,5 +109,45 @@ class DataScoutTest extends TestCase {
         $dataTable->render();
 
         $this->assertEquals(0, $dataScout->getQueryCount());
+    }
+
+    /**
+     * @test
+     */
+    public function displays_alternative_button_text()
+    {
+        $buttonText = 'my-test-button';
+
+        $dataScout = new DataScout();
+        $dataScout->buttonText($buttonText);
+
+        DataTable::model(TestModel::class, ['name'])->addComponent($dataScout);
+
+        $this->assertEquals(
+            '<form method="get" action="' . $this->baseUrl .
+            '?search="><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="Search.."/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
+            $buttonText . '</button></div></div></form>',
+            $dataScout->render()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function displays_alternative_placeholder()
+    {
+        $placeholder = 'my-test-placeholder';
+
+        $dataScout = new DataScout();
+        $dataScout->placeholder($placeholder);
+
+        DataTable::model(TestModel::class, ['name'])->addComponent($dataScout);
+
+        $this->assertEquals(
+            '<form method="get" action="' . $this->baseUrl .
+            '?search="><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
+            $placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">Search</button></div></div></form>',
+            $dataScout->render()
+        );
     }
 }
