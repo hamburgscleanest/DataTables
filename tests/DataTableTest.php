@@ -4,6 +4,7 @@ namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
 use hamburgscleanest\DataTables\Facades\SessionHelper;
+use hamburgscleanest\DataTables\Models\ColumnFormatters\DateColumn;
 use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -80,36 +81,6 @@ class DataTableTest extends TestCase {
     /**
      * @test
      */
-    public function closure_is_working()
-    {
-        /** @var TestModel $testmodel */
-        TestModel::create([
-            'name'       => 'test',
-            'created_at' => '2017-01-01 12:00:00'
-        ]);
-
-        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
-            ->renderRow(
-                function ($row)
-                {
-                    $row->id = 1337;
-                    $row->created_at = '2017-01-01 13:37:00';
-                    $row->name = 'Test';
-
-                    return $row;
-                }
-            );
-        $dataTable->query()->where('name', 'test');
-
-        $this->assertEquals(
-            '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>1337</td><td>2017-01-01 13:37:00</td><td>Test</td></tr></table>',
-            $dataTable->render()
-        );
-    }
-
-    /**
-     * @test
-     */
     public function table_has_class()
     {
         /** @var TestModel $testmodel */
@@ -135,7 +106,6 @@ class DataTableTest extends TestCase {
      */
     public function table_renders_mutated_attributes()
     {
-        /** @var TestModel $testmodel */
         TestModel::create([
             'name'       => 'test',
             'created_at' => '2017-01-01 12:00:00'
@@ -206,5 +176,25 @@ class DataTableTest extends TestCase {
 
         SessionHelper::shouldReceive('removeState')->once();
         $sorter->forget();
+    }
+
+    /**
+     * @test
+     */
+    public function column_formatters_are_set()
+    {
+        $fieldName = 'formatters-test';
+        $date = '2017-01-01 00:00:00';
+        $dateFormat = 'd.m.Y';
+
+        TestModel::create(['name' => $fieldName, 'created_at' => $date]);
+
+        $dataTable = DataTable::model(TestModel::class, ['created_at' => new DateColumn($dateFormat)]);
+        $dataTable->query()->where('name', $fieldName);
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>created_at</th></tr><tr><td>01.01.2017</td></tr></table>',
+            $dataTable->render()
+        );
     }
 }

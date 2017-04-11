@@ -9,7 +9,8 @@ namespace hamburgscleanest\DataTables\Interfaces;
 interface ColumnFormatter {
 
     /**
-     * @return void
+     * @param string $column
+     * @return string
      */
-    public function format();
+    public function format(string $column): string;
 }

@@ -12,10 +12,9 @@ use Illuminate\Http\Request;
 class Header {
 
     /** @var string */
-    private $_originalName;
-
-    /** @var string */
     public $name;
+    /** @var string */
+    private $_originalName;
 
     /**
      * Header constructor.
@@ -28,20 +27,20 @@ class Header {
     }
 
     /**
+     * @param Column $column
+     * @return Header
+     */
+    public static function createFromColumn(Column $column): Header
+    {
+        return new static($column->name);
+    }
+
+    /**
      * @return string
      */
     public function getOriginalName(): string
     {
         return $this->_originalName;
-    }
-
-    /**
-     * @param HeaderFormatter $headerFormatter
-     * @param Request $request
-     */
-    public function format(HeaderFormatter $headerFormatter, Request $request)
-    {
-        $headerFormatter->format($this, $request);
     }
 
     /**
@@ -54,5 +53,14 @@ class Header {
         {
             $this->format($formatter, $request);
         }
+    }
+
+    /**
+     * @param HeaderFormatter $headerFormatter
+     * @param Request $request
+     */
+    public function format(HeaderFormatter $headerFormatter, Request $request)
+    {
+        $headerFormatter->format($this, $request);
     }
 }

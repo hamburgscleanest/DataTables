@@ -33,7 +33,7 @@ class Sorter extends DataComponent {
         {
             foreach ($fields as $fieldName => $direction)
             {
-                if ($fieldName === 0)
+                if (\is_int($fieldName))
                 {
                     $fieldName = $direction;
                     $direction = 'asc';
@@ -42,51 +42,6 @@ class Sorter extends DataComponent {
                 $this->_sortFields[$fieldName] = \mb_strtolower($direction);
             }
         }
-    }
-
-    /**
-     * @param string $fields
-     */
-    private function _initFields(string $fields)
-    {
-        $this->_sortFields = [];
-        foreach (\explode(self::COLUMN_SEPARATOR, $fields) as $field)
-        {
-            $sortParts = \explode(self::SORTING_SEPARATOR, $field);
-            if (\count($sortParts) === 1)
-            {
-                $sortParts[1] = 'asc';
-            }
-
-            if ($sortParts[1] === 'none')
-            {
-                SessionHelper::removeState($this->_request, $this->_rememberKey . '.' . $sortParts[0]);
-            }
-
-            $this->_sortFields[$sortParts[0]] = $sortParts[1];
-        }
-    }
-
-    protected function _readFromSession()
-    {
-        $this->_sortFields = (array) SessionHelper::getState($this->_request, $this->_rememberKey, []);
-    }
-
-    protected function _storeInSession()
-    {
-        SessionHelper::saveState($this->_request, $this->_rememberKey, $this->_sortFields);
-    }
-
-    protected function _afterInit()
-    {
-        /** @var string $sortFields */
-        $sortFields = $this->_request->get('sort');
-        if (empty($sortFields))
-        {
-            return;
-        }
-
-        $this->_initFields($sortFields);
     }
 
     /**
@@ -112,21 +67,6 @@ class Sorter extends DataComponent {
     }
 
     /**
-     * Sort by this column.
-     *
-     * @param string $field
-     * @param string $direction
-     *
-     * @return $this
-     */
-    public function addField(string $field, string $direction = 'asc')
-    {
-        $this->_sortFields[$field] = \mb_strtolower($direction);
-
-        return $this;
-    }
-
-    /**
      * Stop sorting by this column
      *
      * @param string $field
@@ -144,10 +84,70 @@ class Sorter extends DataComponent {
     }
 
     /**
+     * Sort by this column.
+     *
+     * @param string $field
+     * @param string $direction
+     *
+     * @return $this
+     */
+    public function addField(string $field, string $direction = 'asc')
+    {
+        $this->_sortFields[$field] = \mb_strtolower($direction);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function render(): string
     {
         return implode(', ', $this->_sortFields);
+    }
+
+    protected function _readFromSession()
+    {
+        $this->_sortFields = (array) SessionHelper::getState($this->_request, $this->_rememberKey, []);
+    }
+
+    protected function _storeInSession()
+    {
+        SessionHelper::saveState($this->_request, $this->_rememberKey, $this->_sortFields);
+    }
+
+    protected function _afterInit()
+    {
+        /** @var string $sortFields */
+        $sortFields = $this->_request->get('sort');
+        if (empty($sortFields))
+        {
+            return;
+        }
+
+        $this->_initFields($sortFields);
+    }
+
+    /**
+     * @param string $fields
+     */
+    private function _initFields(string $fields)
+    {
+        $this->_sortFields = [];
+        foreach (\explode(self::COLUMN_SEPARATOR, $fields) as $field)
+        {
+            $sortParts = \explode(self::SORTING_SEPARATOR, $field);
+            if (\count($sortParts) === 1)
+            {
+                $sortParts[1] = 'asc';
+            }
+
+            if ($sortParts[1] === 'none')
+            {
+                SessionHelper::removeState($this->_request, $this->_rememberKey . '.' . $sortParts[0]);
+            }
+
+            $this->_sortFields[$sortParts[0]] = $sortParts[1];
+        }
     }
 }

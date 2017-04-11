@@ -19,7 +19,6 @@ class SessionHelperTest extends TestCase {
         parent::setUp();
 
         $this->_request = Mockery::mock(Request::class);
-
         $this->_request
             ->shouldReceive('session')->andReturn(session())
             ->shouldReceive('url')->andReturn('localhost');

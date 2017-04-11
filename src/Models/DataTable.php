@@ -3,6 +3,7 @@
 namespace hamburgscleanest\DataTables\Models;
 
 use Closure;
+use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -27,10 +28,10 @@ class DataTable {
     private $_headerFormatters = [];
 
     /** @var array */
-    private $_components = [];
+    private $_columnFormatters = [];
 
-    /** @var Closure */
-    private $_rowRenderer; // TODO: IColumnFormatter => DateColumnFormatter etc.
+    /** @var array */
+    private $_components = [];
 
     /** @var string */
     private $_classes;
@@ -58,7 +59,7 @@ class DataTable {
      * @return $this
      * @throws \RuntimeException
      */
-    public function model(string $modelName, array $columns = [])
+    public function model(string $modelName, array $columns = []): DataTable
     {
         if (!\class_exists($modelName))
         {
@@ -71,15 +72,37 @@ class DataTable {
         }
 
         $this->_queryBuilder = (new $modelName)->newQuery();
-        $this->_columns = $columns;
+        $this->_columns = $this->_fetchColumns($columns);
 
         return $this;
     }
 
     /**
+     * Returns an array of Column objects which may be bound to a formatter.
+     *
+     * @param array $columns
+     * @return array
+     */
+    private function _fetchColumns(array $columns): array
+    {
+        $columnModels = [];
+        foreach ($columns as $column => $formatter)
+        {
+            if (\is_int($column))
+            {
+                $column = $formatter;
+                $formatter = null;
+            }
+            $columnModels[] = new Column($column, $formatter);
+        }
+
+        return $columnModels;
+    }
+
+    /**
      * @return Builder
      */
-    public function query()
+    public function query(): Builder
     {
         return $this->_queryBuilder;
     }
@@ -90,22 +113,9 @@ class DataTable {
      * @param array $columns
      * @return $this
      */
-    public function columns(array $columns)
+    public function columns(array $columns): DataTable
     {
-        $this->_columns += $columns;
-
-        return $this;
-    }
-
-    /**
-     * Manipulate each rendered row.
-     *
-     * @param Closure $customRowRenderer
-     * @return $this
-     */
-    public function renderRow(Closure $customRowRenderer)
-    {
-        $this->_rowRenderer = $customRowRenderer;
+        $this->_columns += $this->_fetchColumns($columns);
 
         return $this;
     }
@@ -118,7 +128,7 @@ class DataTable {
      *
      * @return $this
      */
-    public function addComponent(DataComponent $component)
+    public function addComponent(DataComponent $component): DataTable
     {
         $component->init($this->_queryBuilder, $this->_request);
         $this->_components[] = $component;
@@ -132,7 +142,7 @@ class DataTable {
      * @param HeaderFormatter $headerFormatter
      * @return $this
      */
-    public function formatHeaders(HeaderFormatter $headerFormatter)
+    public function formatHeaders(HeaderFormatter $headerFormatter): DataTable
     {
         $this->_headerFormatters[] = $headerFormatter;
 
@@ -140,13 +150,86 @@ class DataTable {
     }
 
     /**
+     * Add a formatter for a column.
+     *
+     * @param string $columnName
+     * @param ColumnFormatter $columnFormatter
+     * @return DataTable
+     */
+    public function formatColumn(string $columnName, ColumnFormatter $columnFormatter): DataTable
+    {
+        /** @var Column $column */
+        $column = \array_first(
+            $this->_columns,
+            function ($index, $column) use ($columnName)
+            {
+                return $column->name === $columnName;
+            }
+        );
+
+        if ($column !== null)
+        {
+            $column->setFormatter($columnFormatter);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add classes to the table.
+     *
+     * @param string $classes
+     *
+     * @return $this
+     */
+    public function classes(string $classes): DataTable
+    {
+        $this->_classes = $classes;
+
+        return $this;
+    }
+
+    /**
+     * Add a relation to the table.
+     *
+     * @param array $relations
+     * @return $this
+     */
+    public function with(array $relations): DataTable
+    {
+        $this->_relations += $relations;
+
+        return $this;
+    }
+
+    /**
+     * Renders the table.
+     *
+     * @param null|Closure $noDataView
+     *
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function render(Closure $noDataView = null): string
+    {
+        $data = $this->_getData();
+
+        if ($data->count() === 0)
+        {
+            return $noDataView !== null ? $noDataView->call($this) : '<div>no data</div>';
+        }
+
+        return $this->_open() . $this->_renderHeaders() . $this->_renderBody($data) . $this->_close();
+    }
+
+    /**
      * Get data which should be displayed in the table.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      *
      * @throws \RuntimeException
      */
-    private function _getData()
+    private function _getData(): Collection
     {
         if ($this->_queryBuilder === null)
         {
@@ -168,17 +251,13 @@ class DataTable {
     }
 
     /**
-     * Add classes to the table.
+     * Starts the table.
      *
-     * @param string $classes
-     *
-     * @return $this
+     * @return string
      */
-    public function classes(string $classes)
+    private function _open(): string
     {
-        $this->_classes = $classes;
-
-        return $this;
+        return '<table class="' . ($this->_classes ?? 'table') . '">';
     }
 
     /**
@@ -186,17 +265,17 @@ class DataTable {
      *
      * @return string
      */
-    private function _renderHeaders()
+    private function _renderHeaders(): string
     {
         if (\count($this->_columns) === 0)
         {
-            $this->_columns = Schema::getColumnListing($this->_queryBuilder->getQuery()->from);
+            $this->_columns = $this->_fetchColumns(Schema::getColumnListing($this->_queryBuilder->getQuery()->from));
         }
 
         $headers = array_map(
-            function($name)
+            function ($column)
             {
-                return new Header($name);
+                return Header::createFromColumn($column);
             },
             $this->_columns
         );
@@ -222,13 +301,35 @@ class DataTable {
      *
      * @return string
      */
-    private function _renderBody(Collection $data)
+    private function _renderBody(Collection $data): string
     {
         $html = '';
         foreach ($data as $row)
         {
             $html .= $this->_renderRow($row);
         }
+
+        return $html;
+    }
+
+    /**
+     * Displays a single row.
+     *
+     * @param Model $rowModel
+     *
+     * @return string
+     */
+    private function _renderRow(Model $rowModel): string
+    {
+        $attributes = $rowModel->getAttributes() + $this->_getMutatedAttributes($rowModel, $this->_getColumnNames());
+
+        $html = '<tr>';
+        /** @var Column $column */
+        foreach ($this->_columns as $column)
+        {
+            $html .= '<td>' . $column->format($attributes[$column->name] ?? '') . '</td>';
+        }
+        $html .= '</tr>';
 
         return $html;
     }
@@ -252,52 +353,13 @@ class DataTable {
     }
 
     /**
-     * Displays a single row.
+     * Get all column names.
      *
-     * @param Model $rowModel
-     *
-     * @return string
+     * @return array
      */
-    private function _renderRow(Model $rowModel)
+    private function _getColumnNames(): array
     {
-        if ($this->_rowRenderer !== null)
-        {
-            $rowModel = $this->_rowRenderer->call($this, $rowModel);
-        }
-
-        $attributes = $rowModel->getAttributes() + $this->_getMutatedAttributes($rowModel, $this->_columns);
-
-        $html = '<tr>';
-        foreach ($this->_columns as $column)
-        {
-            $html .= '<td>' . ($attributes[$column] ?? '') . '</td>';
-        }
-        $html .= '</tr>';
-
-        return $html;
-    }
-
-    /**
-     * Add a relation to the table.
-     *
-     * @param array $relations
-     * @return $this
-     */
-    public function with(array $relations)
-    {
-        $this->_relations += $relations;
-
-        return $this;
-    }
-
-    /**
-     * Starts the table.
-     *
-     * @return string
-     */
-    private function _open()
-    {
-        return '<table class="' . ($this->_classes ?? 'table') . '">';
+        return \array_map(function ($column) { return $column->name; }, $this->_columns);
     }
 
     /**
@@ -305,28 +367,8 @@ class DataTable {
      *
      * @return string
      */
-    private function _close()
+    private function _close(): string
     {
         return '</table>';
-    }
-
-    /**
-     * Renders the table.
-     *
-     * @param null|Closure $noDataView
-     *
-     * @return string
-     * @throws \RuntimeException
-     */
-    public function render(Closure $noDataView = null)
-    {
-        $data = $this->_getData();
-
-        if ($data->count() === 0)
-        {
-            return $noDataView !== null ? $noDataView->call($this) : '<div>no data</div>';
-        }
-
-        return $this->_open() . $this->_renderHeaders() . $this->_renderBody($data) . $this->_close();
     }
 }
