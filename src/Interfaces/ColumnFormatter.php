@@ -8,5 +8,8 @@ namespace hamburgscleanest\DataTables\Interfaces;
  */
 interface ColumnFormatter {
 
+    /**
+     * @return void
+     */
     public function format();
 }
