@@ -2,6 +2,8 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
+use Illuminate\Support\Collection;
+
 
 /**
  * Class Relation
@@ -42,5 +44,21 @@ class Relation {
         }
 
         return \mb_substr($extractedName, 0, \mb_strpos($extractedName, '.'));
+    }
+
+    /**
+     * @param string $columnName
+     * @param Collection $relation
+     * @return string
+     */
+    public function getValue(string $columnName, Collection $relation): string
+    {
+        $aggregateFunctionSet = $this->aggregate !== 'first';
+        if ($aggregateFunctionSet)
+        {
+            return $relation->{$this->aggregate}($columnName);
+        }
+
+        return (string) $relation->first()->{$columnName};
     }
 }

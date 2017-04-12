@@ -406,16 +406,12 @@ class DataTable {
             return '';
         }
 
-        $aggregateFunctionSet = $columnRelation->aggregate !== 'first';
-
-        $columnName = $column->getName();
-        $columnValue = $relation instanceof Collection ? $relation->{$columnRelation->aggregate}($aggregateFunctionSet ? $columnName : null) : $relation->{$columnName};
-        if (!$aggregateFunctionSet)
+        if ($relation instanceof Model)
         {
-            $columnValue = (string) $relation->first()->{$columnName};
+            return $relation->{$column->getName()};
         }
 
-        return $columnValue;
+        return $columnRelation->getValue($column->getName(), $relation);
     }
 
     /**
