@@ -14,11 +14,8 @@ class Column {
     /** @var string */
     private $_name;
 
-    /** @var string */
+    /** @var Relation */
     private $_relation;
-
-    /** @var string */
-    private $_aggregate = 'first';
 
     /** @var ColumnFormatter */
     private $_formatter;
@@ -30,34 +27,8 @@ class Column {
      */
     public function __construct(string $name, ? ColumnFormatter $columnFormatter = null)
     {
-        $this->setName($this->_extractAggregate($name));
+        $this->setName($name);
         $this->_formatter = $columnFormatter;
-    }
-
-    /**
-     * @param string $name
-     * @return string
-     */
-    private function _extractAggregate(string $name): string
-    {
-        $replaced = 0;
-        $name = preg_replace("/\((.*?)\)/", '#$1', $name, 1, $replaced);
-        if ($replaced === 1)
-        {
-            $parts = \explode('#', $name);
-            $this->_aggregate = \mb_strtolower($parts[0]);
-            $name = $parts[1];
-        }
-
-        return $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAggregate(): string
-    {
-        return $this->_aggregate;
     }
 
     /**
@@ -81,24 +52,16 @@ class Column {
             return;
         }
 
-        $this->_name = \mb_substr($name, $posDivider + 1);
-        $this->_relation = \mb_substr($name, 0, $posDivider);
+        $this->_relation = new Relation($name);
+        $this->_name = \str_replace(')', '', \mb_substr($name, $posDivider + 1));
     }
 
     /**
-     * @return string
+     * @return null|Relation
      */
-    public function getRelation(): string
+    public function getRelation(): ?Relation
     {
         return $this->_relation;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRelation(): bool
-    {
-        return !empty($this->_relation);
     }
 
     /**

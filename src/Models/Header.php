@@ -23,10 +23,12 @@ class Header {
     public function __construct(Column $column)
     {
         $this->_attributeName = $column->getName();
-        if ($column->isRelation())
+
+        $relation = $column->getRelation();
+        if ($relation !== null)
         {
-            $aggregate = $column->getAggregate();
-            $this->_attributeName = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $column->getRelation() . '_' . $this->_attributeName;
+            $aggregate = $relation->aggregate;
+            $this->_attributeName = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $relation->name . '_' . $this->_attributeName;
         }
 
         $this->name = $this->_attributeName;
@@ -45,21 +47,35 @@ class Header {
     /**
      * @param array $headerFormatters
      * @param Request $request
+     * @return Header
      */
-    public function formatArray(array $headerFormatters, Request $request)
+    public function formatArray(array $headerFormatters, Request $request): Header
     {
         foreach ($headerFormatters as $formatter)
         {
             $this->format($formatter, $request);
         }
+
+        return $this;
     }
 
     /**
      * @param HeaderFormatter $headerFormatter
      * @param Request $request
+     * @return Header
      */
-    public function format(HeaderFormatter $headerFormatter, Request $request)
+    public function format(HeaderFormatter $headerFormatter, Request $request): Header
     {
         $headerFormatter->format($this, $request);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function print(): string
+    {
+        return '<th>' . $this->name . '</th>';
     }
 }

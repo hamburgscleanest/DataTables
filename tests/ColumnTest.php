@@ -19,7 +19,7 @@ class ColumnTest extends TestCase {
         $column = new Column($name);
 
         $this->assertEquals($name, $column->getName());
-        $this->assertFalse($column->isRelation());
+        $this->assertNull($column->getRelation());
     }
 
     /**
@@ -29,10 +29,11 @@ class ColumnTest extends TestCase {
     {
         $name = 'test.column';
         $column = new Column($name);
+        $relation = $column->getRelation();
 
         $this->assertEquals('column', $column->getName());
-        $this->assertEquals('test', $column->getRelation());
-        $this->assertTrue($column->isRelation());
+        $this->assertNotNull($relation);
+        $this->assertEquals('test', $relation->name);
     }
 
     /**
@@ -42,10 +43,11 @@ class ColumnTest extends TestCase {
     {
         $name = 'COUNT(test.column)';
         $column = new Column($name);
+        $relation = $column->getRelation();
 
         $this->assertEquals('column', $column->getName());
-        $this->assertEquals('test', $column->getRelation());
-        $this->assertEquals('count', $column->getAggregate());
-        $this->assertTrue($column->isRelation());
+        $this->assertNotNull($relation);
+        $this->assertEquals('test', $relation->name);
+        $this->assertEquals('count', $relation->aggregate);
     }
 }

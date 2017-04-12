@@ -217,6 +217,8 @@ class DataTable {
             return $noDataView !== null ? $noDataView->call($this) : '<div>no data</div>';
         }
 
+        $this->_initColumns();
+
         return $this->_open() . $this->_renderHeaders() . $this->_renderBody($data) . $this->_close();
     }
 
@@ -248,6 +250,14 @@ class DataTable {
         return $this->_queryBuilder->get();
     }
 
+    private function _initColumns()
+    {
+        if (\count($this->_columns) === 0)
+        {
+            $this->_columns = $this->_fetchColumns(Schema::getColumnListing($this->_queryBuilder->getQuery()->from));
+        }
+    }
+
     /**
      * Starts the table.
      *
@@ -265,31 +275,31 @@ class DataTable {
      */
     private function _renderHeaders(): string
     {
-        if (\count($this->_columns) === 0)
-        {
-            $this->_columns = $this->_fetchColumns(Schema::getColumnListing($this->_queryBuilder->getQuery()->from));
-        }
-
-        $headers = array_map(
-            function ($column)
-            {
-                return new Header($column);
-            },
-            $this->_columns
-        );
-
         $html = '<tr>';
 
         /** @var Header $header */
-        foreach ($headers as $header)
+        foreach ($this->_fetchHeaders() as $header)
         {
-            $header->formatArray($this->_headerFormatters, $this->_request);
-
-            $html .= '<th>' . $header->name . '</th>';
+            $html .= $header->formatArray($this->_headerFormatters, $this->_request)->print();
         }
         $html .= '</tr>';
 
         return $html;
+    }
+
+    /**
+     * @return array
+     */
+    private function _fetchHeaders(): array
+    {
+        return array_map(
+            function ($column)
+            {
+                /** @var Column $column */
+                return new Header($column);
+            },
+            $this->_columns
+        );
     }
 
     /**
@@ -325,7 +335,8 @@ class DataTable {
         /** @var Column $column */
         foreach ($this->_columns as $column)
         {
-            if ($column->isRelation())
+            $relation = $column->getRelation();
+            if ($relation !== null)
             {
                 $columnValue = $this->_getColumnValueFromRelation($rowModel, $column);
             } else
@@ -375,7 +386,7 @@ class DataTable {
                 function ($column)
                 {
                     /** @var Column $column */
-                    return !$column->isRelation();
+                    return $column->getRelation() === null;
                 }
             )
         );
@@ -388,17 +399,17 @@ class DataTable {
      */
     private function _getColumnValueFromRelation(Model $model, Column $column): string
     {
-        $aggregate = $column->getAggregate();
-        $aggregateFunctionSet = $aggregate !== 'first';
-        $relation = $model->getRelation($column->getRelation());
-
+        $columnRelation = $column->getRelation();
+        $relation = $model->getRelation($columnRelation->name);
         if ($relation === null)
         {
             return '';
         }
 
+        $aggregateFunctionSet = $columnRelation->aggregate !== 'first';
+
         $columnName = $column->getName();
-        $columnValue = $relation instanceof Collection ? $relation->{$aggregate}($aggregateFunctionSet ? $columnName : null) : '1';
+        $columnValue = $relation instanceof Collection ? $relation->{$columnRelation->aggregate}($aggregateFunctionSet ? $columnName : null) : $relation->{$columnName};
         if (!$aggregateFunctionSet)
         {
             $columnValue = (string) $relation->first()->{$columnName};
