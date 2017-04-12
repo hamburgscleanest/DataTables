@@ -211,16 +211,16 @@ class SortableHeader implements HeaderFormatter {
 
     /**
      * @param Request $request
-     * @param string $column
+     * @param string $columnName
      * @param string $oldDirection
      * @return string
      * @throws \RuntimeException
      */
-    private function _buildSortUrl(Request $request, string $column, string $oldDirection = 'asc')
+    private function _buildSortUrl(Request $request, string $columnName, string $oldDirection = 'asc')
     {
         $newDirection = $this->_getNewDirection($oldDirection);
 
-        $newSorting = $column . self::SORTING_SEPARATOR . $newDirection;
+        $newSorting = $columnName . self::SORTING_SEPARATOR . $newDirection;
         $parameters = UrlHelper::parameterizeQuery($request->getQueryString());
 
         if (!isset($parameters['sort']))
@@ -228,23 +228,9 @@ class SortableHeader implements HeaderFormatter {
             $parameters['sort'] = '';
         }
 
-        $columnRegex = '/(^|\\' . self::COLUMN_SEPARATOR . ')' . $column . self::SORTING_SEPARATOR . $oldDirection . '/';
-        $replacedCount = 0;
-        $parameters['sort'] = \preg_replace($columnRegex, self::COLUMN_SEPARATOR . $newSorting, $parameters['sort'], 1, $replacedCount);
-
-        if (!empty($parameters['sort']) && $parameters['sort'][0] === self::COLUMN_SEPARATOR)
+        if ($this->_replaceOldSort($columnName, $parameters['sort'], $oldDirection, $newSorting))
         {
-            $parameters['sort'] = \mb_substr($parameters['sort'], 1);
-        }
-
-        if ($replacedCount === 0)
-        {
-            $sorting = $newSorting;
-            if (!empty($parameters['sort']))
-            {
-                $sorting = self::COLUMN_SEPARATOR . $sorting;
-            }
-            $parameters['sort'] .= $sorting;
+            $this->_addSortParameter($parameters['sort'], $newSorting);
         }
 
         return $request->url() . '?' . \http_build_query($parameters);
@@ -271,5 +257,39 @@ class SortableHeader implements HeaderFormatter {
         }
 
         return $newDirection;
+    }
+
+    /**
+     * @param string $columnName
+     * @param string $sortParameter
+     * @param string $oldDirection
+     * @param string $newSorting
+     * @return bool
+     */
+    private function _replaceOldSort(string $columnName, string &$sortParameter, string $oldDirection, string $newSorting): bool
+    {
+        $replacedCount = 0;
+        $columnRegex = '/(^|\\' . self::COLUMN_SEPARATOR . ')' . $columnName . self::SORTING_SEPARATOR . $oldDirection . '/';
+        $parameters['sort'] = \preg_replace($columnRegex, self::COLUMN_SEPARATOR . $newSorting, $sortParameter, 1, $replacedCount);
+
+        if (!empty($sortParameter) && $sortParameter[0] === self::COLUMN_SEPARATOR)
+        {
+            $sortParameter = \mb_substr($sortParameter, 1);
+        }
+
+        return $replacedCount > 0;
+    }
+
+    /**
+     * @param string $sortParameter
+     * @param string $newSorting
+     */
+    private function _addSortParameter(string &$sortParameter, string $newSorting)
+    {
+        if (!empty($sortParameter))
+        {
+            $newSorting = self::COLUMN_SEPARATOR . $newSorting;
+        }
+        $sortParameter .= $newSorting;
     }
 }
