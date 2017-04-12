@@ -29,10 +29,10 @@ class TestModel extends Model {
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function tester()
+    public function testers()
     {
-        return $this->hasOne(TestModel::class);
+        return $this->hasMany(TestModel::class);
     }
 }

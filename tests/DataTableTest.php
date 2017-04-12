@@ -228,11 +228,31 @@ class DataTableTest extends TestCase {
         $parent = TestModel::create(['name' => $fieldName, 'created_at' => '2017-01-01 00:00:00']);
         TestModel::create(['name' => $fieldName, 'created_at' => '2017-02-02 00:00:00', 'test_model_id' => $parent->id]);
 
-        $dataTable = DataTable::model(TestModel::class, ['created_at', 'tester.created_at'])->with(['tester']);
-        $dataTable->query()->where('name', $fieldName);
+        $dataTable = DataTable::model(TestModel::class, ['created_at', 'testers.created_at'])->with(['testers']);
+        $dataTable->query()->where('created_at', '2017-01-01 00:00:00');
 
         $this->assertEquals(
-            '<table class="table"><tr><th>created_at</th><th>tester.created_at</th></tr><tr><td>2017-01-01 00:00:00</td><td></td></tr><tr><td>2017-02-02 00:00:00</td><td></td></tr></table>',
+            '<table class="table"><tr><th>created_at</th><th>testers_created_at</th></tr><tr><td>2017-01-01 00:00:00</td><td>2017-02-02 00:00:00</td></tr></table>',
+            $dataTable->render()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function aggregates_are_considered()
+    {
+        $fieldName = 'test-relations';
+
+        $parent = TestModel::create(['name' => $fieldName, 'created_at' => '2017-01-01 00:00:00']);
+        TestModel::create(['name' => $fieldName, 'created_at' => '2017-02-02 00:00:00', 'test_model_id' => $parent->id]);
+        TestModel::create(['name' => $fieldName, 'created_at' => '2017-03-03 00:00:00', 'test_model_id' => $parent->id]);
+
+        $dataTable = DataTable::model(TestModel::class, ['created_at', 'COUNT(testers.id)'])->with(['testers']);
+        $dataTable->query()->where('created_at', '2017-01-01 00:00:00');
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>created_at</th><th>count_testers_id</th></tr><tr><td>2017-01-01 00:00:00</td><td>2</td></tr></table>',
             $dataTable->render()
         );
     }

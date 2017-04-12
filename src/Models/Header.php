@@ -13,34 +13,33 @@ class Header {
 
     /** @var string */
     public $name;
+
     /** @var string */
-    private $_originalName;
+    private $_attributeName;
 
     /**
      * Header constructor.
-     * @param string $name
      */
-    public function __construct(string $name)
+    public function __construct(Column $column)
     {
-        $this->_originalName = $name;
-        $this->name = $name;
+        $this->_attributeName = $column->getName();
+        if ($column->isRelation())
+        {
+            $aggregate = $column->getAggregate();
+            $this->_attributeName = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $column->getRelation() . '_' . $this->_attributeName;
+        }
+
+        $this->name = $this->_attributeName;
     }
 
     /**
-     * @param Column $column
-     * @return Header
-     */
-    public static function createFromColumn(Column $column): Header
-    {
-        return new static($column->name);
-    }
-
-    /**
+     * Get the original attribute name.
+     *
      * @return string
      */
-    public function getOriginalName(): string
+    public function getAttributeName(): string
     {
-        return $this->_originalName;
+        return $this->_attributeName;
     }
 
     /**

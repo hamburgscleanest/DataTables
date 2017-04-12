@@ -160,7 +160,8 @@ class DataTable {
             $this->_columns,
             function ($index, $column) use ($columnName)
             {
-                return $column->name === $columnName;
+                /** @var Column $column */
+                return $column->getName() === $columnName;
             }
         );
 
@@ -272,7 +273,7 @@ class DataTable {
         $headers = array_map(
             function ($column)
             {
-                return Header::createFromColumn($column);
+                return new Header($column);
             },
             $this->_columns
         );
@@ -324,7 +325,15 @@ class DataTable {
         /** @var Column $column */
         foreach ($this->_columns as $column)
         {
-            $html .= '<td>' . $column->format($attributes[$column->name] ?? '') . '</td>';
+            if ($column->isRelation())
+            {
+                $columnValue = $this->_getColumnValueFromRelation($rowModel, $column);
+            } else
+            {
+                $columnValue = $column->format($attributes[$column->getName()] ?? '');
+            }
+
+            $html .= '<td>' . $columnValue . '</td>';
         }
         $html .= '</tr>';
 
@@ -356,7 +365,46 @@ class DataTable {
      */
     private function _getColumnNames(): array
     {
-        return \array_map(function ($column) { return $column->name; }, $this->_columns);
+        return \array_map(function ($column)
+        {
+            /** @var Column $column */
+            return $column->getName();
+        },
+            \array_filter(
+                $this->_columns,
+                function ($column)
+                {
+                    /** @var Column $column */
+                    return !$column->isRelation();
+                }
+            )
+        );
+    }
+
+    /**
+     * @param Model $model
+     * @param Column $column
+     * @return string
+     */
+    private function _getColumnValueFromRelation(Model $model, Column $column): string
+    {
+        $aggregate = $column->getAggregate();
+        $aggregateFunctionSet = $aggregate !== 'first';
+        $relation = $model->getRelation($column->getRelation());
+
+        if ($relation === null)
+        {
+            return '';
+        }
+
+        $columnName = $column->getName();
+        $columnValue = $relation instanceof Collection ? $relation->{$aggregate}($aggregateFunctionSet ? $columnName : null) : '1';
+        if (!$aggregateFunctionSet)
+        {
+            $columnValue = (string) $relation->first()->{$columnName};
+        }
+
+        return $columnValue;
     }
 
     /**

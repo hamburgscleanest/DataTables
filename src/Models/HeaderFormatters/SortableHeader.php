@@ -110,7 +110,7 @@ class SortableHeader implements HeaderFormatter {
      */
     public function format(Header $header, Request $request)
     {
-        $headerAttributeName = $header->getOriginalName();
+        $headerAttributeName = $header->getAttributeName();
 
         $sortFields = $this->_extractSortFields($request);
         $direction = $sortFields[$headerAttributeName] ?? 'none';
