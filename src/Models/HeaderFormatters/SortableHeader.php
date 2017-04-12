@@ -223,15 +223,11 @@ class SortableHeader implements HeaderFormatter {
         $newSorting = $columnName . self::SORTING_SEPARATOR . $newDirection;
         $parameters = UrlHelper::parameterizeQuery($request->getQueryString());
 
-        if (!isset($parameters['sort']))
+        if (!$this->_replaceOldSort($columnName, $parameters, $oldDirection, $newSorting))
         {
-            $parameters['sort'] = '';
+            $this->_addSortParameter($parameters, $newSorting);
         }
 
-        if ($this->_replaceOldSort($columnName, $parameters['sort'], $oldDirection, $newSorting))
-        {
-            $this->_addSortParameter($parameters['sort'], $newSorting);
-        }
 
         return $request->url() . '?' . \http_build_query($parameters);
     }
@@ -261,35 +257,40 @@ class SortableHeader implements HeaderFormatter {
 
     /**
      * @param string $columnName
-     * @param string $sortParameter
+     * @param array $parameters
      * @param string $oldDirection
      * @param string $newSorting
      * @return bool
      */
-    private function _replaceOldSort(string $columnName, string &$sortParameter, string $oldDirection, string $newSorting): bool
+    private function _replaceOldSort(string $columnName, array &$parameters, string $oldDirection, string $newSorting): bool
     {
+        if (!isset($parameters['sort']))
+        {
+            $parameters['sort'] = '';
+        }
+
         $replacedCount = 0;
         $columnRegex = '/(^|\\' . self::COLUMN_SEPARATOR . ')' . $columnName . self::SORTING_SEPARATOR . $oldDirection . '/';
-        $parameters['sort'] = \preg_replace($columnRegex, self::COLUMN_SEPARATOR . $newSorting, $sortParameter, 1, $replacedCount);
+        $parameters['sort'] = \preg_replace($columnRegex, self::COLUMN_SEPARATOR . $newSorting, $parameters['sort'], 1, $replacedCount);
 
-        if (!empty($sortParameter) && $sortParameter[0] === self::COLUMN_SEPARATOR)
+        if (!empty($parameters['sort']) && $parameters['sort'][0] === self::COLUMN_SEPARATOR)
         {
-            $sortParameter = \mb_substr($sortParameter, 1);
+            $parameters['sort'] = \mb_substr($parameters['sort'], 1);
         }
 
         return $replacedCount > 0;
     }
 
     /**
-     * @param string $sortParameter
+     * @param array $parameters
      * @param string $newSorting
      */
-    private function _addSortParameter(string &$sortParameter, string $newSorting)
+    private function _addSortParameter(array &$parameters, string $newSorting)
     {
-        if (!empty($sortParameter))
+        if (!empty($parameters['sort']))
         {
             $newSorting = self::COLUMN_SEPARATOR . $newSorting;
         }
-        $sortParameter .= $newSorting;
+        $parameters['sort'] .= $newSorting;
     }
 }
