@@ -152,7 +152,7 @@ Or access column values from "hasMany" and "belongsToMany" relationships by usin
 If you omit the aggregate function, the value of the first related record is returned.
 
 ``` php       
-     DataTable::model(TestModel::class)->columns(['COUNT(relation.id')])->with(['relation']);
+     DataTable::model(TestModel::class)->columns(['COUNT(relation.id)'])->with(['relation']);
 ```
 
 ## Changes
