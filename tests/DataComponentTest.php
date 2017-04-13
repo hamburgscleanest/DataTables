@@ -50,4 +50,13 @@ class DataComponentTest extends TestCase {
 
         $this->assertTrue($testComponent->storeInSessionCalled);
     }
+
+    /**
+     * @test
+     */
+    public function is_rendered()
+    {
+        $testComponent = new TestDataComponent();
+        $this->assertEquals('TEST-RENDER', $testComponent->render());
+    }
 }

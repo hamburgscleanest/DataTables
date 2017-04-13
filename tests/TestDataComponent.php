@@ -48,6 +48,6 @@ class TestDataComponent extends DataComponent {
      */
     public function render() : string
     {
-        return '';
+        return 'TEST-RENDER';
     }
 }
