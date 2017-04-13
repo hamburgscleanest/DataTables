@@ -8,6 +8,7 @@ use hamburgscleanest\DataTables\Models\ColumnFormatters\DateColumn;
 use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\View;
 use RuntimeException;
 
 /**
@@ -53,10 +54,22 @@ class DataTableTest extends TestCase {
             $html,
             $dataTable->render()
         );
+    }
 
-        //TODO
-        //$viewName = 'no_data';
-        //$dataTable->noDataView($viewName);
+    /**
+     * @test
+     */
+    public function renders_custom_no_data_for_view()
+    {
+        View::addLocation(__DIR__ . '/views');
+
+        $dataTable = DataTable::model(TestModel::class)->noDataView('no_data');
+        $dataTable->query()->where('created_at', '1991-08-03');
+
+        $this->assertEquals(
+            '<div>NO_DATA</div>',
+            $dataTable->render()
+        );
     }
 
     /**
