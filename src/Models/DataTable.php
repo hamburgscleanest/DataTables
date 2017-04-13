@@ -58,14 +58,9 @@ class DataTable {
      */
     public function model(string $modelName, array $columns = []): DataTable
     {
-        if (!\class_exists($modelName))
+        if (!\class_exists($modelName) || !\is_subclass_of($modelName, Model::class))
         {
-            throw new RuntimeException('Class "' . $modelName . '" does not exist!');
-        }
-
-        if (!\is_subclass_of($modelName, Model::class))
-        {
-            throw new RuntimeException('"' . $modelName . '" is not an active record!');
+            throw new RuntimeException('Class "' . $modelName . '" does not exist or is not an active record!');
         }
 
         $this->_queryBuilder = (new $modelName)->newQuery();
@@ -236,10 +231,7 @@ class DataTable {
             throw new RuntimeException('Unknown base model!');
         }
 
-        if (\count($this->_relations) > 0)
-        {
-            $this->_queryBuilder->with($this->_relations);
-        }
+        $this->_addRelations();
 
         /** @var DataComponent $component */
         foreach ($this->_components as $component)
@@ -248,6 +240,14 @@ class DataTable {
         }
 
         return $this->_queryBuilder->get();
+    }
+
+    private function _addRelations()
+    {
+        if (\count($this->_relations) > 0)
+        {
+            $this->_queryBuilder->with($this->_relations);
+        }
     }
 
     private function _initColumns()
@@ -335,16 +335,7 @@ class DataTable {
         /** @var Column $column */
         foreach ($this->_columns as $column)
         {
-            $relation = $column->getRelation();
-            if ($relation !== null)
-            {
-                $columnValue = $this->_getColumnValueFromRelation($rowModel, $column);
-            } else
-            {
-                $columnValue = $column->format($attributes[$column->getName()] ?? '');
-            }
-
-            $html .= '<td>' . $columnValue . '</td>';
+            $html .= '<td>' . $column->getRelation() !== null ? $this->_getColumnValueFromRelation($rowModel, $column) : $column->format($attributes[$column->getName()] ?? '') . '</td>';
         }
         $html .= '</tr>';
 
@@ -381,14 +372,24 @@ class DataTable {
             /** @var Column $column */
             return $column->getName();
         },
-            \array_filter(
-                $this->_columns,
-                function ($column)
-                {
-                    /** @var Column $column */
-                    return $column->getRelation() === null;
-                }
-            )
+            $this->_getColumnsWithoutRelations()
+        );
+    }
+
+    /**
+     * Get only the columns which are attributes from the base model.
+     *
+     * @return array
+     */
+    private function _getColumnsWithoutRelations(): array
+    {
+        return \array_filter(
+            $this->_columns,
+            function ($column)
+            {
+                /** @var Column $column */
+                return $column->getRelation() === null;
+            }
         );
     }
 
