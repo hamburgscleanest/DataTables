@@ -402,10 +402,6 @@ class DataTable {
     {
         $columnRelation = $column->getRelation();
         $relation = $model->getRelation($columnRelation->name);
-        if ($relation === null)
-        {
-            return '';
-        }
 
         if ($relation instanceof Model)
         {

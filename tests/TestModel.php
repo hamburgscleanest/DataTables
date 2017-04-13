@@ -29,6 +29,14 @@ class TestModel extends Model {
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function tester()
+    {
+        return $this->hasOne(TestModel::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function testers()
