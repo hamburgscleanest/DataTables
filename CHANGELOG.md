@@ -43,18 +43,3 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## 0.7.0
 
 initial beta version
-
-### Added
-- Nothing
-
-### Deprecated
-- Nothing
-
-### Fixed
-- Nothing
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
