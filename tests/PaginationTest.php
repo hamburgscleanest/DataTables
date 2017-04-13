@@ -31,7 +31,7 @@ class PaginationTest extends TestCase {
             '?page=2">2</a></li><li><a href="' . $this->baseUrl .
             '?page=3">3</a></li><li><a href="' . $this->baseUrl .
             '?page=2">→</a></li><li><a href="' . $this->baseUrl .
-            '?page=6">last</a></li></ul>',
+            '?page=7">last</a></li></ul>',
             $paginator->render()
         );
     }

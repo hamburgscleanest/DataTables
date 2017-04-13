@@ -44,15 +44,19 @@ class DataTableTest extends TestCase {
      */
     public function renders_custom_no_data()
     {
-        $dataTable = DataTable::model(TestModel::class);
+        $html = '<p>Nothing here</p>';
+
+        $dataTable = DataTable::model(TestModel::class)->noDataHtml($html);
         $dataTable->query()->where('created_at', '1991-08-03');
 
-        $view = '<p>Nothing here</p>';
-
         $this->assertEquals(
-            $view,
-            $dataTable->render(function () use ($view) { return $view; })
+            $html,
+            $dataTable->render()
         );
+
+        //TODO
+        //$viewName = 'no_data';
+        //$dataTable->noDataView($viewName);
     }
 
     /**
