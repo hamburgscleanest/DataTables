@@ -138,4 +138,17 @@ class PaginationTest extends TestCase {
             $paginator->render()
         );
     }
+
+    /**
+     * @test
+     */
+    public function entries_per_page_is_greater_than_the_data_count()
+    {
+        /** @var Paginator $paginator */
+        $paginator = new Paginator(500);
+
+        DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
+
+        $this->assertEquals(1, $paginator->pageCount());
+    }
 }
