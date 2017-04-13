@@ -59,7 +59,7 @@ class Column {
     /**
      * @return null|Relation
      */
-    public function getRelation(): ?Relation
+    public function getRelation(): ? Relation
     {
         return $this->_relation;
     }

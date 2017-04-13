@@ -16,7 +16,7 @@ class UrlHelper {
      * @return array
      * @throws \RuntimeException
      */
-    public function parameterizeQuery(? string $queryString = null): array
+    public function parameterizeQuery(? string $queryString = null) : array
     {
         if (empty($queryString))
         {
