@@ -2,7 +2,6 @@
 
 namespace hamburgscleanest\DataTables\Models;
 
-use Closure;
 use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\View;
 use RuntimeException;
 
 /**
@@ -157,7 +155,7 @@ class DataTable {
         /** @var Column $column */
         $column = \array_first(
             $this->_columns,
-            function ($index, $column) use ($columnName)
+            function($index, $column) use ($columnName)
             {
                 /** @var Column $column */
                 return $column->getName() === $columnName;
@@ -321,7 +319,7 @@ class DataTable {
     private function _fetchHeaders(): array
     {
         return array_map(
-            function ($column)
+            function($column)
             {
                 /** @var Column $column */
                 return new Header($column);
@@ -395,7 +393,7 @@ class DataTable {
      */
     private function _getColumnNames(): array
     {
-        return \array_map(function ($column)
+        return \array_map(function($column)
         {
             /** @var Column $column */
             return $column->getName();
@@ -413,7 +411,7 @@ class DataTable {
     {
         return \array_filter(
             $this->_columns,
-            function ($column)
+            function($column)
             {
                 /** @var Column $column */
                 return $column->getRelation() === null;
