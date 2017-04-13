@@ -32,7 +32,7 @@ class TableRenderer {
      * @param null|string $classes
      * @return string
      */
-    public function open(?string $classes = null) : string
+    public function open(? string $classes = null) : string
     {
         return '<table class="' . ($classes ?? 'table') . '">';
     }
