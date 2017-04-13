@@ -111,7 +111,6 @@ class SortableHeader implements HeaderFormatter {
     public function format(Header $header, Request $request)
     {
         $headerAttributeName = $header->getAttributeName();
-
         $sortFields = $this->_extractSortFields($request);
         $direction = $sortFields[$headerAttributeName] ?? 'none';
 
@@ -227,7 +226,6 @@ class SortableHeader implements HeaderFormatter {
         {
             $this->_addSortParameter($parameters, $newSorting);
         }
-
 
         return $request->url() . '?' . \http_build_query($parameters);
     }
