@@ -39,6 +39,9 @@ class DataTable {
     /** @var array */
     private $_relations = [];
 
+    /** @var string */
+    private $_noDataHtml = '<div>no data</div>';
+
     /**
      * DataTable constructor.
      * @param Request $request
@@ -196,20 +199,44 @@ class DataTable {
     }
 
     /**
-     * Renders the table.
+     * Set the HTML which should be displayed when the dataset is empty.
      *
-     * @param null|Closure $noDataView
+     * @param string $html
+     * @return DataTable
+     */
+    public function noDataHtml(string $html): DataTable
+    {
+        $this->_noDataHtml = $html;
+
+        return $this;
+    }
+
+    /**
+     * Set a view which should be displayed when the dataset is empty.
+     *
+     * @param string $viewName
+     * @return DataTable
+     */
+    public function noDataView(string $viewName): DataTable
+    {
+        $this->_noDataHtml = \view($viewName)->render();
+
+        return $this;
+    }
+
+    /**
+     * Renders the table.
      *
      * @return string
      * @throws \RuntimeException
      */
-    public function render(Closure $noDataView = null): string
+    public function render(): string
     {
         $data = $this->_getData();
 
         if ($data->count() === 0)
         {
-            return $noDataView !== null ? $noDataView->call($this) : '<div>no data</div>';
+            return $this->_noDataHtml;
         }
 
         $this->_initColumns();

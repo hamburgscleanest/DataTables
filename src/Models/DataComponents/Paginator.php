@@ -214,7 +214,7 @@ class Paginator extends DataComponent {
             return 1;
         }
 
-        return (int) \floor($queryCount / $this->_perPage);
+        return (int) \ceil($queryCount / $this->_perPage);
     }
 
     /**

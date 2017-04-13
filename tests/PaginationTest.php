@@ -22,7 +22,6 @@ class PaginationTest extends TestCase {
         /** @var Paginator $paginator */
         $paginator = new Paginator();
 
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($paginator);
 
@@ -45,7 +44,6 @@ class PaginationTest extends TestCase {
         /** @var Paginator $paginator */
         $paginator = new Paginator(0);
 
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($paginator);
 
@@ -60,7 +58,6 @@ class PaginationTest extends TestCase {
         /** @var Paginator $paginator */
         $paginator = new Paginator(150);
 
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($paginator);
 
@@ -75,7 +72,6 @@ class PaginationTest extends TestCase {
         /** @var Paginator $paginator */
         $paginator = new Paginator(0);
 
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($paginator);
 
@@ -90,26 +86,24 @@ class PaginationTest extends TestCase {
      */
     public function pagination_is_rendered_correctly_for_last_page()
     {
-        // TODO
-        return;
+        $entriesPerPage = 15;
 
         /** @var Paginator $paginator */
-        $paginator = new Paginator();
+        $paginator = new Paginator($entriesPerPage);
 
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        $pageCount = (int) \ceil(TestModel::count() / $entriesPerPage);
+
+        request()->request->add(['page' => $pageCount]);
+
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
 
-        $pageCount = $paginator->pageCount();
-
-        $this->get($this->baseUrl . '?page=' . $pageCount);
-
         $this->assertEquals(
-            '<ul class="pagination"><li class="active"><a href="' . $this->baseUrl .
-            '?page=1">1</a></li><li><a href="' . $this->baseUrl .
-            '?page=2">2</a></li><li><a href="' . $this->baseUrl .
-            '?page=3">3</a></li><li><a href="' . $this->baseUrl .
-            '?page=2">→</a></li><li><a href="' . $this->baseUrl .
-            '?page=6">last</a></li></ul>',
+            '<ul class="pagination"><li><a href="' . $this->baseUrl .
+            '?page=1">first</a></li><li><a href="' . $this->baseUrl .
+            '?page=6">←</a></li><li><a href="' . $this->baseUrl .
+            '?page=5">5</a></li><li><a href="' . $this->baseUrl .
+            '?page=6">6</a></li><li class="active"><a href="' . $this->baseUrl .
+            '?page=7">7</a></li></ul>',
             $paginator->render()
         );
     }
@@ -117,26 +111,30 @@ class PaginationTest extends TestCase {
     /**
      * @test
      */
-    public function pagination_is_rendered_correctly_for_other_pages() // TODO
+    public function pagination_is_rendered_correctly_for_other_pages()
     {
-        // TODO
-        return;
+        $entriesPerPage = 5;
 
         /** @var Paginator $paginator */
-        $paginator = new Paginator();
+        $paginator = new Paginator($entriesPerPage);
 
-        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
-        DataTable::query(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
+        $page = (int) \ceil(TestModel::count() / $entriesPerPage * 0.5);
 
-        $this->get($this->baseUrl . '?page=2');
+        request()->request->add(['page' => $page]);
+
+        DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
 
         $this->assertEquals(
-            '<ul class="pagination"><li class="active"><a href="' . $this->baseUrl .
-            '?page=1">1</a></li><li><a href="' . $this->baseUrl .
-            '?page=2">2</a></li><li><a href="' . $this->baseUrl .
-            '?page=3">3</a></li><li><a href="' . $this->baseUrl .
-            '?page=2">→</a></li><li><a href="' . $this->baseUrl .
-            '?page=6">last</a></li></ul>',
+            '<ul class="pagination"><li><a href="' . $this->baseUrl .
+            '?page=1">first</a></li><li><a href="' . $this->baseUrl .
+            '?page=9">←</a></li><li><a href="' . $this->baseUrl .
+            '?page=8">8</a></li><li><a href="' . $this->baseUrl .
+            '?page=9">9</a></li><li class="active"><a href="' . $this->baseUrl .
+            '?page=10">10</a></li><li><a href="' . $this->baseUrl .
+            '?page=11">11</a></li><li><a href="' . $this->baseUrl .
+            '?page=12">12</a></li><li><a href="' . $this->baseUrl .
+            '?page=11">→</a></li><li><a href="' . $this->baseUrl .
+            '?page=20">last</a></li></ul>',
             $paginator->render()
         );
     }
