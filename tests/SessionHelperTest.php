@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
-use hamburgscleanest\DataTables\Facades\SessionHelper;
+use hamburgscleanest\DataTables\Helpers\SessionHelper;
 use Illuminate\Http\Request;
 use Mockery;
 
@@ -29,7 +29,9 @@ class SessionHelperTest extends TestCase {
      */
     public function unset_state_returns_null()
     {
-        $this->assertNull(SessionHelper::getState($this->_request, 'test'));
+        $sessionHelper = new SessionHelper($this->_request);
+
+        $this->assertNull($sessionHelper->getState('test'));
     }
 
     /**
@@ -37,8 +39,10 @@ class SessionHelperTest extends TestCase {
      */
     public function saving_data_in_the_session_works()
     {
-        SessionHelper::saveState($this->_request, 'test', true);
-        $this->assertTrue(SessionHelper::getState($this->_request, 'test'));
+        $sessionHelper = new SessionHelper($this->_request);
+
+        $sessionHelper->saveState('test', true);
+        $this->assertTrue($sessionHelper->getState('test'));
     }
 
     /**
@@ -46,8 +50,10 @@ class SessionHelperTest extends TestCase {
      */
     public function removing_data_from_the_session_works()
     {
-        SessionHelper::saveState($this->_request, 'test', true);
-        SessionHelper::removeState($this->_request, 'test');
-        $this->assertNull(SessionHelper::getState($this->_request, 'test'));
+        $sessionHelper = new SessionHelper($this->_request);
+
+        $sessionHelper->saveState('test', true);
+        $sessionHelper->removeState('test');
+        $this->assertNull($sessionHelper->getState('test'));
     }
 }

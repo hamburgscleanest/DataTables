@@ -4,6 +4,7 @@ namespace hamburgscleanest\DataTables;
 
 use hamburgscleanest\DataTables\Facades\DataTable as DataTableFacade;
 use hamburgscleanest\DataTables\Helpers\SessionHelper;
+use hamburgscleanest\DataTables\Helpers\TableRenderer;
 use hamburgscleanest\DataTables\Helpers\UrlHelper;
 use hamburgscleanest\DataTables\Models\DataTable;
 use Illuminate\Foundation\AliasLoader;
@@ -37,14 +38,19 @@ class DataTablesServiceProvider extends ServiceProvider {
             return new DataTable($app->request);
         });
 
-        $this->app->singleton('session_helper', function()
+        $this->app->singleton('session_helper', function($app)
         {
-            return new SessionHelper();
+            return new SessionHelper($app->request);
         });
 
         $this->app->singleton('url_helper', function()
         {
             return new UrlHelper();
+        });
+
+        $this->app->singleton('table_renderer', function($app)
+        {
+            return new TableRenderer($app->request);
         });
 
         $this->app->booting(function()

@@ -12,50 +12,64 @@ class SessionHelper {
 
     const SESSION_STORAGE = 'data-tables.';
 
+    /** @var Request */
+    private $_request;
+
     /**
+     * SessionHelper constructor.
      * @param Request $request
+     */
+    public function __construct(Request $request)
+    {
+        $this->_request = $request;
+    }
+
+    /**
+     * Save the state for the given key.
+     *
+     * @param string $key
+     * @param mixed $sessionValue
+     */
+    public function saveState(string $key, $sessionValue)
+    {
+        $this->_request->session()->put($this->_getFormattedKey($key), $sessionValue);
+    }
+
+    /**
      * @param string $key
      * @return string
      */
-    private function _getFormattedKey(Request $request, string $key): string
+    private function _getFormattedKey(string $key) : string
     {
         return
             self::SESSION_STORAGE .
             \preg_replace(
                 '/\.|\//',
                 '_',
-                \preg_replace('/(http|https):\/\//', '', $request->url())
+                \preg_replace('/(http|https):\/\//', '', $this->_request->url())
             ) .
             '.' . $key;
     }
 
     /**
-     * @param Request $request
-     * @param string $key
-     * @param mixed $sessionValue
-     */
-    public function saveState(Request $request, string $key, $sessionValue)
-    {
-        $request->session()->put($this->_getFormattedKey($request, $key), $sessionValue);
-    }
-
-    /**
-     * @param Request $request
+     * Get the state for the given key.
+     *
      * @param string $key
      * @param null $default
      * @return mixed
      */
-    public function getState(Request $request, string $key, $default = null)
+    public function getState(string $key, $default = null)
     {
-        return $request->session()->get($this->_getFormattedKey($request, $key)) ?? $default;
+        return $this->_request->session()->get($this->_getFormattedKey($key)) ?? $default;
     }
 
     /**
-     * @param Request $request
+     * Remove the state for the given key.
+     *
      * @param string $key
      */
-    public function removeState(Request $request, string $key)
+    public function removeState(string $key)
     {
-        $request->session()->remove($this->_getFormattedKey($request, $key));
+        $this->_request->session()->remove($this->_getFormattedKey($key));
     }
 }
