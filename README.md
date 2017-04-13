@@ -140,6 +140,21 @@ Add sorting to the table via a data component and make your table headers sortab
     ...
 ```
 
+## Query relations
+
+Access column values from "hasOne" and "belongsTo" relationships.
+
+``` php       
+     DataTable::model(TestModel::class)->columns(['relation.name'])->with(['relation']);
+```
+
+Or access column values from "hasMany" and "belongsToMany" relationships by using an aggregate function.
+If you omit the aggregate function, the value of the first related record is returned.
+
+``` php       
+     DataTable::model(TestModel::class)->columns(['COUNT(relation.id')])->with(['relation']);
+```
+
 ## Changes
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
