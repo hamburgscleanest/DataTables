@@ -82,15 +82,27 @@ class DataTable {
         $columnModels = [];
         foreach ($columns as $column => $formatter)
         {
-            if (\is_int($column))
-            {
-                $column = $formatter;
-                $formatter = null;
-            }
+            [$column, $formatter] = $this->_setColumnFormatter($column, $formatter);
             $columnModels[] = new Column($column, $formatter);
         }
 
         return $columnModels;
+    }
+
+    /**
+     * @param $column
+     * @param $formatter
+     * @return array
+     */
+    private function _setColumnFormatter($column, $formatter): array
+    {
+        if (\is_int($column))
+        {
+            $column = $formatter;
+            $formatter = null;
+        }
+
+        return [$column, $formatter];
     }
 
     /**
@@ -155,7 +167,7 @@ class DataTable {
         /** @var Column $column */
         $column = \array_first(
             $this->_columns,
-            function($index, $column) use ($columnName)
+            function ($index, $column) use ($columnName)
             {
                 /** @var Column $column */
                 return $column->getName() === $columnName;
@@ -319,7 +331,7 @@ class DataTable {
     private function _fetchHeaders(): array
     {
         return array_map(
-            function($column)
+            function ($column)
             {
                 /** @var Column $column */
                 return new Header($column);
@@ -393,7 +405,7 @@ class DataTable {
      */
     private function _getColumnNames(): array
     {
-        return \array_map(function($column)
+        return \array_map(function ($column)
         {
             /** @var Column $column */
             return $column->getName();
@@ -411,7 +423,7 @@ class DataTable {
     {
         return \array_filter(
             $this->_columns,
-            function($column)
+            function ($column)
             {
                 /** @var Column $column */
                 return $column->getRelation() === null;
