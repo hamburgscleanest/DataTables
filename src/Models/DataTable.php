@@ -335,9 +335,7 @@ class DataTable {
         /** @var Column $column */
         foreach ($this->_columns as $column)
         {
-            $columnValue = $column->getRelation() !== null ? $this->_getColumnValueFromRelation($rowModel, $column) : ($attributes[$column->getName()] ?? '');
-
-            $html .= '<td>' . $column->format($columnValue) . '</td>';
+            $html .= '<td>' . $column->format($column->getRelation() !== null ? $this->_getColumnValueFromRelation($rowModel, $column) : ($attributes[$column->getName()] ?? '')) . '</td>';
         }
         $html .= '</tr>';
 
