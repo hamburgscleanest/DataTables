@@ -3,6 +3,7 @@
 namespace hamburgscleanest\DataTables\Models;
 
 use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
+use Illuminate\Database\Eloquent\Model;
 
 
 /**
@@ -75,6 +76,53 @@ class Column {
         return $this;
     }
 
+    /**
+     * Get the value from the column's relation
+     *
+     * @param Model $rowModel
+     * @return string
+     */
+    private function _getValueFromRelation(Model $rowModel) : string
+    {
+        $relation = $model->getRelation($this->_relation->name);
+        if ($relation instanceof Model)
+        {
+            return $relation->{$this->_name};
+        }
+        
+        return $this->_relation->getValue($this->_name, $relation);
+    }
+    
+    /**
+     * @param Model $rowModel
+     * @return string
+     */
+    private function _getValue(Model $rowModel) : string 
+    {
+        if(!property_exists($rowModel, $this->_name)) 
+        {
+            return '';
+        }
+        
+        return (string) $rowModel->{$this->_name};
+    }
+    
+    /**
+     * Get the value of this column for the given row.
+     *
+     * @param Model $rowModel
+     * @return string
+     */
+    public function getValue(Model $rowModel) : string
+    {
+        if($this->_relation !== null)
+        {
+            return $this->_getValueFromRelation($rowModel);
+        }
+        
+        return $this->_getValue($rowModel);
+    }
+    
     /**
      * Formats the column data.
      *
