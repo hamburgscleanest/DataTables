@@ -101,53 +101,10 @@ class TableRenderer {
         /** @var Column $column */
         foreach ($columns as $column)
         {
-            // TODO: simplify..
-            $html .= '<td>' . 
-                $column->format(
-                $column->getRelation() !== null ? 
-                $this->_getColumnValueFromRelation($rowModel, $column) : 
-                $this->_getColumnValue($rowModel, $column)
-            ) . 
-            '</td>';
+            $html .= '<td>' . $column->getFormattedValue($rowModel) . '</td>';
         }
         $html .= '</tr>';
 
         return $html;
-    }
-    
-    /**
-     * Get the value of a column.
-     *
-     * @param Model $rowModel
-     * @param Column $column
-     * @return string
-     */
-    private function _getColumnValue(Model $rowModel, Column $column) : string
-    {
-        $columnName = $column->getName();       
-        if(!property_exists($rowModel, $columnName)) 
-        {
-            return '';
-        }
-        
-        return (string) $rowModel->{$columnName};
-    }
-
-    /**
-     * @param Model $model
-     * @param Column $column
-     * @return string
-     */
-    private function _getColumnValueFromRelation(Model $model, Column $column) : string
-    {
-        $columnRelation = $column->getRelation();
-        $relation = $model->getRelation($columnRelation->name);
-
-        if ($relation instanceof Model)
-        {
-            return $relation->{$column->getName()};
-        }
-
-        return $columnRelation->getValue($column->getName(), $relation);
     }
 }
