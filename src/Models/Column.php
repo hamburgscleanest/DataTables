@@ -124,13 +124,15 @@ class Column {
     }
     
     /**
-     * Formats the column data.
+     * Get the formatted column value.
      *
-     * @param string $data
+     * @param Model $rowModel
      * @return string
      */
-    public function format(string $data): string
+    public function getFormattedValue(Model $rowModel): string
     {
-        return $this->_formatter !== null ? $this->_formatter->format($data) : $data;
+        $value = $this->getValue($rowModel);
+        
+        return $this->_formatter !== null ? $this->_formatter->format($value) : $value;
     }
 }
