@@ -84,7 +84,7 @@ class Column {
      */
     private function _getValueFromRelation(Model $rowModel) : string
     {
-        $relation = $model->getRelation($this->_relation->name);
+        $relation = $rowModel->getRelation($this->_relation->name);
         if ($relation instanceof Model)
         {
             return $relation->{$this->_name};
