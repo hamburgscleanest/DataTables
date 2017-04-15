@@ -97,70 +97,40 @@ class TableRenderer {
      */
     private function _renderRow(Model $rowModel, array $columns) : string
     {
-        $attributes = $rowModel->getAttributes() + $this->_getMutatedAttributes($rowModel, $this->_getColumnNames($columns));
-
         $html = '<tr>';
         /** @var Column $column */
         foreach ($columns as $column)
         {
-            $html .= '<td>' . $column->format($column->getRelation() !== null ? $this->_getColumnValueFromRelation($rowModel, $column) : ($attributes[$column->getName()] ?? '')) . '</td>';
+            // TODO: simplify..
+            $html .= '<td>' . 
+                $column->format(
+                $column->getRelation() !== null ? 
+                $this->_getColumnValueFromRelation($rowModel, $column) : 
+                $this->_getColumnValue($rowModel, $column)
+            ) . 
+            '</td>';
         }
         $html .= '</tr>';
 
         return $html;
     }
-
+    
     /**
-     * Get all the mutated attributes which are needed.
+     * Get the value of a column.
      *
-     * @param Model $model
-     * @param array $columns
-     * @return array
+     * @param Model $rowModel
+     * @param Column $column
+     * @return string
      */
-    private function _getMutatedAttributes(Model $model, array $columns = []) : array
+    private function _getColumnValue(Model $rowModel, Column $column) : string
     {
-        $attributes = [];
-        foreach (\array_intersect_key($model->getMutatedAttributes(), $columns) as $attribute)
+        $columnName = $column->getName();       
+        if(!property_exists($rowModel, $columnName)) 
         {
-            $attributes[$attribute] = $model->{$attribute};
+            return '';
         }
-
-        return $attributes;
-    }
-
-    /**
-     * Get all column names.
-     *
-     * @param array $columns
-     * @return array
-     */
-    private function _getColumnNames(array $columns) : array
-    {
-        return \array_map(function($column)
-        {
-            /** @var Column $column */
-            return $column->getName();
-        },
-            $this->_getColumnsWithoutRelations($columns)
-        );
-    }
-
-    /**
-     * Get only the columns which are attributes from the base model.
-     *
-     * @param array $columns
-     * @return array
-     */
-    private function _getColumnsWithoutRelations(array $columns) : array
-    {
-        return \array_filter(
-            $columns,
-            function($column)
-            {
-                /** @var Column $column */
-                return $column->getRelation() === null;
-            }
-        );
+        
+        return (string) $rowModel->{$columnName};
     }
 
     /**
