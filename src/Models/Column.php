@@ -35,7 +35,7 @@ class Column {
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName() : string
     {
         return $this->_name;
     }
@@ -60,7 +60,7 @@ class Column {
     /**
      * @return null|Relation
      */
-    public function getRelation(): ? Relation
+    public function getRelation() : ? Relation
     {
         return $this->_relation;
     }
@@ -69,11 +69,40 @@ class Column {
      * @param ColumnFormatter $columnFormatter
      * @return Column
      */
-    public function setFormatter(ColumnFormatter $columnFormatter): Column
+    public function setFormatter(ColumnFormatter $columnFormatter) : Column
     {
         $this->_formatter = $columnFormatter;
 
         return $this;
+    }
+
+    /**
+     * Get the formatted column value.
+     *
+     * @param Model $rowModel
+     * @return string
+     */
+    public function getFormattedValue(Model $rowModel) : string
+    {
+        $value = $this->getValue($rowModel);
+
+        return $this->_formatter !== null ? $this->_formatter->format($value) : $value;
+    }
+
+    /**
+     * Get the value of this column for the given row.
+     *
+     * @param Model $rowModel
+     * @return string
+     */
+    public function getValue(Model $rowModel) : string
+    {
+        if ($this->_relation !== null)
+        {
+            return $this->_getValueFromRelation($rowModel);
+        }
+
+        return $this->_getValue($rowModel);
     }
 
     /**
@@ -89,50 +118,16 @@ class Column {
         {
             return $relation->{$this->_name};
         }
-        
+
         return $this->_relation->getValue($this->_name, $relation);
     }
-    
+
     /**
      * @param Model $rowModel
      * @return string
      */
-    private function _getValue(Model $rowModel) : string 
+    private function _getValue(Model $rowModel) : string
     {
-        if(!property_exists($rowModel, $this->_name)) 
-        {
-            return '';
-        }
-        
-        return (string) $rowModel->{$this->_name};
-    }
-    
-    /**
-     * Get the value of this column for the given row.
-     *
-     * @param Model $rowModel
-     * @return string
-     */
-    public function getValue(Model $rowModel) : string
-    {
-        if($this->_relation !== null)
-        {
-            return $this->_getValueFromRelation($rowModel);
-        }
-        
-        return $this->_getValue($rowModel);
-    }
-    
-    /**
-     * Get the formatted column value.
-     *
-     * @param Model $rowModel
-     * @return string
-     */
-    public function getFormattedValue(Model $rowModel): string
-    {
-        $value = $this->getValue($rowModel);
-        
-        return $this->_formatter !== null ? $this->_formatter->format($value) : $value;
+        return (string) $rowModel->{$this->_name} ?? '';
     }
 }
