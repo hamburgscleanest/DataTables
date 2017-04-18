@@ -97,87 +97,14 @@ class TableRenderer {
      */
     private function _renderRow(Model $rowModel, array $columns) : string
     {
-        $attributes = $rowModel->getAttributes() + $this->_getMutatedAttributes($rowModel, $this->_getColumnNames($columns));
-
         $html = '<tr>';
         /** @var Column $column */
         foreach ($columns as $column)
         {
-            $html .= '<td>' . $column->format($column->getRelation() !== null ? $this->_getColumnValueFromRelation($rowModel, $column) : ($attributes[$column->getName()] ?? '')) . '</td>';
+            $html .= '<td>' . $column->getFormattedValue($rowModel) . '</td>';
         }
         $html .= '</tr>';
 
         return $html;
-    }
-
-    /**
-     * Get all the mutated attributes which are needed.
-     *
-     * @param Model $model
-     * @param array $columns
-     * @return array
-     */
-    private function _getMutatedAttributes(Model $model, array $columns = []) : array
-    {
-        $attributes = [];
-        foreach (\array_intersect_key($model->getMutatedAttributes(), $columns) as $attribute)
-        {
-            $attributes[$attribute] = $model->{$attribute};
-        }
-
-        return $attributes;
-    }
-
-    /**
-     * Get all column names.
-     *
-     * @param array $columns
-     * @return array
-     */
-    private function _getColumnNames(array $columns) : array
-    {
-        return \array_map(function($column)
-        {
-            /** @var Column $column */
-            return $column->getName();
-        },
-            $this->_getColumnsWithoutRelations($columns)
-        );
-    }
-
-    /**
-     * Get only the columns which are attributes from the base model.
-     *
-     * @param array $columns
-     * @return array
-     */
-    private function _getColumnsWithoutRelations(array $columns) : array
-    {
-        return \array_filter(
-            $columns,
-            function($column)
-            {
-                /** @var Column $column */
-                return $column->getRelation() === null;
-            }
-        );
-    }
-
-    /**
-     * @param Model $model
-     * @param Column $column
-     * @return string
-     */
-    private function _getColumnValueFromRelation(Model $model, Column $column) : string
-    {
-        $columnRelation = $column->getRelation();
-        $relation = $model->getRelation($columnRelation->name);
-
-        if ($relation instanceof Model)
-        {
-            return $relation->{$column->getName()};
-        }
-
-        return $columnRelation->getValue($column->getName(), $relation);
     }
 }
