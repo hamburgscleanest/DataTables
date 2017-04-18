@@ -128,50 +128,9 @@ class SortableHeader implements HeaderFormatter {
     private function _extractSortFields(Request $request) : array
     {
         return \array_diff(
-            $this->_getSortFields($request) + $this->_getRememberedState($request) + $this->_getDefaultSorting($this->_sortableHeaders),
+            $this->_getRememberedState($request) + $this->_getDefaultSorting($this->_sortableHeaders),
             $this->_getDefaultSorting($this->_dontSort)
         );
-    }
-
-    /**
-     * Get the sorted fields from the request.
-     *
-     * @param Request $request
-     * @return array
-     */
-    private function _getSortFields(Request $request) : array
-    {
-        $sortFields = $request->get('sort');
-        if ($sortFields === null)
-        {
-            return [];
-        }
-
-        $sorting = [];
-        foreach (\explode(self::COLUMN_SEPARATOR, $sortFields) as $field)
-        {
-            $sortParts = $this->_getSortParts($field);
-            $sorting[$sortParts[0]] = \mb_strtolower($sortParts[1]);
-        }
-
-        return $sorting;
-    }
-
-    /**
-     * Get the name of the field and the sorting direction (default: "asc").
-     *
-     * @param string $field
-     * @return array
-     */
-    private function _getSortParts(string $field) : array
-    {
-        $sortParts = \explode(self::SORTING_SEPARATOR, $field);
-        if (\count($sortParts) === 1)
-        {
-            $sortParts[1] = $this->_defaultDirection;
-        }
-
-        return $sortParts;
     }
 
     /**

@@ -218,4 +218,24 @@ class SortableHeaderTest extends TestCase {
             \mb_substr($dataTable->render(), 0, 263)
         );
     }
+
+    /**
+     * @test
+     */
+    public function parameters_added_to_existing()
+    {
+        UrlHelper::shouldReceive('queryParameters')->andReturn(['sort' => 'created_at~desc']);
+
+        $date = '1970-01-01 00:00:00';
+        TestModel::create(['name' => 'sort-request-test', 'created_at' => $date]);
+
+        $dataTable = DataTable::model(TestModel::class, ['created_at', 'name'])->formatHeaders(new SortableHeader(['created_at', 'name']));
+
+        $this->assertEquals(
+            '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl .
+            '?sort=created_at%7Enone">created_at <span class="sort-symbol">&#x25BC;</span></a></th><th><a class="sortable-header" href="' . $this->baseUrl .
+            '?sort=created_at%7Edesc.name%7Easc',
+            \mb_substr($dataTable->render(), 0, 251)
+        );
+    }
 }
