@@ -30,6 +30,8 @@ class TestDataComponent extends DataComponent {
 
     protected function _afterInit()
     {
+        parent::_afterInit();
+
         $this->afterInitCalled = true;
     }
 
