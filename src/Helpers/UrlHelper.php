@@ -33,11 +33,16 @@ class UrlHelper {
     {
         $queryString = $this->_request->getQueryString();
 
-        if (empty($queryString))
-        {
-            return [];
-        }
+        return empty($queryString) ? [] : $this->_extractQueryParameters($queryString);
+    }
 
+    /**
+     * @param string $queryString
+     * @return array
+     * @throws \RuntimeException
+     */
+    private function _extractQueryParameters(string $queryString) : array
+    {
         $parameters = [];
         foreach (\explode('&', $queryString) as $query)
         {

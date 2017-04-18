@@ -188,14 +188,7 @@ class SortableHeader implements HeaderFormatter {
             $oldDirection = $queryDirection;
         }
 
-        $newDirection = $this->_getNewDirection($oldDirection);
-        $newSorting = $columnName . self::SORTING_SEPARATOR . $newDirection;
-        if (!$this->_replaceOldSort($columnName, $parameters, $oldDirection, $newSorting))
-        {
-            $this->_addSortParameter($parameters, $newSorting);
-        }
-
-        return \http_build_query($parameters);
+        return \http_build_query($this->_getQueryParameters($parameters, $columnName, $oldDirection));
     }
 
     /**
@@ -221,6 +214,17 @@ class SortableHeader implements HeaderFormatter {
         }
 
         return $sortValue;
+    }
+
+    private function _getQueryParameters(array $parameters, string $columnName, string $oldDirection) : array
+    {
+        $newSorting = $columnName . self::SORTING_SEPARATOR . $this->_getNewDirection($oldDirection);
+        if (!$this->_replaceOldSort($columnName, $parameters, $oldDirection, $newSorting))
+        {
+            $this->_addSortParameter($parameters, $newSorting);
+        }
+
+        return $parameters;
     }
 
     /**
