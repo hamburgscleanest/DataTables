@@ -21,6 +21,23 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 0.8.1
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- SortableHeader: Fixed sorting bug..
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.8.0
 
 ### Added
