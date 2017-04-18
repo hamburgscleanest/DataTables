@@ -20,6 +20,14 @@ class TestDataComponent extends DataComponent {
     /** @var bool */
     public $storeInSessionCalled = false;
 
+    /**
+     * @return string
+     */
+    public function render() : string
+    {
+        return 'TEST-RENDER';
+    }
+
     protected function _afterInit()
     {
         $this->afterInitCalled = true;
@@ -27,11 +35,15 @@ class TestDataComponent extends DataComponent {
 
     protected function _readFromSession()
     {
+        parent::_readFromSession();
+
         $this->readFromSessionCalled = true;
     }
 
     protected function _storeInSession()
     {
+        parent::_storeInSession();
+
         $this->storeInSessionCalled = true;
     }
 
@@ -41,13 +53,5 @@ class TestDataComponent extends DataComponent {
     protected function _shapeData() : Builder
     {
         return TestModel::query();
-    }
-
-    /**
-     * @return string
-     */
-    public function render() : string
-    {
-        return 'TEST-RENDER';
     }
 }
