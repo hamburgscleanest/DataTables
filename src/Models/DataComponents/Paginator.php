@@ -147,7 +147,7 @@ class Paginator extends DataComponent {
      */
     private function _buildPageUrl(int $pageNumber): string
     {
-        $parameters = UrlHelper::parameterizeQuery($this->_request->getQueryString());
+        $parameters = UrlHelper::queryParameters();
         $parameters['page'] = $pageNumber;
 
         return $this->_request->url() . '?' . \http_build_query($parameters);

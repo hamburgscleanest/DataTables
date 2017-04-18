@@ -5,6 +5,7 @@ namespace hamburgscleanest\DataTables\Tests;
 use Carbon\Carbon;
 use hamburgscleanest\DataTables\Facades\DataTable;
 use hamburgscleanest\DataTables\Facades\SessionHelper;
+use hamburgscleanest\DataTables\Facades\UrlHelper;
 use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use hamburgscleanest\DataTables\Models\HeaderFormatters\SortableHeader;
 
@@ -129,9 +130,9 @@ class SortableHeaderTest extends TestCase {
     /**
      * @test
      */
-    public function sorting_parameters_are_considered()
+    public function sorting_parameters_are_considered_asc()
     {
-        request()->request->add(['sort' => 'created_at~asc']);
+        UrlHelper::shouldReceive('queryParameters')->andReturn(['sort' => 'created_at~asc']);
 
         $date = '1970-01-01 00:00:00';
         TestModel::create(['name' => 'sort-request-test', 'created_at' => $date]);
@@ -142,8 +143,19 @@ class SortableHeaderTest extends TestCase {
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Edesc',
             \mb_substr($dataTable->render(), 0, 101)
         );
+    }
 
-        request()->request->add(['sort' => 'created_at~desc']);
+    /**
+     * @test
+     */
+    public function sorting_parameters_are_considered_desc()
+    {
+        UrlHelper::shouldReceive('queryParameters')->andReturn(['sort' => 'created_at~desc']);
+
+        $date = '1970-01-01 00:00:00';
+        TestModel::create(['name' => 'sort-request-test', 'created_at' => $date]);
+
+        $dataTable = DataTable::model(TestModel::class, ['created_at'])->formatHeaders(new SortableHeader(['created_at']));
 
         $this->assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Enone',
@@ -156,7 +168,7 @@ class SortableHeaderTest extends TestCase {
      */
     public function sorting_parameters_with_default_value_are_considered()
     {
-        request()->request->add(['sort' => 'created_at']);
+        UrlHelper::shouldReceive('queryParameters')->andReturn(['sort' => 'created_at']);
 
         $date = '1970-01-01 00:00:00';
         TestModel::create(['name' => 'sort-request-test', 'created_at' => $date]);
@@ -164,8 +176,8 @@ class SortableHeaderTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['created_at'])->formatHeaders(new SortableHeader(['created_at']));
 
         $this->assertEquals(
-            '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Edesc',
-            \mb_substr($dataTable->render(), 0, 101)
+            '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Easc',
+            \mb_substr($dataTable->render(), 0, 100)
         );
     }
 
@@ -174,7 +186,7 @@ class SortableHeaderTest extends TestCase {
      */
     public function existing_parameters_are_considered()
     {
-        request()->request->add(['sort' => 'created_at~desc']);
+        UrlHelper::shouldReceive('queryParameters')->andReturn(['sort' => 'created_at~desc']);
 
         $date = '1970-01-01 00:00:00';
         TestModel::create(['name' => 'sort-request-test', 'created_at' => $date]);
@@ -192,7 +204,7 @@ class SortableHeaderTest extends TestCase {
      */
     public function multiple_existing_parameters_are_considered()
     {
-        request()->request->add(['sort' => 'created_at~desc.name~asc']);
+        UrlHelper::shouldReceive('queryParameters')->andReturn(['sort' => 'created_at~desc.name~asc']);
 
         $date = '1970-01-01 00:00:00';
         TestModel::create(['name' => 'sort-request-test', 'created_at' => $date]);
@@ -201,9 +213,9 @@ class SortableHeaderTest extends TestCase {
 
         $this->assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl .
-            '?sort=created_at%7Enone">created_at <span class="sort-symbol">&#x25BC;</span></a></th><th><a class="sortable-header" href="' . $this->baseUrl .
-            '?sort=name%7Edesc',
-            \mb_substr($dataTable->render(), 0, 234)
+            '?sort=created_at%7Enone.name%7Easc">created_at <span class="sort-symbol">&#x25BC;</span></a></th><th><a class="sortable-header" href="' . $this->baseUrl .
+            '?sort=created_at%7Edesc.name%7Edesc',
+            \mb_substr($dataTable->render(), 0, 263)
         );
     }
 }

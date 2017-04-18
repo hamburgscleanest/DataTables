@@ -52,7 +52,7 @@ class SortableHeader implements HeaderFormatter {
      * @param array $sortingSymbols
      * @return SortableHeader
      */
-    public function sortingSymbols(array $sortingSymbols): SortableHeader
+    public function sortingSymbols(array $sortingSymbols) : SortableHeader
     {
         $this->_sortingSymbols = $sortingSymbols;
 
@@ -65,7 +65,7 @@ class SortableHeader implements HeaderFormatter {
      * @param string $header
      * @return SortableHeader
      */
-    public function makeSortable(string $header): SortableHeader
+    public function makeSortable(string $header) : SortableHeader
     {
         $this->_sortableHeaders[] = $header;
         $this->_removeIndex($this->_dontSort, $header);
@@ -92,7 +92,7 @@ class SortableHeader implements HeaderFormatter {
      * @param string $header
      * @return SortableHeader
      */
-    public function dontSort(string $header): SortableHeader
+    public function dontSort(string $header) : SortableHeader
     {
         $this->_dontSort[] = $header;
         $this->_removeIndex($this->_sortableHeaders, $header);
@@ -116,8 +116,8 @@ class SortableHeader implements HeaderFormatter {
 
         if ($this->_showSortLink($headerAttributeName))
         {
-            $header->name = '<a class="sortable-header" href="' . $this->_buildSortUrl($request, $headerAttributeName, $direction) . '">' . $header->name .
-                            ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
+            $header->name = '<a class="sortable-header" href="' . ($request->url() . '?' . $this->_buildSortQuery($headerAttributeName, $direction)) . '">' .
+                            $header->name . ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
         }
     }
 
@@ -125,7 +125,7 @@ class SortableHeader implements HeaderFormatter {
      * @param Request $request
      * @return array
      */
-    private function _extractSortFields(Request $request): array
+    private function _extractSortFields(Request $request) : array
     {
         return \array_diff(
             $this->_getSortFields($request) + $this->_getRememberedState($request) + $this->_getDefaultSorting($this->_sortableHeaders),
@@ -139,7 +139,7 @@ class SortableHeader implements HeaderFormatter {
      * @param Request $request
      * @return array
      */
-    private function _getSortFields(Request $request): array
+    private function _getSortFields(Request $request) : array
     {
         $sortFields = $request->get('sort');
         if ($sortFields === null)
@@ -163,7 +163,7 @@ class SortableHeader implements HeaderFormatter {
      * @param string $field
      * @return array
      */
-    private function _getSortParts(string $field): array
+    private function _getSortParts(string $field) : array
     {
         $sortParts = \explode(self::SORTING_SEPARATOR, $field);
         if (\count($sortParts) === 1)
@@ -178,7 +178,7 @@ class SortableHeader implements HeaderFormatter {
      * @param Request $request
      * @return array
      */
-    private function _getRememberedState(Request $request): array
+    private function _getRememberedState(Request $request) : array
     {
         return SessionHelper::getState($request, 'sort', []);
     }
@@ -187,7 +187,7 @@ class SortableHeader implements HeaderFormatter {
      * @param array $sortFields
      * @return array
      */
-    private function _getDefaultSorting(array $sortFields): array
+    private function _getDefaultSorting(array $sortFields) : array
     {
         $sorting = [];
         foreach ($sortFields as $field)
@@ -202,32 +202,66 @@ class SortableHeader implements HeaderFormatter {
      * @param $headerAttributeName
      * @return bool
      */
-    private function _showSortLink(string $headerAttributeName): bool
+    private function _showSortLink(string $headerAttributeName) : bool
     {
         return \count($this->_sortableHeaders + $this->_dontSort) === 0 ||
                (\in_array($headerAttributeName, $this->_sortableHeaders, true) && !\in_array($headerAttributeName, $this->_dontSort, true));
     }
 
     /**
-     * @param Request $request
      * @param string $columnName
      * @param string $oldDirection
      * @return string
      * @throws \RuntimeException
      */
-    private function _buildSortUrl(Request $request, string $columnName, string $oldDirection = 'asc')
+    private function _buildSortQuery(string $columnName, string &$oldDirection)
     {
+        $parameters = UrlHelper::queryParameters();
+        if (!isset($parameters['sort']))
+        {
+            $parameters['sort'] = '';
+        }
+
+        $queryDirection = $this->_getDirectionFromQuery($columnName, $parameters['sort']);
+        if ($queryDirection !== null)
+        {
+            /** @var string $queryDirection */
+            $oldDirection = $queryDirection;
+        }
+
         $newDirection = $this->_getNewDirection($oldDirection);
-
         $newSorting = $columnName . self::SORTING_SEPARATOR . $newDirection;
-        $parameters = UrlHelper::parameterizeQuery($request->getQueryString());
-
         if (!$this->_replaceOldSort($columnName, $parameters, $oldDirection, $newSorting))
         {
             $this->_addSortParameter($parameters, $newSorting);
         }
 
-        return $request->url() . '?' . \http_build_query($parameters);
+        return \http_build_query($parameters);
+    }
+
+    /**
+     * @param string $columnName
+     * @param string $queryString
+     * @return null|string
+     */
+    private function _getDirectionFromQuery(string $columnName, string $queryString) : ?string
+    {
+        $column = $columnName . self::SORTING_SEPARATOR;
+        $columnPos = \mb_strpos($queryString, $column);
+
+        if ($columnPos === false)
+        {
+            return null;
+        }
+
+        $sortValue = \mb_substr($queryString, $columnPos + \mb_strlen($column));
+        $dividerPos = \mb_strpos($sortValue, self::COLUMN_SEPARATOR);
+        if ($dividerPos !== false)
+        {
+            $sortValue = \mb_substr($sortValue, 0, $dividerPos);
+        }
+
+        return $sortValue;
     }
 
     /**
@@ -236,7 +270,7 @@ class SortableHeader implements HeaderFormatter {
      * @param string $oldDirection
      * @return string
      */
-    private function _getNewDirection(string $oldDirection): string
+    private function _getNewDirection(string $oldDirection) : string
     {
         switch ($oldDirection)
         {
@@ -260,17 +294,11 @@ class SortableHeader implements HeaderFormatter {
      * @param string $newSorting
      * @return bool
      */
-    private function _replaceOldSort(string $columnName, array &$parameters, string $oldDirection, string $newSorting): bool
+    private function _replaceOldSort(string $columnName, array &$parameters, string $oldDirection, string $newSorting) : bool
     {
-        if (!isset($parameters['sort']))
-        {
-            $parameters['sort'] = '';
-        }
-
         $replacedCount = 0;
-        $columnRegex = '/(^|\\' . self::COLUMN_SEPARATOR . ')' . $columnName . self::SORTING_SEPARATOR . $oldDirection . '/';
+        $columnRegex = '/(^|\\' . self::COLUMN_SEPARATOR . ')' . $columnName . '(' . self::SORTING_SEPARATOR . $oldDirection . '|)/';
         $parameters['sort'] = \preg_replace($columnRegex, self::COLUMN_SEPARATOR . $newSorting, $parameters['sort'], 1, $replacedCount);
-
         if (!empty($parameters['sort']) && $parameters['sort'][0] === self::COLUMN_SEPARATOR)
         {
             $parameters['sort'] = \mb_substr($parameters['sort'], 1);

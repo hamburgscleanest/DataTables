@@ -128,7 +128,7 @@ class DataScout extends DataComponent {
      */
     private function _buildSearchUrl()
     {
-        $parameters = UrlHelper::parameterizeQuery($this->_request->getQueryString());
+        $parameters = UrlHelper::queryParameters();
         $parameters['search'] = \implode(',', $this->_searchQueries);
 
         return $this->_request->url() . '?' . \http_build_query($parameters);

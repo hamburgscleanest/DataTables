@@ -59,9 +59,9 @@ class DataTablesServiceProvider extends ServiceProvider {
 
     private function _registerUrlHelper() : void
     {
-        $this->app->singleton('url_helper', function()
+        $this->app->singleton('url_helper', function($app)
         {
-            return new UrlHelper();
+            return new UrlHelper($app->request);
         });
     }
 
