@@ -139,7 +139,7 @@ class SortableHeader implements HeaderFormatter {
      */
     private function _getRememberedState(Request $request) : array
     {
-        return SessionHelper::getState($request, 'sort', []);
+        return (array) SessionHelper::getState($request, 'sort', []);
     }
 
     /**
