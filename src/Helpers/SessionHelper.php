@@ -2,8 +2,6 @@
 
 namespace hamburgscleanest\DataTables\Helpers;
 
-use Illuminate\Http\Request;
-
 /**
  * Class SessionHelper
  * @package hamburgscleanest\DataTables\Helpers
@@ -12,27 +10,15 @@ class SessionHelper {
 
     const SESSION_STORAGE = 'data-tables.';
 
-    /** @var Request */
-    private $_request;
-
-    /**
-     * SessionHelper constructor.
-     * @param Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->_request = $request;
-    }
-
     /**
      * Save the state for the given key.
      *
      * @param string $key
      * @param mixed $sessionValue
      */
-    public function saveState(string $key, $sessionValue)
+    public function saveState(string $key, $sessionValue) : void
     {
-        $this->_request->session()->put($this->_getFormattedKey($key), $sessionValue);
+        \request()->session()->put($this->_getFormattedKey($key), $sessionValue);
     }
 
     /**
@@ -46,7 +32,7 @@ class SessionHelper {
             \preg_replace(
                 '/\.|\//',
                 '_',
-                \preg_replace('/(http|https):\/\//', '', $this->_request->url())
+                \preg_replace('/(http|https):\/\//', '', \request()->url())
             ) .
             '.' . $key;
     }
@@ -60,7 +46,7 @@ class SessionHelper {
      */
     public function getState(string $key, $default = null)
     {
-        return $this->_request->session()->get($this->_getFormattedKey($key)) ?? $default;
+        return \request()->session()->get($this->_getFormattedKey($key)) ?? $default;
     }
 
     /**
@@ -68,8 +54,8 @@ class SessionHelper {
      *
      * @param string $key
      */
-    public function removeState(string $key)
+    public function removeState(string $key) : void
     {
-        $this->_request->session()->remove($this->_getFormattedKey($key));
+        \request()->session()->remove($this->_getFormattedKey($key));
     }
 }

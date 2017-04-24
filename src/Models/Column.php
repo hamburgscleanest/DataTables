@@ -13,6 +13,9 @@ use Illuminate\Database\Eloquent\Model;
 class Column {
 
     /** @var string */
+    private $_key;
+
+    /** @var string */
     private $_name;
 
     /** @var Relation */
@@ -28,8 +31,36 @@ class Column {
      */
     public function __construct(string $name, ? ColumnFormatter $columnFormatter = null)
     {
-        $this->setName($name);
+        $this->_setName($name);
         $this->_formatter = $columnFormatter;
+    }
+
+    /**
+     * @param string $name
+     */
+    private function _setName(string $name) : void
+    {
+        $posDivider = \mb_strpos($name, '.');
+        if ($posDivider === false)
+        {
+            $this->_name = $this->_key = $name;
+
+            return;
+        }
+
+        $this->_name = \str_replace(')', '', \mb_substr($name, $posDivider + 1));
+
+        $this->_relation = new Relation($name);
+        $aggregate = $this->_relation->aggregate;
+        $this->_key = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $this->_relation->name . '_' . $this->_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey() : string
+    {
+        return $this->_key;
     }
 
     /**
@@ -41,20 +72,11 @@ class Column {
     }
 
     /**
-     * @param string $name
+     * @return string
      */
-    public function setName(string $name)
+    public function getAttributeName() : string
     {
-        $posDivider = \mb_strpos($name, '.');
-        if ($posDivider === false)
-        {
-            $this->_name = $name;
-
-            return;
-        }
-
-        $this->_relation = new Relation($name);
-        $this->_name = \str_replace(')', '', \mb_substr($name, $posDivider + 1));
+        return $this->_relation ? $this->_relation->attributeName : $this->_name;
     }
 
     /**

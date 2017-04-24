@@ -3,9 +3,9 @@
 namespace hamburgscleanest\DataTables\Models\DataComponents;
 
 use hamburgscleanest\DataTables\Facades\SessionHelper;
+use hamburgscleanest\DataTables\Models\Column;
 use hamburgscleanest\DataTables\Models\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
-use function implode;
 
 /**
  * Class Sorter
@@ -47,7 +47,7 @@ class Sorter extends DataComponent {
     /**
      * @return Builder
      */
-    public function _shapeData(): Builder
+    public function _shapeData() : Builder
     {
         if (\count($this->_sortFields) > 0)
         {
@@ -59,7 +59,7 @@ class Sorter extends DataComponent {
                     continue;
                 }
 
-                $this->_queryBuilder->orderBy($fieldName, $direction);
+                $this->_sortField($fieldName, $direction);
             }
         }
 
@@ -73,7 +73,7 @@ class Sorter extends DataComponent {
      *
      * @return Sorter
      */
-    public function removeField(string $field): Sorter
+    public function removeField(string $field) : Sorter
     {
         if (isset($this->_sortFields[$field]))
         {
@@ -84,6 +84,30 @@ class Sorter extends DataComponent {
     }
 
     /**
+     * @param string $fieldName
+     * @param string $direction
+     */
+    private function _sortField(string $fieldName, string $direction) : void
+    {
+        /** @var Column $column */
+        $column = \array_first($this->_columns, function($index, $column) use ($fieldName)
+        {
+            if (\is_int($column))
+            {
+                $column = $index;
+            }
+
+            /** @var Column $column */
+            return $column->getKey() === $fieldName;
+        });
+
+        if ($column !== null)
+        {
+            $this->_queryBuilder->orderBy($column->getAttributeName(), $direction);
+        }
+    }
+
+    /**
      * Sort by this column.
      *
      * @param string $field
@@ -91,7 +115,7 @@ class Sorter extends DataComponent {
      *
      * @return Sorter
      */
-    public function addField(string $field, string $direction = 'asc'): Sorter
+    public function addField(string $field, string $direction = 'asc') : Sorter
     {
         $this->_sortFields[$field] = \mb_strtolower($direction);
 
@@ -101,25 +125,25 @@ class Sorter extends DataComponent {
     /**
      * @return string
      */
-    public function render(): string
+    public function render() : string
     {
         return implode(', ', $this->_sortFields);
     }
 
-    protected function _readFromSession()
+    protected function _readFromSession() : void
     {
-        $this->_sortFields = (array) SessionHelper::getState($this->_request, $this->_rememberKey, []);
+        $this->_sortFields = (array) SessionHelper::getState($this->_rememberKey, []);
     }
 
-    protected function _storeInSession()
+    protected function _storeInSession() : void
     {
-        SessionHelper::saveState($this->_request, $this->_rememberKey, $this->_sortFields);
+        SessionHelper::saveState($this->_rememberKey, $this->_sortFields);
     }
 
-    protected function _afterInit()
+    protected function _afterInit() : void
     {
         /** @var string $sortFields */
-        $sortFields = $this->_request->get('sort');
+        $sortFields = \request()->get('sort');
         if (empty($sortFields))
         {
             return;
@@ -131,7 +155,7 @@ class Sorter extends DataComponent {
     /**
      * @param string $fields
      */
-    private function _initFields(string $fields)
+    private function _initFields(string $fields) : void
     {
         $this->_sortFields = [];
         foreach (\explode(self::COLUMN_SEPARATOR, $fields) as $field)
@@ -144,7 +168,7 @@ class Sorter extends DataComponent {
 
             if ($sortParts[1] === 'none')
             {
-                SessionHelper::removeState($this->_request, $this->_rememberKey . '.' . $sortParts[0]);
+                SessionHelper::removeState($this->_rememberKey . '.' . $sortParts[0]);
             }
 
             $this->_sortFields[$sortParts[0]] = $sortParts[1];

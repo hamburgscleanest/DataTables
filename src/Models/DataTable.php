@@ -7,7 +7,6 @@ use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use RuntimeException;
@@ -17,9 +16,6 @@ use RuntimeException;
  * @package hamburgscleanest\DataTables\Models
  */
 class DataTable {
-
-    /** @var Request */
-    private $_request;
 
     /** @var Builder */
     private $_queryBuilder;
@@ -41,15 +37,6 @@ class DataTable {
 
     /** @var string */
     private $_noDataHtml = '<div>no data</div>';
-
-    /**
-     * DataTable constructor.
-     * @param Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->_request = $request;
-    }
 
     /**
      * Set the base model whose data is displayed in the table.
@@ -137,7 +124,7 @@ class DataTable {
      */
     public function addComponent(DataComponent $component) : DataTable
     {
-        $component->init($this->_queryBuilder, $this->_request);
+        $component->init($this->_queryBuilder, $this->_columns);
         $this->_components[] = $component;
 
         return $this;
@@ -147,7 +134,7 @@ class DataTable {
      * Add a formatter for the column headers.
      *
      * @param HeaderFormatter $headerFormatter
-     * @return $this
+     * @return DataTable
      */
     public function formatHeaders(HeaderFormatter $headerFormatter) : DataTable
     {
@@ -201,7 +188,7 @@ class DataTable {
      * Add a relation to the table.
      *
      * @param array $relations
-     * @return $this
+     * @return DataTable
      */
     public function with(array $relations) : DataTable
     {
@@ -284,7 +271,7 @@ class DataTable {
         return $this->_queryBuilder->get();
     }
 
-    private function _addRelations()
+    private function _addRelations() : void
     {
         if (\count($this->_relations) > 0)
         {
@@ -292,7 +279,7 @@ class DataTable {
         }
     }
 
-    private function _initColumns()
+    private function _initColumns() : void
     {
         if (\count($this->_columns) === 0)
         {
@@ -305,11 +292,11 @@ class DataTable {
      */
     private function _fetchHeaders() : array
     {
-        return array_map(
+        return \array_map(
             function($column)
             {
                 /** @var Column $column */
-                return new Header($column);
+                return new Header($column->getKey());
             },
             $this->_columns
         );

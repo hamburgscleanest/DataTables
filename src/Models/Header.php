@@ -12,26 +12,18 @@ use Illuminate\Http\Request;
 class Header {
 
     /** @var string */
-    public $name;
+    public $key;
 
     /** @var string */
     private $_attributeName;
 
     /**
      * Header constructor.
+     * @param string $columnKey
      */
-    public function __construct(Column $column)
+    public function __construct(string $columnKey)
     {
-        $this->_attributeName = $column->getName();
-
-        $relation = $column->getRelation();
-        if ($relation !== null)
-        {
-            $aggregate = $relation->aggregate;
-            $this->_attributeName = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $relation->name . '_' . $this->_attributeName;
-        }
-
-        $this->name = $this->_attributeName;
+        $this->_attributeName = $this->key = $columnKey;
     }
 
     /**
@@ -39,7 +31,7 @@ class Header {
      *
      * @return string
      */
-    public function getAttributeName(): string
+    public function getAttributeName() : string
     {
         return $this->_attributeName;
     }
@@ -49,11 +41,11 @@ class Header {
      * @param Request $request
      * @return Header
      */
-    public function formatArray(array $headerFormatters, Request $request): Header
+    public function formatArray(array $headerFormatters) : Header
     {
         foreach ($headerFormatters as $formatter)
         {
-            $this->format($formatter, $request);
+            $this->format($formatter);
         }
 
         return $this;
@@ -61,12 +53,11 @@ class Header {
 
     /**
      * @param HeaderFormatter $headerFormatter
-     * @param Request $request
      * @return Header
      */
-    public function format(HeaderFormatter $headerFormatter, Request $request): Header
+    public function format(HeaderFormatter $headerFormatter) : Header
     {
-        $headerFormatter->format($this, $request);
+        $headerFormatter->format($this);
 
         return $this;
     }
@@ -74,8 +65,8 @@ class Header {
     /**
      * @return string
      */
-    public function print(): string
+    public function print() : string
     {
-        return '<th>' . $this->name . '</th>';
+        return '<th>' . $this->key . '</th>';
     }
 }

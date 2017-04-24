@@ -2,7 +2,6 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
-use hamburgscleanest\DataTables\Models\Column;
 use hamburgscleanest\DataTables\Models\Header;
 
 /**
@@ -17,9 +16,9 @@ class HeaderTest extends TestCase {
     public function attribute_name_is_set()
     {
         $name = 'testcolumn';
-        $header = new Header(new Column($name));
+        $header = new Header($name);
 
-        $this->assertEquals($name, $header->name);
+        $this->assertEquals($name, $header->key);
         $this->assertEquals($name, $header->getAttributeName());
     }
 }

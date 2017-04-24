@@ -17,6 +17,9 @@ class Relation {
     /** @var string */
     public $aggregate = 'first';
 
+    /** @var string */
+    public $attributeName;
+
     /**
      * Relation constructor.
      * @param string $columnName
@@ -24,6 +27,7 @@ class Relation {
      */
     public function __construct(string $columnName)
     {
+        $this->attributeName = $columnName;
         $this->name = $this->_extractAggregate($columnName);
     }
 
@@ -31,7 +35,7 @@ class Relation {
      * @param string $name
      * @return string
      */
-    private function _extractAggregate(string $name): string
+    private function _extractAggregate(string $name) : string
     {
         $replaced = 0;
         $extractedName = preg_replace('/\((.*?)\)/', '#$1', $name, 1, $replaced);
@@ -51,7 +55,7 @@ class Relation {
      * @param Collection $relation
      * @return string
      */
-    public function getValue(string $columnName, Collection $relation): string
+    public function getValue(string $columnName, Collection $relation) : string
     {
         $aggregateFunctionSet = $this->aggregate !== 'first';
         if ($aggregateFunctionSet)

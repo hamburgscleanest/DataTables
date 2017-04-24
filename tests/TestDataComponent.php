@@ -28,21 +28,21 @@ class TestDataComponent extends DataComponent {
         return 'TEST-RENDER';
     }
 
-    protected function _afterInit()
+    protected function _afterInit() : void
     {
         parent::_afterInit();
 
         $this->afterInitCalled = true;
     }
 
-    protected function _readFromSession()
+    protected function _readFromSession() : void
     {
         parent::_readFromSession();
 
         $this->readFromSessionCalled = true;
     }
 
-    protected function _storeInSession()
+    protected function _storeInSession() : void
     {
         parent::_storeInSession();
 

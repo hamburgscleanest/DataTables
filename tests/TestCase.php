@@ -4,6 +4,7 @@ namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\DataTablesServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Request;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 /**
@@ -18,11 +19,14 @@ class TestCase extends Orchestra {
 
         $this->withFactories(dirname(__DIR__) . '/tests/factories');
         $this->setUpDb();
+
+
+        Request::setSession($this->app['session.store']);
     }
 
     protected function setUpDb()
     {
-        $this->app['db']->connection()->getSchemaBuilder()->create('testmodels', function (Blueprint $table)
+        $this->app['db']->connection()->getSchemaBuilder()->create('testmodels', function(Blueprint $table)
         {
             $table->increments('id');
             $table->string('name');

@@ -2,7 +2,6 @@
 
 namespace hamburgscleanest\DataTables\Helpers;
 
-use Illuminate\Http\Request;
 use RuntimeException;
 
 /**
@@ -10,18 +9,6 @@ use RuntimeException;
  * @package hamburgscleanest\DataTables\Helpers
  */
 class UrlHelper {
-
-    /** @var Request */
-    private $_request;
-
-    /**
-     * UrlHelper constructor.
-     * @param Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->_request = $request;
-    }
 
     /**
      * Array of all the query parameters for the current request.
@@ -31,7 +18,7 @@ class UrlHelper {
      */
     public function queryParameters() : array
     {
-        $queryString = $this->_request->getQueryString();
+        $queryString = \request()->getQueryString();
 
         return empty($queryString) ? [] : $this->_extractQueryParameters($queryString);
     }

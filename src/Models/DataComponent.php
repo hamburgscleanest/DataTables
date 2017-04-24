@@ -15,14 +15,14 @@ abstract class DataComponent {
     /** @var Builder */
     protected $_queryBuilder;
 
-    /** @var Request */
-    protected $_request;
-
     /** @var bool */
     protected $_rememberState = false;
 
     /** @var string */
     protected $_rememberKey = 'global';
+
+    /** @var array */
+    protected $_columns = [];
 
     /**
      * You cannot count the data when ordering.
@@ -30,7 +30,7 @@ abstract class DataComponent {
      *
      * @return int
      */
-    public function getQueryCount(): int
+    public function getQueryCount() : int
     {
         /** @var \Illuminate\Database\Query\Builder $query */
         $query = $this->_queryBuilder->getQuery();
@@ -54,12 +54,12 @@ abstract class DataComponent {
 
     /**
      * @param Builder $queryBuilder
-     * @param Request $request
+     * @param array $columns
      */
-    public function init(Builder $queryBuilder, Request $request)
+    public function init(Builder $queryBuilder, array $columns) : void
     {
-        $this->_request = $request;
         $this->_queryBuilder = $queryBuilder;
+        $this->_columns = $columns;
 
         if ($this->_rememberState)
         {
@@ -72,17 +72,15 @@ abstract class DataComponent {
      * Everything that needs to be read when the state is remembered.
      * Is called before _afterInit(), so that session values can be overriden.
      */
-    protected function _readFromSession()
+    protected function _readFromSession() : void
     {
 
     }
 
     /**
-     * Initalize fields after the query builder instance and the request is set.
-     *
-     * TODO: Refactor..
+     * Initalize fields after the query builder instance is set.
      */
-    protected function _afterInit()
+    protected function _afterInit() : void
     {
 
     }
@@ -92,7 +90,7 @@ abstract class DataComponent {
      *
      * @return DataComponent
      */
-    public function remember(): DataComponent
+    public function remember() : DataComponent
     {
         $this->_rememberState = true;
 
@@ -104,18 +102,15 @@ abstract class DataComponent {
      *
      * @return DataComponent
      */
-    public function forget(): DataComponent
+    public function forget() : DataComponent
     {
         $this->_rememberState = false;
-        if ($this->_request !== null)
-        {
-            SessionHelper::removeState($this->_request, $this->_rememberKey);
-        }
+        SessionHelper::removeState($this->_rememberKey);
 
         return $this;
     }
 
-    public function transformData()
+    public function transformData() : void
     {
         if ($this->_rememberState)
         {
@@ -128,7 +123,7 @@ abstract class DataComponent {
      * Use this function to save your state in the session.
      * This is called just before rendering, so all dynamically added stuff etc. is considered.
      */
-    protected function _storeInSession()
+    protected function _storeInSession() : void
     {
 
     }
@@ -136,10 +131,10 @@ abstract class DataComponent {
     /**
      * @return Builder
      */
-    abstract protected function _shapeData(): Builder;
+    abstract protected function _shapeData() : Builder;
 
     /**
      * @return string
      */
-    abstract public function render(): string;
+    abstract public function render() : string;
 }

@@ -41,35 +41,35 @@ class DataTablesServiceProvider extends ServiceProvider {
         $this->_setDataTableAlias();
     }
 
-    private function _registerDataTable()
+    private function _registerDataTable() : void
     {
-        $this->app->bind('datatable', function($app)
+        $this->app->bind('datatable', function()
         {
-            return new DataTable($app->request);
+            return new DataTable();
         });
     }
 
     private function _registerSessionHelper() : void
     {
-        $this->app->singleton('session_helper', function($app)
+        $this->app->singleton('session_helper', function()
         {
-            return new SessionHelper($app->request);
+            return new SessionHelper();
         });
     }
 
     private function _registerUrlHelper() : void
     {
-        $this->app->singleton('url_helper', function($app)
+        $this->app->singleton('url_helper', function()
         {
-            return new UrlHelper($app->request);
+            return new UrlHelper();
         });
     }
 
     private function _registerTableRenderer() : void
     {
-        $this->app->singleton('table_renderer', function($app)
+        $this->app->singleton('table_renderer', function()
         {
-            return new TableRenderer($app->request);
+            return new TableRenderer();
         });
     }
 

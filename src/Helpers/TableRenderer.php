@@ -5,7 +5,6 @@ namespace hamburgscleanest\DataTables\Helpers;
 use hamburgscleanest\DataTables\Models\Column;
 use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 /**
@@ -13,18 +12,6 @@ use Illuminate\Support\Collection;
  * @package hamburgscleanest\DataTables\Helpers
  */
 class TableRenderer {
-
-    /** @var Request */
-    private $_request;
-
-    /**
-     * TableRenderer constructor.
-     * @param Request $request
-     */
-    public function __construct(Request $request)
-    {
-        $this->_request = $request;
-    }
 
     /**
      * Starts the table.
@@ -61,7 +48,7 @@ class TableRenderer {
         /** @var Header $header */
         foreach ($headers as $header)
         {
-            $html .= $header->formatArray($formatters, $this->_request)->print();
+            $html .= $header->formatArray($formatters)->print();
         }
         $html .= '</tr>';
 

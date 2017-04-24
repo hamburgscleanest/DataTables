@@ -3,8 +3,6 @@
 namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Helpers\UrlHelper;
-use Illuminate\Http\Request;
-use Mockery;
 use RuntimeException;
 
 /**
@@ -13,23 +11,14 @@ use RuntimeException;
  */
 class UrlHelperTest extends TestCase {
 
-    private $_request;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->_request = Mockery::mock(Request::class);
-    }
-
     /**
      * @test
      */
     public function query_parameters_are_set_correctly()
     {
-        $this->_request->shouldReceive('getQueryString')->andReturn('test=abc&test2=def');
+        \request()->server->set('QUERY_STRING', 'test=abc&test2=def');
 
-        $urlHelper = new UrlHelper($this->_request);
+        $urlHelper = new UrlHelper();
         $this->assertEquals(
             [
                 'test'  => 'abc',
@@ -46,9 +35,9 @@ class UrlHelperTest extends TestCase {
     {
         $this->expectException(RuntimeException::class);
 
-        $this->_request->shouldReceive('getQueryString')->andReturn('test');
+        \request()->server->set('QUERY_STRING', 'test');
 
-        $urlHelper = new UrlHelper($this->_request);
+        $urlHelper = new UrlHelper();
         $urlHelper->queryParameters();
     }
 }

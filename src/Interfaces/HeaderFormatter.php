@@ -3,7 +3,6 @@
 namespace hamburgscleanest\DataTables\Interfaces;
 
 use hamburgscleanest\DataTables\Models\Header;
-use Illuminate\Http\Request;
 
 /**
  * Interface HeaderFormatter
@@ -16,8 +15,7 @@ interface HeaderFormatter {
      * For example add a link to sort by this header/column.
      *
      * @param Header $header
-     * @param Request $request
      * @return void
      */
-    public function format(Header $header, Request $request);
+    public function format(Header $header) : void;
 }

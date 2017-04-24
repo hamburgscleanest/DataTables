@@ -6,7 +6,6 @@ use hamburgscleanest\DataTables\Facades\SessionHelper;
 use hamburgscleanest\DataTables\Facades\UrlHelper;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use hamburgscleanest\DataTables\Models\Header;
-use Illuminate\Http\Request;
 
 /**
  * Class SortableHeader
@@ -22,9 +21,6 @@ class SortableHeader implements HeaderFormatter {
 
     const SORTING_SEPARATOR = '~';
     const COLUMN_SEPARATOR  = '.';
-
-    /** @var string */
-    private $_defaultDirection = 'asc';
 
     /** @var array */
     private $_sortableHeaders;
@@ -77,7 +73,7 @@ class SortableHeader implements HeaderFormatter {
      * @param array $array
      * @param string $key
      */
-    private function _removeIndex(array $array, string $key)
+    private function _removeIndex(array $array, string $key) : void
     {
         $index = \array_search($key, $array, true);
         if ($index !== false)
@@ -105,41 +101,38 @@ class SortableHeader implements HeaderFormatter {
      * Also indicates how the columns are sorted (when sorted).
      *
      * @param Header $header
-     * @param Request $request
      * @throws \RuntimeException
      */
-    public function format(Header $header, Request $request)
+    public function format(Header $header) : void
     {
         $headerAttributeName = $header->getAttributeName();
-        $sortFields = $this->_extractSortFields($request);
+        $sortFields = $this->_extractSortFields();
         $direction = $sortFields[$headerAttributeName] ?? 'none';
 
         if ($this->_showSortLink($headerAttributeName))
         {
-            $header->name = '<a class="sortable-header" href="' . ($request->url() . '?' . $this->_buildSortQuery($headerAttributeName, $direction)) . '">' .
-                            $header->name . ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
+            $header->key = '<a class="sortable-header" href="' . (\request()->url() . '?' . $this->_buildSortQuery($headerAttributeName, $direction)) . '">' .
+                           $header->key . ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
         }
     }
 
     /**
-     * @param Request $request
      * @return array
      */
-    private function _extractSortFields(Request $request) : array
+    private function _extractSortFields() : array
     {
         return \array_diff(
-            $this->_getRememberedState($request) + $this->_getDefaultSorting($this->_sortableHeaders),
+            $this->_getRememberedState() + $this->_getDefaultSorting($this->_sortableHeaders),
             $this->_getDefaultSorting($this->_dontSort)
         );
     }
 
     /**
-     * @param Request $request
      * @return array
      */
-    private function _getRememberedState(Request $request) : array
+    private function _getRememberedState() : array
     {
-        return (array) SessionHelper::getState($request, 'sort', []);
+        return (array) SessionHelper::getState('sort', []);
     }
 
     /**
@@ -173,7 +166,7 @@ class SortableHeader implements HeaderFormatter {
      * @return string
      * @throws \RuntimeException
      */
-    private function _buildSortQuery(string $columnName, string &$oldDirection)
+    private function _buildSortQuery(string $columnName, string &$oldDirection) : string
     {
         $parameters = UrlHelper::queryParameters();
         if (!isset($parameters['sort']))
@@ -216,6 +209,12 @@ class SortableHeader implements HeaderFormatter {
         return $sortValue;
     }
 
+    /**
+     * @param array $parameters
+     * @param string $columnName
+     * @param string $oldDirection
+     * @return array
+     */
     private function _getQueryParameters(array $parameters, string $columnName, string $oldDirection) : array
     {
         $newSorting = $columnName . self::SORTING_SEPARATOR . $this->_getNewDirection($oldDirection);
@@ -274,7 +273,7 @@ class SortableHeader implements HeaderFormatter {
      * @param array $parameters
      * @param string $newSorting
      */
-    private function _addSortParameter(array &$parameters, string $newSorting)
+    private function _addSortParameter(array &$parameters, string $newSorting) : void
     {
         if (!empty($parameters['sort']))
         {

@@ -32,13 +32,13 @@ class TranslateHeader implements HeaderFormatter {
      * @param Header $header
      * @param Request $request
      */
-    public function format(Header $header, Request $request)
+    public function format(Header $header) : void
     {
         $headerAttributeName = $header->getAttributeName();
 
         if (isset($this->_translations[$headerAttributeName]))
         {
-            $header->name = $this->_translations[$headerAttributeName];
+            $header->key = $this->_translations[$headerAttributeName];
         }
     }
 }
