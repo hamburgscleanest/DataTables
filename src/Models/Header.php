@@ -38,7 +38,6 @@ class Header {
 
     /**
      * @param array $headerFormatters
-     * @param Request $request
      * @return Header
      */
     public function formatArray(array $headerFormatters) : Header

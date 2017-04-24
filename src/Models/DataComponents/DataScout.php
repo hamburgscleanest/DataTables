@@ -46,20 +46,27 @@ class DataScout extends DataComponent {
             return $this->_queryBuilder;
         }
 
-        $this->_queryBuilder->where(
-            function($query)
+        $this->_queryBuilder->where(function($query)
+        {
+            foreach ($this->_searchQueries as $value)
             {
-                foreach ($this->_searchQueries as $value)
-                {
-                    foreach ($this->_searchableFields as $field)
-                    {
-                        $query->orWhere($field, 'like', '%' . $value . '%');
-                    }
-                }
+                $this->_addWhereQueries($query, $value);
             }
-        );
+        });
 
         return $this->_queryBuilder;
+    }
+
+    /**
+     * @param Builder $query
+     * @param string $value
+     */
+    private function _addWhereQueries(Builder $query, string $value) : void
+    {
+        foreach ($this->_searchableFields as $field)
+        {
+            $query->orWhere($field, 'like', '%' . $value . '%');
+        }
     }
 
     /**

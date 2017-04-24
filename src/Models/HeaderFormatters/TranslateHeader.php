@@ -30,7 +30,6 @@ class TranslateHeader implements HeaderFormatter {
      * For example add a link to sort by this header/column.
      *
      * @param Header $header
-     * @param Request $request
      */
     public function format(Header $header) : void
     {
