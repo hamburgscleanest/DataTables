@@ -151,4 +151,56 @@ class PaginationTest extends TestCase {
 
         $this->assertEquals(1, $paginator->pageCount());
     }
+
+    /**
+     * @test
+     */
+    public function entries_are_limited()
+    {
+        /** @var Paginator $paginator */
+        $paginator = new Paginator();
+        $paginator->entriesPerPage(1);
+
+        DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
+
+        $this->assertEquals($paginator->getQueryCount(), $paginator->pageCount());
+    }
+
+    /**
+     * @test
+     */
+    public function surrounding_pages_are_rendered_correctly()
+    {
+        /** @var Paginator $paginator */
+        $paginator = new Paginator();
+        $paginator->surroundingPages(1);
+
+        request()->request->add(['page' => 6]);
+
+        DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
+
+        $this->assertEquals(
+            '<ul class="pagination"><li><a href="' . $this->baseUrl .
+            '?page=1">first</a></li><li><a href="' . $this->baseUrl .
+            '?page=5">←</a></li><li><a href="' . $this->baseUrl .
+            '?page=5">5</a></li><li class="active"><a href="' . $this->baseUrl .
+            '?page=6">6</a></li><li><a href="' . $this->baseUrl .
+            '?page=7">7</a></li><li><a href="' . $this->baseUrl .
+            '?page=7">→</a></li></ul>',
+            $paginator->render()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function dataset_is_reduced()
+    {
+        $dataTable = DataTable::model(TestModel::class, ['id'])->addComponent(new Paginator(1));
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>id</th></tr><tr><td>1</td></tr></table>',
+            $dataTable->render()
+        );
+    }
 }

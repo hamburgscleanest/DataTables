@@ -47,7 +47,7 @@ class Sorter extends DataComponent {
     /**
      * @return Builder
      */
-    public function _shapeData() : Builder
+    protected function _shapeData() : Builder
     {
         if (\count($this->_sortFields) > 0)
         {
@@ -92,11 +92,6 @@ class Sorter extends DataComponent {
         /** @var Column $column */
         $column = \array_first($this->_columns, function($index, $column) use ($fieldName)
         {
-            if (\is_int($column))
-            {
-                $column = $index;
-            }
-
             /** @var Column $column */
             return $column->getKey() === $fieldName;
         });
@@ -127,7 +122,7 @@ class Sorter extends DataComponent {
      */
     public function render() : string
     {
-        return implode(', ', $this->_sortFields);
+        return implode(', ', \array_keys($this->_sortFields));
     }
 
     protected function _readFromSession() : void

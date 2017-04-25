@@ -72,7 +72,7 @@ class Paginator extends DataComponent {
     /**
      * @return Builder
      */
-    public function _shapeData() : Builder
+    protected function _shapeData() : Builder
     {
         if ($this->_perPage === 0)
         {
@@ -127,7 +127,7 @@ class Paginator extends DataComponent {
      * @return null|string
      * @throws \RuntimeException
      */
-    private function _getFirstPageUrl() : ?string
+    private function _getFirstPageUrl() : ? string
     {
         if ($this->_currentPage <= $this->_surroundingPages + 1)
         {
@@ -157,7 +157,7 @@ class Paginator extends DataComponent {
      * @return null|string
      * @throws \RuntimeException
      */
-    private function _getPreviousPageUrl() : ?string
+    private function _getPreviousPageUrl() : ? string
     {
         $previousPage = $this->_currentPage - 1;
         if ($previousPage < 1)
@@ -245,7 +245,7 @@ class Paginator extends DataComponent {
      * @return null|string
      * @throws \RuntimeException
      */
-    private function _getLastPageUrl() : ?string
+    private function _getLastPageUrl() : ? string
     {
         $lastPage = $this->pageCount();
         if ($this->_currentPage + $this->_surroundingPages >= $lastPage)

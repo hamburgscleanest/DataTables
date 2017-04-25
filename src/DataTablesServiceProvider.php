@@ -80,14 +80,4 @@ class DataTablesServiceProvider extends ServiceProvider {
             AliasLoader::getInstance()->alias('DataTable', DataTableFacade::class);
         });
     }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return ['datatable'];
-    }
 }

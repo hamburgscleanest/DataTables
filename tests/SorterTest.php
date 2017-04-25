@@ -4,6 +4,7 @@ namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
 use hamburgscleanest\DataTables\Facades\SessionHelper;
+use hamburgscleanest\DataTables\Models\ColumnFormatters\DateColumn;
 use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -115,5 +116,18 @@ class SorterTest extends TestCase {
             '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
             \mb_substr($dataTable->render(), 0, 139)
         );
+    }
+
+    /**
+     * @test
+     */
+    public function renders_correctly()
+    {
+        $fieldName = 'test';
+
+        /** @var Sorter $sorter */
+        $sorter = new Sorter([$fieldName]);
+
+        $this->assertEquals($fieldName, $sorter->render());
     }
 }
