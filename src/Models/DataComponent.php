@@ -4,7 +4,6 @@ namespace hamburgscleanest\DataTables\Models;
 
 use hamburgscleanest\DataTables\Facades\SessionHelper;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 
 /**
  * Class DataComponent
@@ -35,13 +34,8 @@ abstract class DataComponent {
         /** @var \Illuminate\Database\Query\Builder $query */
         $query = $this->_queryBuilder->getQuery();
 
-        $oldOrders = $query->orders;
-        $oldLimit = $query->limit;
-        $oldOffset = $query->offset;
-
-        $query->orders = null;
-        $query->limit = null;
-        $query->offset = null;
+        [$oldOrders, $oldLimit, $oldOffset] = [$query->orders, $query->limit, $query->offset];
+        $query->orders = $query->limit = $query->offset = null;
 
         $dataCount = $query->count();
 
