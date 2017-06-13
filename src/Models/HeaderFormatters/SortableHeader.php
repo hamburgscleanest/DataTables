@@ -112,7 +112,7 @@ class SortableHeader implements HeaderFormatter {
         if ($this->_showSortLink($headerAttributeName))
         {
             $header->key = '<a class="sortable-header" href="' . (\request()->url() . '?' . $this->_buildSortQuery($headerAttributeName, $direction)) . '">' .
-                           $header->key . ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
+                            $header->key . ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
         }
     }
 
@@ -166,7 +166,7 @@ class SortableHeader implements HeaderFormatter {
      * @return string
      * @throws \RuntimeException
      */
-    private function _buildSortQuery(string $columnName, string &$oldDirection) : string
+    private function _buildSortQuery(string $columnName, string & $oldDirection) : string
     {
         $parameters = UrlHelper::queryParameters();
         if (!isset($parameters['sort']))
@@ -189,7 +189,7 @@ class SortableHeader implements HeaderFormatter {
      * @param string $queryString
      * @return null|string
      */
-    private function _getDirectionFromQuery(string $columnName, string $queryString) : ?string
+    private function _getDirectionFromQuery(string $columnName, string $queryString) : ? string
     {
         $column = $columnName . self::SORTING_SEPARATOR;
         $columnPos = \mb_strpos($queryString, $column);
