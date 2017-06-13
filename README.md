@@ -8,7 +8,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 Data tables whose behavior and appearance can be extended by components.
-For example sorting, pagination or searching the table. 
+For example sorting, paginating or filtering the table. 
 No JavaScript is required.
 
 
@@ -59,7 +59,7 @@ Add the service provider to your providers array
 ## Extending behaviour
 
 You can extend the behaviour of the table via data components.
-Just create a new Component and add it to the table.
+Just create a new component and add it to the table.
 
 ### Adding pagination
 
