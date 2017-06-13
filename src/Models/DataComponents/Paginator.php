@@ -96,12 +96,12 @@ class Paginator extends DataComponent {
         }
 
         return '<ul class="pagination">' .
-               $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
-               $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
-               $this->_renderPageList() .
-               $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
-               $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
-               '</ul>';
+                $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
+                $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
+                $this->_renderPageList() .
+                $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
+                $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
+                '</ul>';
     }
 
     /**
@@ -179,7 +179,7 @@ class Paginator extends DataComponent {
         $end = $this->_getEndPage();
 
         $pageList = '';
-        for ($i = $this->_getStartPage(); $i <= $end; $i ++)
+        for ($i = $this->_getStartPage(); $i <= $end; $i++)
         {
             $pageList .= $this->_renderListItem($i, $this->_buildPageUrl($i));
         }
@@ -231,7 +231,7 @@ class Paginator extends DataComponent {
      * @return null|string
      * @throws \RuntimeException
      */
-    private function _getNextPageUrl() : ?string
+    private function _getNextPageUrl() : ? string
     {
         if ($this->_currentPage >= $this->pageCount())
         {

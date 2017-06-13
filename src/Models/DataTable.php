@@ -241,9 +241,9 @@ class DataTable {
         $this->_initColumns();
 
         return TableRenderer::open($this->_classes) .
-               TableRenderer::renderHeaders($this->_fetchHeaders(), $this->_headerFormatters) .
-               TableRenderer::renderBody($data, $this->_columns) .
-               TableRenderer::close();
+                TableRenderer::renderHeaders($this->_fetchHeaders(), $this->_headerFormatters) .
+                TableRenderer::renderBody($data, $this->_columns) .
+                TableRenderer::close();
     }
 
     /**
