@@ -8,7 +8,7 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 Data tables whose behavior and appearance can be extended by components.
-For example sorting, pagination or searching the table. 
+For example sorting, pagination or filtering the table. 
 No JavaScript is required.
 
 
