@@ -70,19 +70,6 @@ class Paginator extends DataComponent {
     }
 
     /**
-     * @return Builder
-     */
-    protected function _shapeData() : Builder
-    {
-        if ($this->_perPage === 0)
-        {
-            return $this->_queryBuilder;
-        }
-
-        return $this->_queryBuilder->limit($this->_perPage)->offset(($this->_currentPage - 1) * $this->_perPage);
-    }
-
-    /**
      * Render the page links.
      *
      * @return string
@@ -96,12 +83,12 @@ class Paginator extends DataComponent {
         }
 
         return '<ul class="pagination">' .
-                $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
-                $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
-                $this->_renderPageList() .
-                $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
-                $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
-                '</ul>';
+               $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
+               $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
+               $this->_renderPageList() .
+               $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
+               $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
+               '</ul>';
     }
 
     /**
@@ -179,7 +166,7 @@ class Paginator extends DataComponent {
         $end = $this->_getEndPage();
 
         $pageList = '';
-        for ($i = $this->_getStartPage(); $i <= $end; $i++)
+        for ($i = $this->_getStartPage(); $i <= $end; $i ++)
         {
             $pageList .= $this->_renderListItem($i, $this->_buildPageUrl($i));
         }
@@ -254,6 +241,19 @@ class Paginator extends DataComponent {
         }
 
         return $this->_buildPageUrl($lastPage);
+    }
+
+    /**
+     * @return Builder
+     */
+    protected function _shapeData() : Builder
+    {
+        if ($this->_perPage === 0)
+        {
+            return $this->_dataTable->query();
+        }
+
+        return $this->_dataTable->query()->limit($this->_perPage)->offset(($this->_currentPage - 1) * $this->_perPage);
     }
 
     protected function _afterInit() : void

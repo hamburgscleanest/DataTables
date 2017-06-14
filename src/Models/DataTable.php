@@ -94,6 +94,14 @@ class DataTable {
     }
 
     /**
+     * @return array
+     */
+    public function getColumns() : array
+    {
+        return $this->_columns;
+    }
+
+    /**
      * @return Builder
      */
     public function query() : Builder
@@ -124,8 +132,7 @@ class DataTable {
      */
     public function addComponent(DataComponent $component) : DataTable
     {
-        $component->init($this->_queryBuilder, $this->_columns);
-        $this->_components[] = $component;
+        $this->_components[] = $component->init($this);
 
         return $this;
     }
