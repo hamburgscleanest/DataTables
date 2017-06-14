@@ -291,21 +291,27 @@ class DataTable {
 
         foreach ($this->_relations as $relation)
         {
-            /** @var \Illuminate\Database\Eloquent\Relations\Relation $relationship */
-            $relationship = $this->_model->$relation();
-
-            /** @var Model $related */
-            $related = $relationship->getRelated();
-
-            $this->_queryBuilder->join(
-                $related->getTable() . ' AS ' . $relation,
-                $this->_model->getTable() . '.' . $this->_model->getKeyName(),
-                '=',
-                $relation . '.' . $related->getForeignKey()
-            );
+            $this->_addJoin($relation, $this->_model->$relation());
         }
 
         $this->_queryBuilder->getQuery()->groupBy($this->_model->getTable() . '.' . $this->_model->getKeyName());
+    }
+
+    /**
+     * @param string $relation
+     * @param \Illuminate\Database\Eloquent\Relations\Relation $relationship
+     */
+    private function _addJoin(string $relation, \Illuminate\Database\Eloquent\Relations\Relation $relationship) : void
+    {
+        /** @var Model $related */
+        $related = $relationship->getRelated();
+
+        $this->_queryBuilder->join(
+            $related->getTable() . ' AS ' . $relation,
+            $this->_model->getTable() . '.' . $this->_model->getKeyName(),
+            '=',
+            $relation . '.' . $related->getForeignKey()
+        );
     }
 
     /**
