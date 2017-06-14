@@ -122,22 +122,7 @@ class Sorter extends DataComponent {
         if ($column !== null)
         {
             $this->_dataTable->query()->orderBy(DB::raw($column->getAttributeName()), $direction);
-            $this->_addGroupingForAggregate($column);
         }
-    }
-
-    /**
-     * @param Column $column
-     */
-    private function _addGroupingForAggregate(Column $column) : void
-    {
-        $relation = $column->getRelation();
-        if ($relation === null || $relation->aggregate === 'first')
-        {
-            return;
-        }
-
-        $this->_dataTable->query()->groupBy($relation->name . '.' . $column->getName());
     }
 
     protected function _readFromSession() : void

@@ -284,24 +284,28 @@ class DataTable {
 
     private function _addRelations() : void
     {
-        if (\count($this->_relations) > 0)
+        if (\count($this->_relations) === 0)
         {
-            foreach ($this->_relations as $relation)
-            {
-                /** @var \Illuminate\Database\Eloquent\Relations\Relation $relationship */
-                $relationship = $this->_model->$relation();
-
-                /** @var Model $related */
-                $related = $relationship->getRelated();
-
-                $this->_queryBuilder->join(
-                    $related->getTable() . ' as ' . $relation,
-                    $this->_model->getTable() . '.' . $this->_model->getKeyName(),
-                    '=',
-                    $relation . '.' . $related->getForeignKey()
-                );
-            }
+            return;
         }
+
+        foreach ($this->_relations as $relation)
+        {
+            /** @var \Illuminate\Database\Eloquent\Relations\Relation $relationship */
+            $relationship = $this->_model->$relation();
+
+            /** @var Model $related */
+            $related = $relationship->getRelated();
+
+            $this->_queryBuilder->join(
+                $related->getTable() . ' AS ' . $relation,
+                $this->_model->getTable() . '.' . $this->_model->getKeyName(),
+                '=',
+                $relation . '.' . $related->getForeignKey()
+            );
+        }
+
+        $this->_queryBuilder->getQuery()->groupBy($this->_model->getTable() . '.' . $this->_model->getKeyName());
     }
 
     /**
@@ -344,7 +348,8 @@ class DataTable {
         /** @var Column $column */
         foreach ($this->_columns as $column)
         {
-            if ($column->getRelation() !== null)
+            $relation = $column->getRelation();
+            if ($relation !== null)
             {
                 $raw[] = $column->getAttributeName() . ' AS ' . $column->getKey();
             } else

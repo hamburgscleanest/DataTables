@@ -36,14 +36,14 @@ class Relation {
     {
         $replaced = 0;
         $extractedName = preg_replace('/\((.*?)\)/', '#$1', $name, 1, $replaced);
-        if ($replaced !== 0)
+        if ($replaced === 0)
         {
-            $parts = \explode('#', $extractedName);
-            $this->aggregate = \mb_strtolower($parts[0]);
-
-            $extractedName = $parts[1];
+            return \str_replace('.', '_', \mb_strtolower($extractedName));
         }
 
-        return \mb_substr($extractedName, 0, \mb_strpos($extractedName, '.'));
+        $parts = \explode('#', $extractedName);
+        $this->aggregate = \mb_strtolower($parts[0]);
+
+        return \str_replace('.', '_', \mb_strtolower($parts[1]));
     }
 }

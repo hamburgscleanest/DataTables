@@ -64,7 +64,7 @@ class Column {
 
         $this->_relation = new Relation($name);
         $aggregate = $this->_relation->aggregate;
-        $this->_key = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $this->_relation->name . '_' . $this->_name;
+        $this->_key = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $this->_relation->name;
     }
 
     /**
