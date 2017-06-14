@@ -133,10 +133,17 @@ class SorterTest extends TestCase {
      */
     public function can_access_relation()
     {
-        \factory(TestModel::class)->times(10)->create();
+        $fieldName = 'test';
+        $parent = TestModel::create(['name' => $fieldName, 'created_at' => '2017-01-01 00:00:00']);
+        TestModel::create(['name' => $fieldName, 'created_at' => '2017-02-02 00:00:00', 'test_model_id' => $parent->id]);
+        TestModel::create(['name' => $fieldName, 'created_at' => '2017-03-03 00:00:00', 'test_model_id' => $parent->id]);
 
-        $sorter = new Sorter(['count_testers_id' => 'desc']);
-        $dataTable = DataTable::model(TestModel::class)->with(['testers'])->columns(['COUNT(testers.id)'])->addComponent($sorter);
-        $dataTable->render();
+        $sorter = new Sorter(['count_testers_id']);
+        $dataTable = DataTable::model(TestModel::class)->with(['testers'])->columns(['COUNT(testers.name)'])->addComponent($sorter);
+
+        $this->assertEquals(
+            '<table class="table"><tr><th>count_testers_name</th></tr><tr><td>2</td></tr></table>',
+            $dataTable->render()
+        );
     }
 }
