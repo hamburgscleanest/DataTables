@@ -18,6 +18,12 @@ class Column {
     /** @var string */
     private $_name;
 
+    /** @var bool */
+    private $_mutated = false;
+
+    /** @var string */
+    private $_table;
+
     /** @var Relation */
     private $_relation;
 
@@ -28,11 +34,17 @@ class Column {
      * Column constructor.
      * @param string $name
      * @param ColumnFormatter|null $columnFormatter
+     * @param Model|null $sourceModel
      */
-    public function __construct(string $name, ? ColumnFormatter $columnFormatter = null)
+    public function __construct(string $name, ? ColumnFormatter $columnFormatter = null, ? Model $sourceModel = null)
     {
         $this->_setName($name);
         $this->_formatter = $columnFormatter;
+        if ($sourceModel !== null)
+        {
+            $this->_table = $sourceModel->getTable();
+            $this->_mutated = \in_array($name, $sourceModel->getMutatedAttributes(), true);
+        }
     }
 
     /**
@@ -52,15 +64,7 @@ class Column {
 
         $this->_relation = new Relation($name);
         $aggregate = $this->_relation->aggregate;
-        $this->_key = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $this->_relation->name . '_' . $this->_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getKey() : string
-    {
-        return $this->_key;
+        $this->_key = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $this->_relation->name;
     }
 
     /**
@@ -72,11 +76,11 @@ class Column {
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getAttributeName() : string
+    public function isMutated() : bool
     {
-        return $this->_relation ? $this->_relation->attributeName : $this->_name;
+        return $this->_mutated;
     }
 
     /**
@@ -102,9 +106,9 @@ class Column {
      * Get the formatted column value.
      *
      * @param Model $rowModel
-     * @return string
+     * @return string|null
      */
-    public function getFormattedValue(Model $rowModel) : string
+    public function getFormattedValue(Model $rowModel) : ? string
     {
         $value = $this->getValue($rowModel);
 
@@ -115,41 +119,44 @@ class Column {
      * Get the value of this column for the given row.
      *
      * @param Model $rowModel
+     * @return string|null
+     */
+    public function getValue(Model $rowModel) : ? string
+    {
+        return $rowModel->{$this->getKey()};
+    }
+
+    /**
      * @return string
      */
-    public function getValue(Model $rowModel) : string
+    public function getKey() : string
+    {
+        return $this->_key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier() : string
+    {
+        return $this->getAttributeName() . ' AS ' . $this->_key;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAttributeName() : string
     {
         if ($this->_relation !== null)
         {
-            return $this->_getValueFromRelation($rowModel);
+            return $this->_relation->attributeName;
         }
 
-        return $this->_getValue($rowModel);
-    }
-
-    /**
-     * Get the value from the column's relation
-     *
-     * @param Model $rowModel
-     * @return string
-     */
-    private function _getValueFromRelation(Model $rowModel) : string
-    {
-        $relation = $rowModel->getRelation($this->_relation->name);
-        if ($relation instanceof Model)
+        if ($this->_mutated)
         {
-            return $relation->{$this->_name};
+            return $this->_name;
         }
 
-        return $this->_relation->getValue($this->_name, $relation);
-    }
-
-    /**
-     * @param Model $rowModel
-     * @return string
-     */
-    private function _getValue(Model $rowModel) : string
-    {
-        return (string) ($rowModel->{$this->_name} ?? '');
+        return $this->_table . '.' . $this->_name;
     }
 }

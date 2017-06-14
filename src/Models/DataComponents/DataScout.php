@@ -43,18 +43,17 @@ class DataScout extends DataComponent {
     {
         if (\count($this->_searchQueries) === 0)
         {
-            return $this->_queryBuilder;
+            return $this->_dataTable->query();
         }
 
-        $this->_queryBuilder->where(function($query)
-        {
+        $this->_dataTable->query()->where(function($query) {
             foreach ($this->_searchQueries as $value)
             {
                 $this->_addWhereQueries($query, $value);
             }
         });
 
-        return $this->_queryBuilder;
+        return $this->_dataTable->query();
     }
 
     /**
@@ -127,9 +126,9 @@ class DataScout extends DataComponent {
     public function render() : string
     {
         return '<form method="get" action="' . $this->_buildSearchUrl() .
-                '"><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
-                $this->_placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
-                $this->_buttonText . '</button></div></div></form>';
+               '"><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
+               $this->_placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
+               $this->_buttonText . '</button></div></div></form>';
     }
 
     /**

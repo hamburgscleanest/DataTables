@@ -3,6 +3,8 @@
 namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
+use hamburgscleanest\DataTables\Models\Column;
+use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 
 /**
  * Class DataComponentTest

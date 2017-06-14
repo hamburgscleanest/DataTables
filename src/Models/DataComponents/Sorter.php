@@ -6,6 +6,7 @@ use hamburgscleanest\DataTables\Facades\SessionHelper;
 use hamburgscleanest\DataTables\Models\Column;
 use hamburgscleanest\DataTables\Models\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class Sorter
@@ -45,6 +46,29 @@ class Sorter extends DataComponent {
     }
 
     /**
+     * Sort by this column.
+     *
+     * @param string $field
+     * @param string $direction
+     *
+     * @return Sorter
+     */
+    public function addField(string $field, string $direction = 'asc') : Sorter
+    {
+        $this->_sortFields[$field] = \mb_strtolower($direction);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function render() : string
+    {
+        return implode(', ', \array_keys($this->_sortFields));
+    }
+
+    /**
      * @return Builder
      */
     protected function _shapeData() : Builder
@@ -63,7 +87,7 @@ class Sorter extends DataComponent {
             }
         }
 
-        return $this->_queryBuilder;
+        return $this->_dataTable->query();
     }
 
     /**
@@ -90,39 +114,15 @@ class Sorter extends DataComponent {
     private function _sortField(string $fieldName, string $direction) : void
     {
         /** @var Column $column */
-        $column = \array_first($this->_columns, function($index, $column) use ($fieldName)
-        {
+        $column = \array_first($this->_dataTable->getColumns(), function($index, $column) use ($fieldName) {
             /** @var Column $column */
             return $column->getKey() === $fieldName;
         });
 
         if ($column !== null)
         {
-            $this->_queryBuilder->orderBy($column->getAttributeName(), $direction);
+            $this->_dataTable->query()->orderBy(DB::raw($column->getAttributeName()), $direction);
         }
-    }
-
-    /**
-     * Sort by this column.
-     *
-     * @param string $field
-     * @param string $direction
-     *
-     * @return Sorter
-     */
-    public function addField(string $field, string $direction = 'asc') : Sorter
-    {
-        $this->_sortFields[$field] = \mb_strtolower($direction);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function render() : string
-    {
-        return implode(', ', \array_keys($this->_sortFields));
     }
 
     protected function _readFromSession() : void

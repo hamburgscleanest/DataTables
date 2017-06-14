@@ -14,6 +14,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Fixed
 - Remembering the state does not work
+- DataComponents need to be able to access the relations
 
 ### Removed
 - Nothing

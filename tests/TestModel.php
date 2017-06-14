@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property int id
  * @property string name
+ * @property string custom_column
  * @property Carbon created_at
  */
 class TestModel extends Model {
