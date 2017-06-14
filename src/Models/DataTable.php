@@ -333,6 +333,11 @@ class DataTable {
             return ['*', []];
         }
 
+        return $this->_getColumnNames();
+    }
+
+    private function _getColumnNames() : array
+    {
         $raw = [];
         $columns = [];
 

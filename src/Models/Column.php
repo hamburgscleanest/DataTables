@@ -123,27 +123,6 @@ class Column {
      */
     public function getValue(Model $rowModel) : ? string
     {
-        if ($this->_relation !== null)
-        {
-            return $this->_getValueFromRelation($rowModel);
-        }
-
-        return $this->_getValue($rowModel);
-    }
-
-    /**
-     * Get the value from the column's relation
-     *
-     * @param Model $rowModel
-     * @return string|null
-     */
-    private function _getValueFromRelation(Model $rowModel) : ? string
-    {
-        if ($this->_mutated)
-        {
-            return $rowModel->{$this->_relation->name}->{$this->_name};
-        }
-
         return $rowModel->{$this->getKey()};
     }
 
@@ -153,15 +132,6 @@ class Column {
     public function getKey() : string
     {
         return $this->_key;
-    }
-
-    /**
-     * @param Model $rowModel
-     * @return string|null
-     */
-    private function _getValue(Model $rowModel) : ? string
-    {
-        return (string) $rowModel->{$this->_name};
     }
 
     /**
