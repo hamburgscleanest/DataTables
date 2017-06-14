@@ -15,6 +15,7 @@ class SessionHelper {
      *
      * @param string $key
      * @param mixed $sessionValue
+     * @throws \RuntimeException
      */
     public function saveState(string $key, $sessionValue) : void
     {
@@ -43,6 +44,7 @@ class SessionHelper {
      * @param string $key
      * @param null $default
      * @return mixed
+     * @throws \RuntimeException
      */
     public function getState(string $key, $default = null)
     {
@@ -53,6 +55,7 @@ class SessionHelper {
      * Remove the state for the given key.
      *
      * @param string $key
+     * @throws \RuntimeException
      */
     public function removeState(string $key) : void
     {

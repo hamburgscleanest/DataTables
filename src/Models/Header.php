@@ -3,7 +3,6 @@
 namespace hamburgscleanest\DataTables\Models;
 
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
-use Illuminate\Http\Request;
 
 /**
  * Class Header

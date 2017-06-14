@@ -48,9 +48,9 @@ class DataTable {
      */
     public function model(string $modelName, array $columns = []) : DataTable
     {
-        if (!\class_exists($modelName) || !\is_subclass_of($modelName, Model::class))
+        if (!\is_subclass_of($modelName, Model::class))
         {
-            throw new RuntimeException('Class "' . $modelName . '" does not exist or is not an active record!');
+            throw new RuntimeException('Class "' . $modelName . '" is not an active record!');
         }
 
         $this->_queryBuilder = (new $modelName)->newQuery();
@@ -155,8 +155,7 @@ class DataTable {
         /** @var Column $column */
         $column = \array_first(
             $this->_columns,
-            function($index, $column) use ($columnName)
-            {
+            function($index, $column) use ($columnName) {
                 /** @var Column $column */
                 return $column->getName() === $columnName;
             }
@@ -215,6 +214,7 @@ class DataTable {
      *
      * @param string $viewName
      * @return DataTable
+     * @throws \Throwable
      */
     public function noDataView(string $viewName) : DataTable
     {
@@ -241,9 +241,9 @@ class DataTable {
         $this->_initColumns();
 
         return TableRenderer::open($this->_classes) .
-                TableRenderer::renderHeaders($this->_fetchHeaders(), $this->_headerFormatters) .
-                TableRenderer::renderBody($data, $this->_columns) .
-                TableRenderer::close();
+               TableRenderer::renderHeaders($this->_fetchHeaders(), $this->_headerFormatters) .
+               TableRenderer::renderBody($data, $this->_columns) .
+               TableRenderer::close();
     }
 
     /**
@@ -293,8 +293,7 @@ class DataTable {
     private function _fetchHeaders() : array
     {
         return \array_map(
-            function($column)
-            {
+            function($column) {
                 /** @var Column $column */
                 return new Header($column->getKey());
             },

@@ -15,5 +15,5 @@ class DataTable extends Facade {
      *
      * @return string
      */
-    protected static function getFacadeAccessor() { return 'datatable'; }
+    protected static function getFacadeAccessor() : string { return 'datatable'; }
 }

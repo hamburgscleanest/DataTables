@@ -4,7 +4,6 @@ namespace hamburgscleanest\DataTables\Models\HeaderFormatters;
 
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
 use hamburgscleanest\DataTables\Models\Header;
-use Illuminate\Http\Request;
 
 /**
  * Class TranslateHeader

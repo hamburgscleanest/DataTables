@@ -150,6 +150,6 @@ class Column {
      */
     private function _getValue(Model $rowModel) : string
     {
-        return (string) $rowModel->{$this->_name} ?? '';
+        return (string) ($rowModel->{$this->_name} ?? '');
     }
 }

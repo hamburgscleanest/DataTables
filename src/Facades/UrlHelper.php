@@ -15,5 +15,5 @@ class UrlHelper extends Facade {
      *
      * @return string
      */
-    protected static function getFacadeAccessor() { return 'url_helper'; }
+    protected static function getFacadeAccessor() : string { return 'url_helper'; }
 }
