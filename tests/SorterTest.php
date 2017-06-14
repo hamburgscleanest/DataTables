@@ -4,7 +4,6 @@ namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Facades\DataTable;
 use hamburgscleanest\DataTables\Facades\SessionHelper;
-use hamburgscleanest\DataTables\Models\ColumnFormatters\DateColumn;
 use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -110,8 +109,6 @@ class SorterTest extends TestCase {
 
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent(new Sorter(['created_at']));
 
-        $dataTable->render();
-
         $this->assertNotEquals(
             '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
             \mb_substr($dataTable->render(), 0, 139)
@@ -129,5 +126,17 @@ class SorterTest extends TestCase {
         $sorter = new Sorter([$fieldName]);
 
         $this->assertEquals($fieldName, $sorter->render());
+    }
+
+    /**
+     * @test
+     */
+    public function can_access_relation()
+    {
+        \factory(TestModel::class)->times(10)->create();
+
+        $sorter = new Sorter(['count_testers_id' => 'desc']);
+        $dataTable = DataTable::model(TestModel::class)->with(['testers'])->columns(['COUNT(testers.id)'])->addComponent($sorter);
+        $dataTable->render();
     }
 }

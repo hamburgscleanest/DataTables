@@ -32,6 +32,9 @@ class DataTable {
     /** @var array */
     private $_columns = [];
 
+    /** @var Model */
+    private $_model;
+
     /** @var array */
     private $_relations = [];
 
@@ -53,7 +56,8 @@ class DataTable {
             throw new RuntimeException('Class "' . $modelName . '" is not an active record!');
         }
 
-        $this->_queryBuilder = (new $modelName)->newQuery();
+        $this->_model = new $modelName;
+        $this->_queryBuilder = $this->_model->newQuery();
         $this->_columns = $this->_fetchColumns($columns);
 
         return $this;
@@ -71,7 +75,7 @@ class DataTable {
         foreach ($columns as $column => $formatter)
         {
             [$column, $formatter] = $this->_setColumnFormatter($column, $formatter);
-            $columnModels[] = new Column($column, $formatter);
+            $columnModels[] = new Column($column, $formatter, $this->_model);
         }
 
         return $columnModels;
@@ -275,15 +279,76 @@ class DataTable {
             $component->transformData();
         }
 
-        return $this->_queryBuilder->get();
+        return $this->_setSelection()->_queryBuilder->get();
     }
 
     private function _addRelations() : void
     {
         if (\count($this->_relations) > 0)
         {
-            $this->_queryBuilder->with($this->_relations);
+            foreach ($this->_relations as $relation)
+            {
+                /** @var \Illuminate\Database\Eloquent\Relations\Relation $relationship */
+                $relationship = $this->_model->$relation();
+
+                /** @var Model $related */
+                $related = $relationship->getRelated();
+
+                $this->_queryBuilder->join(
+                    $related->getTable() . ' as ' . $relation,
+                    $this->_model->getTable() . '.' . $this->_model->getKeyName(),
+                    '=',
+                    $relation . '.' . $related->getForeignKey()
+                );
+            }
         }
+    }
+
+    /**
+     * @return DataTable
+     */
+    private function _setSelection() : DataTable
+    {
+        [$raw, $columns] = $this->_getSelectStatements();
+
+        $query = $this->_queryBuilder->getQuery();
+        $query->addSelect($columns);
+        if (!empty($raw))
+        {
+            $query->selectRaw($raw);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Formats the column names to be used in a select statement.
+     *
+     * @return array
+     */
+    private function _getSelectStatements() : array
+    {
+        if (empty($this->_columns))
+        {
+            return ['*', []];
+        }
+
+        $raw = [];
+        $columns = [];
+
+        /** @var Column $column */
+        foreach ($this->_columns as $column)
+        {
+            if ($column->getRelation() !== null)
+            {
+                $raw[] = $column->getAttributeName() . ' AS ' . $column->getKey();
+            } else
+            {
+                $columns[] = $column->getAttributeName();
+            }
+        }
+
+        return [\implode(',', $raw), $columns];
     }
 
     private function _initColumns() : void
