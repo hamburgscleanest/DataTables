@@ -14,7 +14,8 @@ use Illuminate\Support\ServiceProvider;
  * Class DataTablesServiceProvider
  * @package hamburgscleanest\DataTables
  */
-class DataTablesServiceProvider extends ServiceProvider {
+class DataTablesServiceProvider extends ServiceProvider
+{
 
     /**
      * Perform post-registration booting of services.
@@ -41,42 +42,37 @@ class DataTablesServiceProvider extends ServiceProvider {
         $this->_setDataTableAlias();
     }
 
-    private function _registerDataTable() : void
+    private function _registerDataTable(): void
     {
-        $this->app->bind('datatable', function()
-        {
+        $this->app->bind('datatable', function () {
             return new DataTable();
         });
     }
 
-    private function _registerSessionHelper() : void
+    private function _registerSessionHelper(): void
     {
-        $this->app->singleton('session_helper', function()
-        {
+        $this->app->singleton('session_helper', function () {
             return new SessionHelper();
         });
     }
 
-    private function _registerUrlHelper() : void
+    private function _registerUrlHelper(): void
     {
-        $this->app->singleton('url_helper', function()
-        {
+        $this->app->singleton('url_helper', function () {
             return new UrlHelper();
         });
     }
 
-    private function _registerTableRenderer() : void
+    private function _registerTableRenderer(): void
     {
-        $this->app->singleton('table_renderer', function()
-        {
+        $this->app->singleton('table_renderer', function () {
             return new TableRenderer();
         });
     }
 
-    private function _setDataTableAlias() : void
+    private function _setDataTableAlias(): void
     {
-        $this->app->booting(function()
-        {
+        $this->app->booting(function () {
             AliasLoader::getInstance()->alias('DataTable', DataTableFacade::class);
         });
     }
