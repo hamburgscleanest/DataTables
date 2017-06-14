@@ -137,6 +137,14 @@ class Column {
     /**
      * @return string
      */
+    public function getIdentifier() : string
+    {
+        return $this->getAttributeName() . ' AS ' . $this->_key;
+    }
+
+    /**
+     * @return string
+     */
     public function getAttributeName() : string
     {
         if ($this->_relation !== null)

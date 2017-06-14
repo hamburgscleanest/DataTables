@@ -319,52 +319,34 @@ class DataTable {
      */
     private function _setSelection() : DataTable
     {
-        [$raw, $columns] = $this->_getSelectStatements();
-
         $query = $this->_queryBuilder->getQuery();
-        $query->addSelect($columns);
-        if (!empty($raw))
+
+        $columns = $this->_getColumnsForSelect();
+        if (!empty($columns))
         {
-            $query->selectRaw($raw);
+            $query->selectRaw(
+                \implode(',',
+                    \array_map(function($column) {
+                        return $column->getIdentifier();
+                    }, $columns)
+                )
+            );
         }
 
         return $this;
     }
 
     /**
-     * Formats the column names to be used in a select statement.
-     *
      * @return array
      */
-    private function _getSelectStatements() : array
+    private function _getColumnsForSelect() : array
     {
-        if (empty($this->_columns))
-        {
-            return ['*', []];
-        }
-
-        return $this->_getColumnNames();
-    }
-
-    private function _getColumnNames() : array
-    {
-        $raw = [];
-        $columns = [];
-
-        /** @var Column $column */
-        foreach ($this->_columns as $column)
-        {
-            $relation = $column->getRelation();
-            if ($relation !== null)
-            {
-                $raw[] = $column->getAttributeName() . ' AS ' . $column->getKey();
-            } else
-            {
-                $columns[] = $column->getAttributeName();
+        return \array_filter(
+            $this->_columns,
+            function($column) {
+                return !$column->isMutated();
             }
-        }
-
-        return [\implode(',', $raw), $columns];
+        );
     }
 
     private function _initColumns() : void
