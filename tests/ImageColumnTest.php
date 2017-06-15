@@ -24,7 +24,7 @@ class ImageColumnTest extends TestCase {
         $dataTable->query()->where('name', $imagePath);
 
         $this->assertEquals(
-            '<table class="table"><tr><th>name</th></tr><tr><td><img src="' . $imagePath . '" class="image-column"/></td></tr></table>',
+            '<table class="table"><tr><th>name</th></tr><tr><td><img src="' . $imagePath . '"/></td></tr></table>',
             $dataTable->render()
         );
     }

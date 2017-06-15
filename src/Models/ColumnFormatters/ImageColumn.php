@@ -21,7 +21,7 @@ class ImageColumn implements ColumnFormatter {
      * @param null|string $fallback
      * @param null|string $classes
      */
-    public function __construct(? string $fallback = null, ? string $classes = 'image-column')
+    public function __construct(? string $fallback = null, ? string $classes = null)
     {
         $this->_fallback = $fallback;
         $this->_classes = $classes;
@@ -47,7 +47,7 @@ class ImageColumn implements ColumnFormatter {
      */
     private function _renderImage(string $path) : string
     {
-        return '<img src="' . $path . '" class="' . $this->_classes . '"/>';
+        return '<img src="' . $path . (!empty($this->_classes) ? ('" class="' . $this->_classes) : '') . '"/>';
     }
 
     /**
