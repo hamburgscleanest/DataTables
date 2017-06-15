@@ -376,6 +376,10 @@ class DataTable
         );
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function __get($name)
     {
         if (\array_key_exists($name, $this->_components)) return $this->_components[$name];
