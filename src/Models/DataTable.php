@@ -100,7 +100,7 @@ class DataTable
     /**
      * @return array
      */
-    public function getColumns() : array
+    public function getColumns(): array
     {
         return $this->_columns;
     }
@@ -137,10 +137,9 @@ class DataTable
      */
     public function addComponent(DataComponent $component, ?string $name = null): DataTable
     {
-        $component->init($this->_queryBuilder, $this->_columns);
         $componentName = \str_replace(' ', '', Str::lower($name ?? \class_basename($component)));
         if ($this->componentExists($componentName)) throw new MultipleComponentAssertionException();
-        $this->_components[$componentName] = $component;
+        $this->_components[$componentName] = $component->init($this);
 
         return $this;
     }
@@ -294,13 +293,11 @@ class DataTable
 
     private function _addRelations(): void
     {
-        if (\count($this->_relations) === 0)
-        {
+        if (\count($this->_relations) === 0) {
             return;
         }
 
-        foreach ($this->_relations as $relation)
-        {
+        foreach ($this->_relations as $relation) {
             $this->_addJoin($relation, $this->_model->$relation());
         }
 
@@ -311,7 +308,7 @@ class DataTable
      * @param string $relation
      * @param \Illuminate\Database\Eloquent\Relations\Relation $relationship
      */
-    private function _addJoin(string $relation, \Illuminate\Database\Eloquent\Relations\Relation $relationship) : void
+    private function _addJoin(string $relation, \Illuminate\Database\Eloquent\Relations\Relation $relationship): void
     {
         /** @var Model $related */
         $related = $relationship->getRelated();
@@ -327,16 +324,15 @@ class DataTable
     /**
      * @return DataTable
      */
-    private function _setSelection() : DataTable
+    private function _setSelection(): DataTable
     {
         $query = $this->_queryBuilder->getQuery();
 
         $columns = $this->_getColumnsForSelect();
-        if (!empty($columns))
-        {
+        if (!empty($columns)) {
             $query->selectRaw(
                 \implode(',',
-                    \array_map(function($column) {
+                    \array_map(function ($column) {
                         return $column->getIdentifier();
                     }, $columns)
                 )
@@ -349,11 +345,11 @@ class DataTable
     /**
      * @return array
      */
-    private function _getColumnsForSelect() : array
+    private function _getColumnsForSelect(): array
     {
         return \array_filter(
             $this->_columns,
-            function($column) {
+            function ($column) {
                 return !$column->isMutated();
             }
         );
