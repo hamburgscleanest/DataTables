@@ -15,9 +15,8 @@ class IconColumn implements ColumnFormatter {
     private $_iconAdapter;
 
     /**
-     * DateColumn constructor.
+     * IconColumn constructor.
      * @param IconAdapter $iconAdapter
-     * @internal param string $dateFormat
      */
     public function __construct(IconAdapter $iconAdapter)
     {
