@@ -7,7 +7,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## 0.9.0
 
 ### Added
-- Nothing
+- Components can now be accessed diretly via properties
+``` php
+// can be accessed via $dataTable->paginator
+$dataTable->addComponent(new Pagiantor);
+```
 
 ### Deprecated
 - Nothing
