@@ -36,7 +36,7 @@ class SorterTest extends TestCase {
         $date = '1991-08-03 00:00:00';
         TestModel::create(['name' => 'test', 'created_at' => $date]);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
             \mb_substr($dataTable->render(), 0, 139)
         );
@@ -49,7 +49,7 @@ class SorterTest extends TestCase {
     {
         /** @var Sorter $sorter */
         $sorter = new Sorter();
-        $sorter->addField('created_at', 'asc');
+        $sorter->addField('created_at');
 
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($sorter);
@@ -57,7 +57,7 @@ class SorterTest extends TestCase {
         $date = '1991-08-03 00:00:00';
         TestModel::create(['name' => 'test', 'created_at' => $date]);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
             \mb_substr($dataTable->render(), 0, 139)
         );
@@ -73,7 +73,7 @@ class SorterTest extends TestCase {
 
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent(new Sorter(['created_at']));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
             \mb_substr($dataTable->render(), 0, 139)
         );
@@ -84,14 +84,14 @@ class SorterTest extends TestCase {
      */
     public function sorting_parameters_are_considered()
     {
-        request()->request->add(['sort' => 'created_at']);
+        \request()->request->add(['sort' => 'created_at']);
 
         $date = '1991-08-03 00:00:00';
         TestModel::create(['name' => 'test', 'created_at' => $date]);
 
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent(new Sorter());
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
             \mb_substr($dataTable->render(), 0, 139)
         );
@@ -105,11 +105,11 @@ class SorterTest extends TestCase {
         $date = '1991-08-03 00:00:00';
         TestModel::create(['name' => 'test', 'created_at' => $date]);
 
-        request()->request->add(['sort' => 'created_at~none']);
+        \request()->request->add(['sort' => 'created_at~none']);
 
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent(new Sorter(['created_at']));
 
-        $this->assertNotEquals(
+        static::assertNotEquals(
             '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>101</td><td>' . $date . '</td><td>test</td></tr><tr>',
             \mb_substr($dataTable->render(), 0, 139)
         );
@@ -125,7 +125,7 @@ class SorterTest extends TestCase {
         /** @var Sorter $sorter */
         $sorter = new Sorter([$fieldName]);
 
-        $this->assertEquals($fieldName, $sorter->render());
+        static::assertEquals($fieldName, $sorter->render());
     }
 
     /**
@@ -153,7 +153,7 @@ class SorterTest extends TestCase {
         $sorter = new Sorter(['count_testers_id' => 'desc']);
         $dataTable = DataTable::model(TestModel::class)->with(['testers'])->columns(['COUNT(testers.id)'])->addComponent($sorter);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>count_testers_id</th></tr><tr><td>2</td></tr><tr><td>1</td></tr></table>',
             $dataTable->render()
         );

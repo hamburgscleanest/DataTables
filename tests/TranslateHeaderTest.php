@@ -23,7 +23,7 @@ class TranslateHeaderTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatHeaders(new TranslateHeader(['name' => 'TheName']));
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>TheName</th></tr><tr><td>' . $fieldName . '</td></tr></table>',
             $dataTable->render()
         );

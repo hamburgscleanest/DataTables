@@ -33,7 +33,7 @@ class SortableHeaderTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatHeaders(new SortableHeader(['name']));
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=name%7Easc">name <span class="sort-symbol">⇵</span></a></th></tr><tr><td>' . $fieldName . '</td></tr></table>',
             $dataTable->render()
         );
@@ -53,7 +53,7 @@ class SortableHeaderTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatHeaders($sortableHeader);
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=name%7Easc">name <span class="sort-symbol">⇵</span></a></th></tr><tr><td>' . $fieldName . '</td></tr></table>',
             $dataTable->render()
         );
@@ -70,7 +70,7 @@ class SortableHeaderTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatHeaders(new SortableHeader([], ['name']));
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td>' . $fieldName . '</td></tr></table>',
             $dataTable->render()
         );
@@ -91,7 +91,7 @@ class SortableHeaderTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name', 'created_at'])->formatHeaders($sortableHeader);
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Easc">created_at <span class="sort-symbol">⇵</span></a></th></tr><tr><td>' .
             $fieldName . '</td><td>' . $date . '</td></tr></table>',
             $dataTable->render()
@@ -120,7 +120,7 @@ class SortableHeaderTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatHeaders($sortableHeader)->addComponent($sorter);
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl .
             '?sort=name%7Easc">name <span class="sort-symbol">' . $symbols['none'] . '</span></a></th></tr><tr><td>' . $fieldName . '</td></tr></table>',
             $dataTable->render()
@@ -139,7 +139,7 @@ class SortableHeaderTest extends TestCase {
 
         $dataTable = DataTable::model(TestModel::class, ['created_at'])->formatHeaders(new SortableHeader(['created_at']));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Edesc',
             \mb_substr($dataTable->render(), 0, 101)
         );
@@ -157,7 +157,7 @@ class SortableHeaderTest extends TestCase {
 
         $dataTable = DataTable::model(TestModel::class, ['created_at'])->formatHeaders(new SortableHeader(['created_at']));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Enone',
             \mb_substr($dataTable->render(), 0, 101)
         );
@@ -175,7 +175,7 @@ class SortableHeaderTest extends TestCase {
 
         $dataTable = DataTable::model(TestModel::class, ['created_at'])->formatHeaders(new SortableHeader(['created_at']));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Easc',
             \mb_substr($dataTable->render(), 0, 100)
         );
@@ -193,7 +193,7 @@ class SortableHeaderTest extends TestCase {
 
         $dataTable = DataTable::model(TestModel::class, ['created_at'])->formatHeaders(new SortableHeader(['created_at']));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl . '?sort=created_at%7Enone',
             \mb_substr($dataTable->render(), 0, 101)
         );
@@ -211,7 +211,7 @@ class SortableHeaderTest extends TestCase {
 
         $dataTable = DataTable::model(TestModel::class, ['created_at', 'name'])->formatHeaders(new SortableHeader(['created_at', 'name']));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl .
             '?sort=created_at%7Enone.name%7Easc">created_at <span class="sort-symbol">&#x25BC;</span></a></th><th><a class="sortable-header" href="' . $this->baseUrl .
             '?sort=created_at%7Edesc.name%7Edesc',
@@ -231,7 +231,7 @@ class SortableHeaderTest extends TestCase {
 
         $dataTable = DataTable::model(TestModel::class, ['created_at', 'name'])->formatHeaders(new SortableHeader(['created_at', 'name']));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th><a class="sortable-header" href="' . $this->baseUrl .
             '?sort=created_at%7Enone">created_at <span class="sort-symbol">&#x25BC;</span></a></th><th><a class="sortable-header" href="' . $this->baseUrl .
             '?sort=created_at%7Edesc.name%7Easc',

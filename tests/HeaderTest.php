@@ -18,7 +18,7 @@ class HeaderTest extends TestCase {
         $name = 'testcolumn';
         $header = new Header($name);
 
-        $this->assertEquals($name, $header->key);
-        $this->assertEquals($name, $header->getAttributeName());
+        static::assertEquals($name, $header->key);
+        static::assertEquals($name, $header->getAttributeName());
     }
 }

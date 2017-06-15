@@ -114,7 +114,7 @@ class Sorter extends DataComponent {
     private function _sortField(string $fieldName, string $direction) : void
     {
         /** @var Column $column */
-        $column = \array_first($this->_dataTable->getColumns(), function($index, $column) use ($fieldName) {
+        $column = \array_first($this->_dataTable->getColumns(), function($column) use ($fieldName) {
             /** @var Column $column */
             return $column->getKey() === $fieldName;
         });

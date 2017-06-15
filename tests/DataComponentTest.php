@@ -19,7 +19,7 @@ class DataComponentTest extends TestCase {
         $testComponent = new TestDataComponent();
         DataTable::model(TestModel::class)->addComponent($testComponent);
 
-        $this->assertTrue($testComponent->afterInitCalled);
+        static::assertTrue($testComponent->afterInitCalled);
     }
 
     /**
@@ -31,8 +31,8 @@ class DataComponentTest extends TestCase {
         $testComponent->remember();
         DataTable::model(TestModel::class)->addComponent($testComponent);
 
-        $this->assertTrue($testComponent->afterInitCalled);
-        $this->assertTrue($testComponent->readFromSessionCalled);
+        static::assertTrue($testComponent->afterInitCalled);
+        static::assertTrue($testComponent->readFromSessionCalled);
     }
 
     /**
@@ -44,12 +44,12 @@ class DataComponentTest extends TestCase {
         $testComponent->remember();
         $dataTable = DataTable::model(TestModel::class)->addComponent($testComponent);
 
-        $this->assertTrue($testComponent->afterInitCalled);
-        $this->assertTrue($testComponent->readFromSessionCalled);
+        static::assertTrue($testComponent->afterInitCalled);
+        static::assertTrue($testComponent->readFromSessionCalled);
 
         $dataTable->render();
 
-        $this->assertTrue($testComponent->storeInSessionCalled);
+        static::assertTrue($testComponent->storeInSessionCalled);
     }
 
     /**
@@ -58,7 +58,7 @@ class DataComponentTest extends TestCase {
     public function is_rendered()
     {
         $testComponent = new TestDataComponent();
-        $this->assertEquals('TEST-RENDER', $testComponent->render());
+        static::assertEquals('TEST-RENDER', $testComponent->render());
     }
 
     /**
@@ -67,7 +67,7 @@ class DataComponentTest extends TestCase {
     public function component_can_be_accessed_directly()
     {
         $dataTable = DataTable::model(TestModel::class)->addComponent(new TestDataComponent());
-        $this->assertInstanceOf(TestDataComponent::class, $dataTable->testdatacomponent);
+        static::assertInstanceOf(TestDataComponent::class, $dataTable->testdatacomponent);
     }
 
     /**
@@ -76,7 +76,7 @@ class DataComponentTest extends TestCase {
     public function component_can_be_added_and_accessed_directly_by_name()
     {
         $dataTable = DataTable::model(TestModel::class)->addComponent(new TestDataComponent(), 'myawesomecomponent');
-        $this->assertInstanceOf(TestDataComponent::class, $dataTable->myawesomecomponent);
+        static::assertInstanceOf(TestDataComponent::class, $dataTable->myawesomecomponent);
     }
 
     /**
@@ -97,7 +97,7 @@ class DataComponentTest extends TestCase {
         $testValue = 'test';
         $dataTable = DataTable::model(TestModel::class);
         $dataTable->test = $testValue;
-        $this->assertEquals($testValue, $dataTable->test);
+        static::assertEquals($testValue, $dataTable->test);
         DataTable::shouldReceive('test')->andReturn($testValue);
     }
 
@@ -107,8 +107,8 @@ class DataComponentTest extends TestCase {
     public function can_check_whether_component_exists()
     {
         $dataTable = DataTable::model(TestModel::class);
-        $this->assertFalse($dataTable->componentExists('testdatacomponent'));
+        static::assertFalse($dataTable->componentExists('testdatacomponent'));
         $dataTable->addComponent(new TestDataComponent());
-        $this->assertTrue($dataTable->componentExists('testdatacomponent'));
+        static::assertTrue($dataTable->componentExists('testdatacomponent'));
     }
 }

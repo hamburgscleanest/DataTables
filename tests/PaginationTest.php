@@ -25,7 +25,7 @@ class PaginationTest extends TestCase {
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($paginator);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<ul class="pagination"><li class="active"><a href="' . $this->baseUrl .
             '?page=1">1</a></li><li><a href="' . $this->baseUrl .
             '?page=2">2</a></li><li><a href="' . $this->baseUrl .
@@ -49,7 +49,7 @@ class PaginationTest extends TestCase {
 
         $dataTable->render();
 
-        $this->assertEquals(1, $paginator->pageCount());
+        static::assertEquals(1, $paginator->pageCount());
     }
 
     /**
@@ -63,7 +63,7 @@ class PaginationTest extends TestCase {
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($paginator);
 
-        $this->assertEquals(1, $paginator->pageCount());
+        static::assertEquals(1, $paginator->pageCount());
     }
 
     /**
@@ -77,7 +77,7 @@ class PaginationTest extends TestCase {
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($paginator);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<ul class="pagination"><li class="active">1</li></ul>',
             $paginator->render()
         );
@@ -95,11 +95,11 @@ class PaginationTest extends TestCase {
 
         $pageCount = (int) \ceil(TestModel::count() / $entriesPerPage);
 
-        request()->request->add(['page' => $pageCount]);
+        \request()->request->add(['page' => $pageCount]);
 
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<ul class="pagination"><li><a href="' . $this->baseUrl .
             '?page=1">first</a></li><li><a href="' . $this->baseUrl .
             '?page=6">←</a></li><li><a href="' . $this->baseUrl .
@@ -122,11 +122,11 @@ class PaginationTest extends TestCase {
 
         $page = (int) \ceil(TestModel::count() / $entriesPerPage * 0.5);
 
-        request()->request->add(['page' => $page]);
+        \request()->request->add(['page' => $page]);
 
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<ul class="pagination"><li><a href="' . $this->baseUrl .
             '?page=1">first</a></li><li><a href="' . $this->baseUrl .
             '?page=9">←</a></li><li><a href="' . $this->baseUrl .
@@ -151,7 +151,7 @@ class PaginationTest extends TestCase {
 
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
 
-        $this->assertEquals(1, $paginator->pageCount());
+        static::assertEquals(1, $paginator->pageCount());
     }
 
     /**
@@ -165,7 +165,7 @@ class PaginationTest extends TestCase {
 
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
 
-        $this->assertEquals($paginator->getQueryCount(), $paginator->pageCount());
+        static::assertEquals($paginator->getQueryCount(), $paginator->pageCount());
     }
 
     /**
@@ -177,11 +177,11 @@ class PaginationTest extends TestCase {
         $paginator = new Paginator();
         $paginator->surroundingPages(1);
 
-        request()->request->add(['page' => 6]);
+        \request()->request->add(['page' => 6]);
 
         DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->addComponent($paginator);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<ul class="pagination"><li><a href="' . $this->baseUrl .
             '?page=1">first</a></li><li><a href="' . $this->baseUrl .
             '?page=5">←</a></li><li><a href="' . $this->baseUrl .
@@ -200,7 +200,7 @@ class PaginationTest extends TestCase {
     {
         $dataTable = DataTable::model(TestModel::class, ['id'])->addComponent(new Paginator(1));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>id</th></tr><tr><td>1</td></tr></table>',
             $dataTable->render()
         );

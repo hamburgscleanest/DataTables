@@ -18,8 +18,8 @@ class ColumnTest extends TestCase {
         $name = 'testcolumn';
         $column = new Column($name);
 
-        $this->assertEquals($name, $column->getName());
-        $this->assertNull($column->getRelation());
+        static::assertEquals($name, $column->getName());
+        static::assertNull($column->getRelation());
     }
 
     /**
@@ -31,9 +31,9 @@ class ColumnTest extends TestCase {
         $column = new Column($name);
         $relation = $column->getRelation();
 
-        $this->assertEquals('column', $column->getName());
-        $this->assertNotNull($relation);
-        $this->assertEquals('test_column', $relation->name);
+        static::assertEquals('column', $column->getName());
+        static::assertNotNull($relation);
+        static::assertEquals('test_column', $relation->name);
     }
 
     /**
@@ -45,10 +45,10 @@ class ColumnTest extends TestCase {
         $column = new Column($name);
         $relation = $column->getRelation();
 
-        $this->assertEquals('column', $column->getName());
-        $this->assertNotNull($relation);
-        $this->assertEquals('test_column', $relation->name);
-        $this->assertEquals('count', $relation->aggregate);
+        static::assertEquals('column', $column->getName());
+        static::assertNotNull($relation);
+        static::assertEquals('test_column', $relation->name);
+        static::assertEquals('count', $relation->aggregate);
     }
 
     /**
@@ -57,7 +57,7 @@ class ColumnTest extends TestCase {
     public function can_identify_mutated_attributes()
     {
         $column = new Column('custom_column', null, new TestModel());
-        $this->assertTrue($column->isMutated());
-        $this->assertEquals('custom_column', $column->getAttributeName());
+        static::assertTrue($column->isMutated());
+        static::assertEquals('custom_column', $column->getAttributeName());
     }
 }

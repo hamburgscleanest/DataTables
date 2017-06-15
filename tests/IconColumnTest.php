@@ -24,7 +24,7 @@ class IconColumnTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatColumn('name', new IconColumn(new FontAwesomeAdapter()));
         $dataTable->query()->where('name', $iconName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td><i class="fa fa-' . $iconName . '"></i></td></tr></table>',
             $dataTable->render()
         );

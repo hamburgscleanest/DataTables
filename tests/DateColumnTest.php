@@ -25,7 +25,7 @@ class DateColumnTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['created_at'])->formatColumn('created_at', new DateColumn($dateFormat));
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>created_at</th></tr><tr><td>' . Carbon::parse($date)->format($dateFormat) . '</td></tr></table>',
             $dataTable->render()
         );
@@ -49,7 +49,7 @@ class DateColumnTest extends TestCase {
 
         $dateColumn->dateFormat($dateFormat);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>created_at</th></tr><tr><td>' . Carbon::parse($date)->format($dateFormat) . '</td></tr></table>',
             $dataTable->render()
         );

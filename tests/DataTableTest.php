@@ -35,7 +35,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class);
         $dataTable->query()->where('created_at', '1991-08-03');
 
-        $this->assertEquals(
+        static::assertEquals(
             '<div>no data</div>',
             $dataTable->render()
         );
@@ -51,7 +51,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class)->noDataHtml($html);
         $dataTable->query()->where('created_at', '1991-08-03');
 
-        $this->assertEquals(
+        static::assertEquals(
             $html,
             $dataTable->render()
         );
@@ -67,7 +67,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class)->noDataView('no_data');
         $dataTable->query()->where('created_at', '1991-08-03');
 
-        $this->assertEquals(
+        static::assertEquals(
             '<div>NO_DATA</div>',
             $dataTable->render()
         );
@@ -87,7 +87,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name']);
         $dataTable->query()->where('name', 'test');
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>' .
             $testmodel->id . '</td><td>' .
             $testmodel->created_at->format('Y-m-d H:i:s') . '</td><td>' .
@@ -110,7 +110,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->classes('test-class');
         $dataTable->query()->where('name', 'test');
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="test-class"><tr><th>id</th><th>created_at</th><th>name</th></tr><tr><td>' .
             $testmodel->id . '</td><td>' .
             $testmodel->created_at->format('Y-m-d H:i:s') . '</td><td>' .
@@ -132,7 +132,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class, ['custom_column']);
         $dataTable->query()->where('name', 'test');
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>custom_column</th></tr><tr><td>custom-column</td></tr></table>',
             $dataTable->render()
         );
@@ -210,7 +210,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class, ['created_at' => new DateColumn($dateFormat)]);
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>created_at</th></tr><tr><td>01.01.2017</td></tr></table>',
             $dataTable->render()
         );
@@ -230,7 +230,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class)->columns(['created_at' => new DateColumn($dateFormat)]);
         $dataTable->query()->where('name', $fieldName);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>created_at</th></tr><tr><td>01.01.2017</td></tr></table>',
             $dataTable->render()
         );
@@ -249,7 +249,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class, ['created_at', 'tester.created_at'])->with(['tester']);
         $dataTable->query()->where('testmodels.created_at', $parent->created_at->format('Y-m-d H:i:s'));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>created_at</th><th>tester_created_at</th></tr><tr><td>2017-01-01 00:00:00</td><td>2017-02-02 00:00:00</td></tr></table>',
             $dataTable->render()
         );
@@ -268,7 +268,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class, ['created_at', 'testers.created_at'])->with(['testers']);
         $dataTable->query()->where('testmodels.created_at', $parent->created_at->format('Y-m-d H:i:s'));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>created_at</th><th>testers_created_at</th></tr><tr><td>2017-01-01 00:00:00</td><td>2017-02-02 00:00:00</td></tr></table>',
             $dataTable->render()
         );
@@ -288,7 +288,7 @@ class DataTableTest extends TestCase
         $dataTable = DataTable::model(TestModel::class, ['created_at', 'COUNT(testers.id)'])->with(['testers']);
         $dataTable->query()->where('testmodels.created_at', $parent->created_at->format('Y-m-d H:i:s'));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>created_at</th><th>count_testers_id</th></tr><tr><td>2017-01-01 00:00:00</td><td>2</td></tr></table>',
             $dataTable->render()
         );

@@ -3,12 +3,20 @@
 namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Helpers\SessionHelper;
+use Illuminate\Support\Facades\Request;
 
 /**
  * Class SessionHelperTest
  * @package hamburgscleanest\DataTables\Tests
  */
 class SessionHelperTest extends TestCase {
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        Request::setLaravelSession($this->app['session.store']);
+    }
 
     /**
      * @test
@@ -17,7 +25,7 @@ class SessionHelperTest extends TestCase {
     {
         $sessionHelper = new SessionHelper();
 
-        $this->assertNull($sessionHelper->getState('test'));
+        static::assertNull($sessionHelper->getState('test'));
     }
 
     /**
@@ -28,7 +36,7 @@ class SessionHelperTest extends TestCase {
         $sessionHelper = new SessionHelper();
 
         $sessionHelper->saveState('test', true);
-        $this->assertTrue($sessionHelper->getState('test'));
+        static::assertTrue($sessionHelper->getState('test'));
     }
 
     /**
@@ -40,6 +48,6 @@ class SessionHelperTest extends TestCase {
 
         $sessionHelper->saveState('test', true);
         $sessionHelper->removeState('test');
-        $this->assertNull($sessionHelper->getState('test'));
+        static::assertNull($sessionHelper->getState('test'));
     }
 }

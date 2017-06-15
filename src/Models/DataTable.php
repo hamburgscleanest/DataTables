@@ -200,7 +200,7 @@ class DataTable {
         /** @var Column $column */
         $column = \array_first(
             $this->_columns,
-            function($index, $column) use ($columnName) {
+            function($column) use ($columnName) {
                 /** @var Column $column */
                 return $column->getName() === $columnName;
             }

@@ -19,7 +19,7 @@ class UrlHelperTest extends TestCase {
         \request()->server->set('QUERY_STRING', 'test=abc&test2=def');
 
         $urlHelper = new UrlHelper();
-        $this->assertEquals(
+        static::assertEquals(
             [
                 'test'  => 'abc',
                 'test2' => 'def'
