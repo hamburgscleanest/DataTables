@@ -1,6 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node2" href="$classhamburgscleanest_1_1_data_tables_1_1_facades_1_1_data_table.html" title="DataTable" alt="" coords="132,5,212,32"/>
-<area shape="rect" id="node3" href="$classhamburgscleanest_1_1_data_tables_1_1_facades_1_1_session_helper.html" title="SessionHelper" alt="" coords="119,56,225,83"/>
-<area shape="rect" id="node4" href="$classhamburgscleanest_1_1_data_tables_1_1_facades_1_1_table_renderer.html" title="TableRenderer" alt="" coords="119,107,225,133"/>
-<area shape="rect" id="node5" href="$classhamburgscleanest_1_1_data_tables_1_1_facades_1_1_url_helper.html" title="UrlHelper" alt="" coords="135,157,209,184"/>
+<area shape="rect" id="node1" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component.html" title="DataComponent" alt="" coords="5,56,120,83"/>
+<area shape="rect" id="node2" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_components_1_1_data_scout.html" title="DataScout" alt="" coords="168,5,251,32"/>
+<area shape="rect" id="node3" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_components_1_1_paginator.html" title="Paginator" alt="" coords="171,56,248,83"/>
+<area shape="rect" id="node4" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_components_1_1_sorter.html" title="Sorter" alt="" coords="181,107,238,133"/>
 </map>

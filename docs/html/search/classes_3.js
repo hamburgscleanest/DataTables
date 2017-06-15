@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['paginator',['Paginator',['../classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_components_1_1_paginator.html',1,'hamburgscleanest::DataTables::Models::DataComponents']]]
+  ['header',['Header',['../classhamburgscleanest_1_1_data_tables_1_1_models_1_1_header.html',1,'hamburgscleanest::DataTables::Models']]],
+  ['headerformatter',['HeaderFormatter',['../interfacehamburgscleanest_1_1_data_tables_1_1_interfaces_1_1_header_formatter.html',1,'hamburgscleanest::DataTables::Interfaces']]]
 ];

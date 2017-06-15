@@ -1,3 +1,5 @@
 <map id="ColumnFormatter" name="ColumnFormatter">
-<area shape="rect" id="node2" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_column_formatters_1_1_date_column.html" title="DateColumn" alt="" coords="20,80,113,107"/>
+<area shape="rect" id="node2" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_column_formatters_1_1_date_column.html" title="DateColumn" alt="" coords="5,80,99,107"/>
+<area shape="rect" id="node3" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_column_formatters_1_1_icon_column.html" title="IconColumn" alt="" coords="123,80,213,107"/>
+<area shape="rect" id="node4" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_column_formatters_1_1_image_column.html" title="ImageColumn" alt="" coords="237,80,339,107"/>
 </map>

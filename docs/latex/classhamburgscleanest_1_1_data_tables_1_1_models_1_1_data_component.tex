@@ -2,8 +2,7 @@
 \label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component}\index{Data\+Component@{Data\+Component}}
 
 
-Inheritance diagram for Data\+Component\+:
-\nopagebreak
+Inheritance diagram for Data\+Component\+:\nopagebreak
 \begin{figure}[H]
 \begin{center}
 \leavevmode
@@ -13,7 +12,7 @@ Inheritance diagram for Data\+Component\+:
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a510fbf00bd4123cb4b3faeb8cb14bd0b}{init} (Builder \$query\+Builder, array \$columns)
+\hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a69c14abc547575170f5c45a94c58ac8a}{init} (\hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_table}{Data\+Table} \$data\+Table)
 \item 
 \hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a565ac6563f3548952f5b3b9807799d17}{remember} ()
 \item 
@@ -21,6 +20,8 @@ Inheritance diagram for Data\+Component\+:
 \item 
 \mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a18e1ad2a8fdb81acfc1d88c1efef5f4a}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a18e1ad2a8fdb81acfc1d88c1efef5f4a}} 
 {\bfseries transform\+Data} ()
+\item 
+\hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a3d0963e68bb313b163a73f2803c64600}{get\+Name} ()
 \item 
 \hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_afde88292c44dc59faf017738dae6dffb}{render} ()
 \end{DoxyCompactItemize}
@@ -38,17 +39,14 @@ Inheritance diagram for Data\+Component\+:
 \subsection*{Protected Attributes}
 \begin{DoxyCompactItemize}
 \item 
-\mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_aa4dd6d6d5979d3ee49570921a0772e00}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_aa4dd6d6d5979d3ee49570921a0772e00}} 
-{\bfseries \$\+\_\+query\+Builder}
-\item 
 \mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a57effc70e4d12c60eb1f210d9870a43b}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a57effc70e4d12c60eb1f210d9870a43b}} 
 {\bfseries \$\+\_\+remember\+State} = false
 \item 
 \mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_af1957828bb9ad0679ab529f6dbf639af}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_af1957828bb9ad0679ab529f6dbf639af}} 
 {\bfseries \$\+\_\+remember\+Key} = \textquotesingle{}global\textquotesingle{}
 \item 
-\mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a5fceff2607cd15442917d37141b168d1}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a5fceff2607cd15442917d37141b168d1}} 
-{\bfseries \$\+\_\+columns} = \mbox{[}$\,$\mbox{]}
+\mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a89674a8be52428c061003e413ce90575}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a89674a8be52428c061003e413ce90575}} 
+{\bfseries \$\+\_\+data\+Table}
 \end{DoxyCompactItemize}
 
 
@@ -91,19 +89,29 @@ Forget the state of the data component.
 \begin{DoxyReturn}{Returns}
 \hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component}{Data\+Component} 
 \end{DoxyReturn}
-\mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a510fbf00bd4123cb4b3faeb8cb14bd0b}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a510fbf00bd4123cb4b3faeb8cb14bd0b}} 
+\mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a3d0963e68bb313b163a73f2803c64600}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a3d0963e68bb313b163a73f2803c64600}} 
+\index{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component@{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component}!get\+Name@{get\+Name}}
+\index{get\+Name@{get\+Name}!hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component@{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component}}
+\subsubsection{\texorpdfstring{get\+Name()}{getName()}}
+{\footnotesize\ttfamily get\+Name (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyReturn}{Returns}
+string 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a69c14abc547575170f5c45a94c58ac8a}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a69c14abc547575170f5c45a94c58ac8a}} 
 \index{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component@{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component}!init@{init}}
 \index{init@{init}!hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component@{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component}}
 \subsubsection{\texorpdfstring{init()}{init()}}
-{\footnotesize\ttfamily init (\begin{DoxyParamCaption}\item[{Builder}]{\$query\+Builder,  }\item[{array}]{\$columns }\end{DoxyParamCaption})}
+{\footnotesize\ttfamily init (\begin{DoxyParamCaption}\item[{\hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_table}{Data\+Table}}]{\$data\+Table }\end{DoxyParamCaption})}
 
 
 \begin{DoxyParams}[1]{Parameters}
-Builder & {\em \$query\+Builder} & \\
-\hline
-array & {\em \$columns} & \\
+\hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_table}{Data\+Table} & {\em \$data\+Table} & \\
 \hline
 \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\hyperlink{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component}{Data\+Component} 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a565ac6563f3548952f5b3b9807799d17}\label{classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_component_a565ac6563f3548952f5b3b9807799d17}} 
 \index{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component@{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component}!remember@{remember}}
 \index{remember@{remember}!hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component@{hamburgscleanest\+::\+Data\+Tables\+::\+Models\+::\+Data\+Component}}

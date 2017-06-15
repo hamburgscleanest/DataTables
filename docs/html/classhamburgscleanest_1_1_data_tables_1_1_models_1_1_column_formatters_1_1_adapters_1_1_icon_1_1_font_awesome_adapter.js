@@ -1,0 +1,4 @@
+var classhamburgscleanest_1_1_data_tables_1_1_models_1_1_column_formatters_1_1_adapters_1_1_icon_1_1_font_awesome_adapter =
+[
+    [ "format", "classhamburgscleanest_1_1_data_tables_1_1_models_1_1_column_formatters_1_1_adapters_1_1_icon_1_1_font_awesome_adapter.html#a1d0304fbc3ae752c85fdcea52a87fa03", null ]
+];
