@@ -61,6 +61,21 @@ Add the service provider to your providers array
 You can extend the behaviour of the table via data components.
 Just create a new component and add it to the table.
 
+All added components can be accessed directly on the DataTable class via their classnames.
+Optionally you can pass a name for better identification or using multiple components of the same class.
+
+**Example 1 - Adding a component without a name:**
+
+`$dataTable->addComponent(new Component())`
+
+Render it in the view: `$dataTable->component->render()`
+
+**Example 2 - Adding a component with a name:**
+
+`$dataTable->addComponent(new Component(), 'my shiny component')`
+
+Render it in the view: `$dataTable->myshinycomponent->render()`
+
 ### Adding pagination
 
 ``` php
@@ -73,6 +88,21 @@ Just create a new component and add it to the table.
 
 ### Rendering the pagination in your view (page links)
 
+#### Render via DataTable property
+Passing all of your components to your blade view via variables can be pretty wiry. 
+To keep your code clean use the DataTables properties.
+``` php   
+    ...
+    
+    {!! $dataTable->myComponent->render() !!}
+    
+    ...
+```
+
+#### Render via passed variable
+
+Of course you can pass your components to your view like always 
+via `view('my_view', ['paginator' => $paginator]);` and render it in your blade file.
 ``` php   
     ...
     

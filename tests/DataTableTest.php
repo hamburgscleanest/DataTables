@@ -15,7 +15,8 @@ use RuntimeException;
  * Class DataTableTest
  * @package hamburgscleanest\DataTables\Tests
  */
-class DataTableTest extends TestCase {
+class DataTableTest extends TestCase
+{
 
     use DatabaseMigrations;
 
@@ -80,7 +81,7 @@ class DataTableTest extends TestCase {
         /** @var TestModel $testmodel */
         $testmodel = TestModel::create([
             'name'       => 'test',
-            'created_at' => '2017-01-01 12:00:00'
+            'created_at' => '2017-01-01 12:00:00',
         ]);
 
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name']);
@@ -103,7 +104,7 @@ class DataTableTest extends TestCase {
         /** @var TestModel $testmodel */
         $testmodel = TestModel::create([
             'name'       => 'test',
-            'created_at' => '2017-01-01 12:00:00'
+            'created_at' => '2017-01-01 12:00:00',
         ]);
 
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])->classes('test-class');
@@ -125,7 +126,7 @@ class DataTableTest extends TestCase {
     {
         TestModel::create([
             'name'       => 'test',
-            'created_at' => '2017-01-01 12:00:00'
+            'created_at' => '2017-01-01 12:00:00',
         ]);
 
         $dataTable = DataTable::model(TestModel::class, ['custom_column']);
