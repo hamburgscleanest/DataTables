@@ -23,7 +23,7 @@ class ImageColumnTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatColumn('name', new ImageColumn());
         $dataTable->query()->where('name', $imagePath);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td><img src="' . $imagePath . '"/></td></tr></table>',
             $dataTable->render()
         );
@@ -38,10 +38,10 @@ class ImageColumnTest extends TestCase {
         TestModel::create(['name' => $imagePath, 'created_at' => Carbon::now()]);
 
         $class = 'test-class';
-        $dataTable = DataTable::model(TestModel::class, ['name'])->formatColumn('name', new ImageColumn(null, $class));
+        $dataTable = DataTable::model(TestModel::class, ['name'])->formatColumn('name', (new ImageColumn())->classes($class));
         $dataTable->query()->where('name', $imagePath);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td><img src="' . $imagePath . '" class="' . $class . '"/></td></tr></table>',
             $dataTable->render()
         );
@@ -58,7 +58,7 @@ class ImageColumnTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatColumn('name', new ImageColumn());
         $dataTable->query()->where('name', $imagePath);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td></td></tr></table>',
             $dataTable->render()
         );
@@ -74,10 +74,10 @@ class ImageColumnTest extends TestCase {
         TestModel::create(['name' => $imagePath, 'created_at' => Carbon::now()]);
 
         $fallback = 'test-fallback';
-        $dataTable = DataTable::model(TestModel::class, ['name'])->formatColumn('name', new ImageColumn($fallback));
+        $dataTable = DataTable::model(TestModel::class, ['name'])->formatColumn('name', (new ImageColumn())->fallback($fallback));
         $dataTable->query()->where('name', $imagePath);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td>' . $fallback . '</td></tr></table>',
             $dataTable->render()
         );
