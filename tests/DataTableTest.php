@@ -2,7 +2,6 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
-use hamburgscleanest\DataTables\Exceptions\MultipleComponentAssertionException;
 use hamburgscleanest\DataTables\Facades\DataTable;
 use hamburgscleanest\DataTables\Facades\SessionHelper;
 use hamburgscleanest\DataTables\Models\ColumnFormatters\DateColumn;
@@ -293,44 +292,5 @@ class DataTableTest extends TestCase
             '<table class="table"><tr><th>created_at</th><th>count_testers_id</th></tr><tr><td>2017-01-01 00:00:00</td><td>2</td></tr></table>',
             $dataTable->render()
         );
-    }
-
-    /**
-     * @test
-     */
-    public function component_can_be_accessed_directly()
-    {
-        $dataTable = DataTable::model(TestModel::class)->addComponent(new Sorter());
-        $this->assertInstanceOf(Sorter::class, $dataTable->sorter);
-    }
-
-    /**
-     * @test
-     */
-    public function component_can_be_added_and_accessed_directly_by_name()
-    {
-        $dataTable = DataTable::model(TestModel::class)->addComponent(new Sorter(), 'myawesomecomponent');
-        $this->assertInstanceOf(Sorter::class, $dataTable->myawesomecomponent);
-    }
-
-    /**
-     * @test
-     */
-    public function component_can_not_be_added_twice_with_same_name()
-    {
-        $dataTable = DataTable::model(TestModel::class)->addComponent(new Sorter(), 'myawesomecomponent');
-        $this->expectException(MultipleComponentAssertionException::class);
-        $dataTable->addComponent(new Sorter(), 'myawesomecomponent');
-    }
-
-    /**
-     * @test
-     */
-    public function can_check_whether_component_exists()
-    {
-        $dataTable = DataTable::model(TestModel::class);
-        $this->assertFalse($dataTable->componentExists('sorter'));
-        $dataTable->addComponent(new Sorter());
-        $this->assertTrue($dataTable->componentExists('sorter'));
     }
 }
