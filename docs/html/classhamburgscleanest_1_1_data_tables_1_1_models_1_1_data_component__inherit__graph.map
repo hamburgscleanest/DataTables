@@ -1,0 +1,5 @@
+<map id="DataComponent" name="DataComponent">
+<area shape="rect" id="node2" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_components_1_1_data_scout.html" title="DataScout" alt="" coords="5,80,88,107"/>
+<area shape="rect" id="node3" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_components_1_1_paginator.html" title="Paginator" alt="" coords="112,80,189,107"/>
+<area shape="rect" id="node4" href="$classhamburgscleanest_1_1_data_tables_1_1_models_1_1_data_components_1_1_sorter.html" title="Sorter" alt="" coords="214,80,271,107"/>
+</map>

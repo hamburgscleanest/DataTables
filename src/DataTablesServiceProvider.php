@@ -22,7 +22,7 @@ class DataTablesServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot() : void
     {
 
     }
@@ -32,7 +32,7 @@ class DataTablesServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register() : void
     {
         $this->_registerDataTable();
         $this->_registerSessionHelper();

@@ -4,7 +4,6 @@ namespace hamburgscleanest\DataTables\Models;
 
 use hamburgscleanest\DataTables\Facades\SessionHelper;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 
 /**
  * Class DataComponent
@@ -12,17 +11,14 @@ use Illuminate\Http\Request;
  */
 abstract class DataComponent {
 
-    /** @var Builder */
-    protected $_queryBuilder;
-
     /** @var bool */
     protected $_rememberState = false;
 
     /** @var string */
     protected $_rememberKey = 'global';
 
-    /** @var array */
-    protected $_columns = [];
+    /** @var DataTable */
+    protected $_dataTable;
 
     /**
      * You cannot count the data when ordering.
@@ -33,15 +29,10 @@ abstract class DataComponent {
     public function getQueryCount() : int
     {
         /** @var \Illuminate\Database\Query\Builder $query */
-        $query = $this->_queryBuilder->getQuery();
+        $query = $this->_dataTable->query()->getQuery();
 
-        $oldOrders = $query->orders;
-        $oldLimit = $query->limit;
-        $oldOffset = $query->offset;
-
-        $query->orders = null;
-        $query->limit = null;
-        $query->offset = null;
+        [$oldOrders, $oldLimit, $oldOffset] = [$query->orders, $query->limit, $query->offset];
+        $query->orders = $query->limit = $query->offset = null;
 
         $dataCount = $query->count();
 
@@ -53,19 +44,22 @@ abstract class DataComponent {
     }
 
     /**
-     * @param Builder $queryBuilder
-     * @param array $columns
+     * @param DataTable $dataTable
+     *
+     * @return DataComponent
      */
-    public function init(Builder $queryBuilder, array $columns) : void
+    public function init(DataTable $dataTable) : DataComponent
     {
-        $this->_queryBuilder = $queryBuilder;
-        $this->_columns = $columns;
+        $this->_dataTable = $dataTable;
 
         if ($this->_rememberState)
         {
             $this->_readFromSession();
         }
+
         $this->_afterInit();
+
+        return $this;
     }
 
     /**

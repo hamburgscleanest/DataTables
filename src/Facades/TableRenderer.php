@@ -15,5 +15,5 @@ class TableRenderer extends Facade {
      *
      * @return string
      */
-    protected static function getFacadeAccessor() { return 'table_renderer'; }
+    protected static function getFacadeAccessor() : string { return 'table_renderer'; }
 }

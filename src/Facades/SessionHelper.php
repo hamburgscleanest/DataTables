@@ -15,5 +15,5 @@ class SessionHelper extends Facade {
      *
      * @return string
      */
-    protected static function getFacadeAccessor() { return 'session_helper'; }
+    protected static function getFacadeAccessor() : string { return 'session_helper'; }
 }

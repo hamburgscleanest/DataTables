@@ -33,7 +33,7 @@ class ColumnTest extends TestCase {
 
         $this->assertEquals('column', $column->getName());
         $this->assertNotNull($relation);
-        $this->assertEquals('test', $relation->name);
+        $this->assertEquals('test_column', $relation->name);
     }
 
     /**
@@ -47,7 +47,16 @@ class ColumnTest extends TestCase {
 
         $this->assertEquals('column', $column->getName());
         $this->assertNotNull($relation);
-        $this->assertEquals('test', $relation->name);
+        $this->assertEquals('test_column', $relation->name);
         $this->assertEquals('count', $relation->aggregate);
+    }
+
+    /**
+     * @test
+     */
+    public function can_identify_mutated_attributes()
+    {
+        $column = new Column('custom_column', null, new TestModel());
+        $this->assertTrue($column->isMutated());
     }
 }

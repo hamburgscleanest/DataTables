@@ -35,6 +35,9 @@ class DataTable
     /** @var array */
     private $_columns = [];
 
+    /** @var Model */
+    private $_model;
+
     /** @var array */
     private $_relations = [];
 
@@ -51,11 +54,12 @@ class DataTable
      */
     public function model(string $modelName, array $columns = []): DataTable
     {
-        if (!\class_exists($modelName) || !\is_subclass_of($modelName, Model::class)) {
-            throw new RuntimeException('Class "' . $modelName . '" does not exist or is not an active record!');
+        if (!\is_subclass_of($modelName, Model::class)) {
+            throw new RuntimeException('Class "' . $modelName . '" is not an active record!');
         }
 
-        $this->_queryBuilder = (new $modelName)->newQuery();
+        $this->_model = new $modelName;
+        $this->_queryBuilder = $this->_model->newQuery();
         $this->_columns = $this->_fetchColumns($columns);
 
         return $this;
@@ -72,7 +76,7 @@ class DataTable
         $columnModels = [];
         foreach ($columns as $column => $formatter) {
             [$column, $formatter] = $this->_setColumnFormatter($column, $formatter);
-            $columnModels[] = new Column($column, $formatter);
+            $columnModels[] = new Column($column, $formatter, $this->_model);
         }
 
         return $columnModels;
@@ -91,6 +95,14 @@ class DataTable
         }
 
         return [$column, $formatter];
+    }
+
+    /**
+     * @return array
+     */
+    public function getColumns() : array
+    {
+        return $this->_columns;
     }
 
     /**
@@ -226,6 +238,7 @@ class DataTable
      *
      * @param string $viewName
      * @return DataTable
+     * @throws \Throwable
      */
     public function noDataView(string $viewName): DataTable
     {
@@ -276,14 +289,74 @@ class DataTable
             $component->transformData();
         }
 
-        return $this->_queryBuilder->get();
+        return $this->_setSelection()->_queryBuilder->get();
     }
 
     private function _addRelations(): void
     {
-        if (\count($this->_relations) > 0) {
-            $this->_queryBuilder->with($this->_relations);
+        if (\count($this->_relations) === 0)
+        {
+            return;
         }
+
+        foreach ($this->_relations as $relation)
+        {
+            $this->_addJoin($relation, $this->_model->$relation());
+        }
+
+        $this->_queryBuilder->getQuery()->groupBy($this->_model->getTable() . '.' . $this->_model->getKeyName());
+    }
+
+    /**
+     * @param string $relation
+     * @param \Illuminate\Database\Eloquent\Relations\Relation $relationship
+     */
+    private function _addJoin(string $relation, \Illuminate\Database\Eloquent\Relations\Relation $relationship) : void
+    {
+        /** @var Model $related */
+        $related = $relationship->getRelated();
+
+        $this->_queryBuilder->join(
+            $related->getTable() . ' AS ' . $relation,
+            $this->_model->getTable() . '.' . $this->_model->getKeyName(),
+            '=',
+            $relation . '.' . $related->getForeignKey()
+        );
+    }
+
+    /**
+     * @return DataTable
+     */
+    private function _setSelection() : DataTable
+    {
+        $query = $this->_queryBuilder->getQuery();
+
+        $columns = $this->_getColumnsForSelect();
+        if (!empty($columns))
+        {
+            $query->selectRaw(
+                \implode(',',
+                    \array_map(function($column) {
+                        return $column->getIdentifier();
+                    }, $columns)
+                )
+            );
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    private function _getColumnsForSelect() : array
+    {
+        return \array_filter(
+            $this->_columns,
+            function($column) {
+                return !$column->isMutated();
+            }
+        );
     }
 
     private function _initColumns(): void

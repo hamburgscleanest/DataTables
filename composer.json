@@ -1,23 +1,32 @@
 {
   "name": "hamburgscleanest/data-tables",
   "type": "library",
-  "description": "Data tables whose behavior and appearance can be extended by components. For example sorting, pagination or searching the table. No JavaScript is required.",
+  "description": "Data tables whose behavior and appearance can be extended by components. For example sorting, paginating or filtering the table. No JavaScript is required.",
   "keywords": [
     "hamburgscleanest",
     "data-tables",
     "tables",
     "sortable",
     "pagination",
-    "search",
-    "extendable"
+    "searchable",
+    "filterable",
+    "extendable",
+    "customizable",
+    "adjustable"
   ],
   "homepage": "https://github.com/hamburgscleanest/DataTables",
   "license": "MIT",
   "authors": [
     {
-      "name": "Timo & Andre",
+      "name": "Timo",
       "email": "chroma91@gmail.com",
-      "homepage": "https://haccp24.com",
+      "homepage": "https://www.timo-pruesse.de/",
+      "role": "Developer"
+    },
+    {
+      "name": "André",
+      "email": "biermitl@gmail.com",
+      "homepage": "https://andrebiel.de/",
       "role": "Developer"
     }
   ],

@@ -70,19 +70,6 @@ class Paginator extends DataComponent {
     }
 
     /**
-     * @return Builder
-     */
-    protected function _shapeData() : Builder
-    {
-        if ($this->_perPage === 0)
-        {
-            return $this->_queryBuilder;
-        }
-
-        return $this->_queryBuilder->limit($this->_perPage)->offset(($this->_currentPage - 1) * $this->_perPage);
-    }
-
-    /**
      * Render the page links.
      *
      * @return string
@@ -231,7 +218,7 @@ class Paginator extends DataComponent {
      * @return null|string
      * @throws \RuntimeException
      */
-    private function _getNextPageUrl() : ?string
+    private function _getNextPageUrl() : ? string
     {
         if ($this->_currentPage >= $this->pageCount())
         {
@@ -254,6 +241,19 @@ class Paginator extends DataComponent {
         }
 
         return $this->_buildPageUrl($lastPage);
+    }
+
+    /**
+     * @return Builder
+     */
+    protected function _shapeData() : Builder
+    {
+        if ($this->_perPage === 0)
+        {
+            return $this->_dataTable->query();
+        }
+
+        return $this->_dataTable->query()->limit($this->_perPage)->offset(($this->_currentPage - 1) * $this->_perPage);
     }
 
     protected function _afterInit() : void
