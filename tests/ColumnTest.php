@@ -58,5 +58,6 @@ class ColumnTest extends TestCase {
     {
         $column = new Column('custom_column', null, new TestModel());
         $this->assertTrue($column->isMutated());
+        $this->assertEquals('custom_column', $column->getAttributeName());
     }
 }
