@@ -6,10 +6,10 @@ use hamburgscleanest\DataTables\Exceptions\MultipleComponentAssertionException;
 use hamburgscleanest\DataTables\Facades\TableRenderer;
 use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
+use hamburgscleanest\DataTables\Models\Column\Column;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 use RuntimeException;
 
 /**
@@ -236,7 +236,7 @@ class DataTable {
      */
     public function with(array $relations) : DataTable
     {
-        $this->_relations += $relations;
+        $this->_relations += Relationship::createFromArray($this->_model, $relations);
 
         return $this;
     }
@@ -283,8 +283,6 @@ class DataTable {
             return $this->_noDataHtml;
         }
 
-        $this->_initColumns();
-
         return TableRenderer::open($this->_classes) .
                TableRenderer::renderHeaders($this->_fetchHeaders(), $this->_headerFormatters) .
                TableRenderer::renderBody($data, $this->_columns) .
@@ -323,29 +321,13 @@ class DataTable {
             return;
         }
 
+        /** @var Relationship $relation */
         foreach ($this->_relations as $relation)
         {
-            $this->_addJoin($relation, $this->_model->$relation());
+            $relation->addJoin($this->_queryBuilder);
         }
 
         $this->_queryBuilder->getQuery()->groupBy($this->_model->getTable() . '.' . $this->_model->getKeyName());
-    }
-
-    /**
-     * @param string $relation
-     * @param \Illuminate\Database\Eloquent\Relations\Relation $relationship
-     */
-    private function _addJoin(string $relation, \Illuminate\Database\Eloquent\Relations\Relation $relationship) : void
-    {
-        /** @var Model $related */
-        $related = $relationship->getRelated();
-
-        $this->_queryBuilder->join(
-            $related->getTable() . ' AS ' . $relation,
-            $this->_model->getTable() . '.' . $this->_model->getKeyName(),
-            '=',
-            $relation . '.' . $related->getForeignKey()
-        );
     }
 
     /**
@@ -361,6 +343,7 @@ class DataTable {
             $query->selectRaw(
                 \implode(',',
                     \array_map(function($column) {
+                        /** @var Column $column */
                         return $column->getIdentifier();
                     }, $columns)
                 )
@@ -378,17 +361,10 @@ class DataTable {
         return \array_filter(
             $this->_columns,
             function($column) {
+                /** @var Column $column */
                 return !$column->isMutated();
             }
         );
-    }
-
-    private function _initColumns() : void
-    {
-        if (\count($this->_columns) === 0)
-        {
-            $this->_columns = $this->_fetchColumns(Schema::getColumnListing($this->_queryBuilder->getQuery()->from));
-        }
     }
 
     /**

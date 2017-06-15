@@ -1,6 +1,6 @@
 <?php
 
-namespace hamburgscleanest\DataTables\Models;
+namespace hamburgscleanest\DataTables\Models\Column;
 
 use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
 use Illuminate\Database\Eloquent\Model;
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Header
- * @package hamburgscleanest\hamburgscleanest\DataTables\Models
+ * @package hamburgscleanest\hamburgscleanest\DataTables\Models\Column
  */
 class Column {
 
@@ -24,7 +24,7 @@ class Column {
     /** @var string */
     private $_table;
 
-    /** @var Relation */
+    /** @var ColumnRelation */
     private $_relation;
 
     /** @var ColumnFormatter */
@@ -62,7 +62,7 @@ class Column {
 
         $this->_name = \str_replace(')', '', \mb_substr($name, $posDivider + 1));
 
-        $this->_relation = new Relation($name);
+        $this->_relation = new ColumnRelation($name);
         $aggregate = $this->_relation->aggregate;
         $this->_key = ($aggregate !== 'first' ? ($aggregate . '_') : '') . $this->_relation->name;
     }
@@ -84,9 +84,9 @@ class Column {
     }
 
     /**
-     * @return null|Relation
+     * @return null|ColumnRelation
      */
-    public function getRelation() : ? Relation
+    public function getRelation() : ? ColumnRelation
     {
         return $this->_relation;
     }

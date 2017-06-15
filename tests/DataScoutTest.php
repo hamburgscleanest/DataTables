@@ -36,7 +36,7 @@ class DataScoutTest extends TestCase {
         $dataScout->addQuery($queryString);
         $dataTable->render();
 
-        $this->assertLessThan($countBeforeSearch, $dataScout->getQueryCount());
+        static::assertLessThan($countBeforeSearch, $dataScout->getQueryCount());
     }
 
     /**
@@ -46,13 +46,13 @@ class DataScoutTest extends TestCase {
     {
         $queryString = 'test-123';
 
-        request()->request->add(['search' => $queryString]);
+        \request()->request->add(['search' => $queryString]);
 
         TestModel::create(['name' => $queryString, 'created_at' => Carbon::now()]);
 
         $dataTable = DataTable::model(TestModel::class, ['name'])->addComponent(new DataScout(['name']));
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td>' . $queryString . '</td></tr></table>',
             $dataTable->render()
         );
@@ -73,7 +73,7 @@ class DataScoutTest extends TestCase {
 
         TestModel::create(['name' => $queryString, 'created_at' => Carbon::now()]);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td>' . $queryString . '</td></tr></table>',
             $dataTable->render()
         );
@@ -89,7 +89,7 @@ class DataScoutTest extends TestCase {
 
         $dataTable->addComponent(new DataScout(['name']));
 
-        $this->assertEquals($beforeSearch, $dataTable->render());
+        static::assertEquals($beforeSearch, $dataTable->render());
     }
 
     /**
@@ -108,7 +108,7 @@ class DataScoutTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name', 'created_at'])->addComponent($dataScout);
         $dataTable->render();
 
-        $this->assertEquals(0, $dataScout->getQueryCount());
+        static::assertEquals(0, $dataScout->getQueryCount());
     }
 
     /**
@@ -123,7 +123,7 @@ class DataScoutTest extends TestCase {
 
         DataTable::model(TestModel::class, ['name'])->addComponent($dataScout);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<form method="get" action="' . $this->baseUrl .
             '?search="><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="Search.."/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
             $buttonText . '</button></div></div></form>',
@@ -143,7 +143,7 @@ class DataScoutTest extends TestCase {
 
         DataTable::model(TestModel::class, ['name'])->addComponent($dataScout);
 
-        $this->assertEquals(
+        static::assertEquals(
             '<form method="get" action="' . $this->baseUrl .
             '?search="><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
             $placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">Search</button></div></div></form>',

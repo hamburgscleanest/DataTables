@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
-use hamburgscleanest\DataTables\Models\Column;
+use hamburgscleanest\DataTables\Models\Column\Column;
 
 /**
  * Class ColumnTest
