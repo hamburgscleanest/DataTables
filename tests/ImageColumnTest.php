@@ -17,7 +17,7 @@ class ImageColumnTest extends TestCase {
      */
     public function image_is_rendered()
     {
-        $imagePath = __DIR__ . '/images/test.jpg';
+        $imagePath = __DIR__ . '/images/test.gif';
         TestModel::create(['name' => $imagePath, 'created_at' => Carbon::now()]);
 
         $dataTable = DataTable::model(TestModel::class, ['name'])->formatColumn('name', new ImageColumn());
@@ -34,7 +34,7 @@ class ImageColumnTest extends TestCase {
      */
     public function is_rendered_with_custom_classes()
     {
-        $imagePath = __DIR__ . '/images/test.jpg';
+        $imagePath = __DIR__ . '/images/test.gif';
         TestModel::create(['name' => $imagePath, 'created_at' => Carbon::now()]);
 
         $class = 'test-class';
