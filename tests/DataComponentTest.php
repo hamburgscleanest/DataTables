@@ -4,15 +4,12 @@ namespace hamburgscleanest\DataTables\Tests;
 
 use hamburgscleanest\DataTables\Exceptions\MultipleComponentAssertionException;
 use hamburgscleanest\DataTables\Facades\DataTable;
-use hamburgscleanest\DataTables\Models\Column;
-use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 
 /**
  * Class DataComponentTest
  * @package hamburgscleanest\DataTables\Tests
  */
-class DataComponentTest extends TestCase
-{
+class DataComponentTest extends TestCase {
 
     /**
      * @test
@@ -92,12 +89,16 @@ class DataComponentTest extends TestCase
         $dataTable->addComponent(new TestDataComponent(), 'myawesomecomponent');
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function normal_properties_are_returned_correctly()
     {
+        $testValue = 'test';
         $dataTable = DataTable::model(TestModel::class);
-        $dataTable->test = 1;
-        $this->assertEquals(1, $dataTable->test);
+        $dataTable->test = $testValue;
+        $this->assertEquals($testValue, $dataTable->test);
+        DataTable::shouldReceive('test')->andReturn($testValue);
     }
 
     /**

@@ -123,6 +123,14 @@ abstract class DataComponent {
     }
 
     /**
+     * @return string
+     */
+    public function getName() : string
+    {
+        return \mb_strtolower(\class_basename($this));
+    }
+
+    /**
      * @return Builder
      */
     abstract protected function _shapeData() : Builder;
