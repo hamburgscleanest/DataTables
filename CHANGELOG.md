@@ -4,6 +4,23 @@ All Notable changes to `data-tables` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.0.0
+
+### Added
+- Nothing
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
+
+### Removed
+- Nothing
+
+### Security
+- Nothing
+
 ## 0.9.0
 
 ### Added
@@ -12,19 +29,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 // can be accessed via $dataTable->paginator
 $dataTable->addComponent(new Paginator);
 ```
-
-### Deprecated
-- Nothing
+- ColumnFormatter for Icons -> IconColumn
+- ColumnFormatter for Images -> ImageColumn
 
 ### Fixed
 - Remembering the state does not work
-- DataComponents need to be able to access the relations
-
-### Removed
-- Nothing
-
-### Security
-- Nothing
+- DataComponents could not access the defined relations (columns of relations like 'relation.id')
 
 ## 0.8.1
 
