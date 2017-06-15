@@ -44,8 +44,10 @@ class PaginationTest extends TestCase {
         /** @var Paginator $paginator */
         $paginator = new Paginator(0);
 
-        DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
             ->addComponent($paginator);
+
+        $dataTable->render();
 
         $this->assertEquals(1, $paginator->pageCount());
     }

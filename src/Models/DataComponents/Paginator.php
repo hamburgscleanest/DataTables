@@ -190,7 +190,7 @@ class Paginator extends DataComponent {
      */
     public function pageCount() : int
     {
-        if ($this->_perPage === 0)
+        if (empty($this->_perPage))
         {
             return 1;
         }
@@ -248,7 +248,7 @@ class Paginator extends DataComponent {
      */
     protected function _shapeData() : Builder
     {
-        if ($this->_perPage === 0)
+        if (empty($this->_perPage))
         {
             return $this->_dataTable->query();
         }
