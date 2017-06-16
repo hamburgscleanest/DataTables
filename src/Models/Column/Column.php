@@ -112,7 +112,7 @@ class Column {
     {
         $value = $this->getValue($rowModel);
 
-        return $this->_formatter !== null ? $this->_formatter->format($value) : $value;
+        return $this->_formatter !== null ? $this->_formatter->format($rowModel, $value) : $value;
     }
 
     /**

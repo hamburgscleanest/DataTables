@@ -2,7 +2,7 @@
 
 namespace hamburgscleanest\DataTables\Helpers;
 
-use hamburgscleanest\DataTables\Models\Column;
+use hamburgscleanest\DataTables\Models\Column\Column;
 use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;

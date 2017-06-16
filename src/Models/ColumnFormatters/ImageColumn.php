@@ -3,6 +3,7 @@
 namespace hamburgscleanest\DataTables\Models\ColumnFormatters;
 
 use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class ImageColumn
@@ -28,10 +29,11 @@ class ImageColumn implements ColumnFormatter {
     }
 
     /**
+     * @param Model $rowModel
      * @param string $column
      * @return string
      */
-    public function format(string $column) : string
+    public function format(Model $rowModel, string $column) : string
     {
         if (!\file_exists($column))
         {
