@@ -18,15 +18,31 @@ class LinkColumn implements ColumnFormatter {
     /** @var bool */
     private $_openNew;
 
+    /** @var string */
+    private $_classes;
+
     /**
      * LinkColumn constructor.
      * @param string $url
+     * @param null|string $classes
      * @param bool $openInNewWindow
      */
-    public function __construct(string $url, bool $openInNewWindow = false)
+    public function __construct(string $url, ? string $classes = null, bool $openInNewWindow = false)
     {
         $this->_dataLink = new DataLink($url);
+        $this->_classes = $classes;
         $this->_openNew = $openInNewWindow;
+    }
+
+    /**
+     * @param string $classes
+     * @return LinkColumn
+     */
+    public function classes(string $classes) : LinkColumn
+    {
+        $this->_classes = $classes;
+
+        return $this;
     }
 
     /**
@@ -60,7 +76,10 @@ class LinkColumn implements ColumnFormatter {
      */
     private function _renderLink(string $name, string $url) : string
     {
-        return '<a href="' . $url . '"' . ($this->_openNew ? ' target="_blank"' : '') . '>' . $name . '</a>';
+        return '<a href="' . $url . '"' .
+               ($this->_openNew ? ' target="_blank"' : '') .
+               (!empty($this->_classes) ? (' class="' . $this->_classes . '"') : '') .
+               '>' . $name . '</a>';
     }
 
     /**
