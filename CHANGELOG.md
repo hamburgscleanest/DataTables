@@ -7,7 +7,15 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## 1.0.0
 
 ### Added
-- Nothing
+- LinkColumn formatter
+``` php
+/**
+  * Every attribute of the model can be used to generate a link.
+  * For example generating a link to the users profile on the "name" column.
+  * Values in curly braces, e.g. "{id}" will be replaced by the model's value.
+  */
+$dataTable->formatColumn('name', new LinkColumn('/users/{id}')); // e.g. /users/1337
+```
 
 ### Deprecated
 - Nothing
