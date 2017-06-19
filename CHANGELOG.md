@@ -21,6 +21,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 0.9.2
+
+### Fixed
+- Search modes in the "FulltextSearch" class can now be set correctly
+
 ## 0.9.1
 
 ### Added
