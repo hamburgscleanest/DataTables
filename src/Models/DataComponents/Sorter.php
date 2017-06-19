@@ -3,7 +3,6 @@
 namespace hamburgscleanest\DataTables\Models\DataComponents;
 
 use hamburgscleanest\DataTables\Facades\SessionHelper;
-use hamburgscleanest\DataTables\Models\Column;
 use hamburgscleanest\DataTables\Models\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -65,7 +64,7 @@ class Sorter extends DataComponent {
      */
     public function render() : string
     {
-        return implode(', ', \array_keys($this->_sortFields));
+        return \implode(', ', \array_keys($this->_sortFields));
     }
 
     /**
