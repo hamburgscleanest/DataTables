@@ -31,19 +31,6 @@ class DataScout extends DataComponent {
     }
 
     /**
-     * @return Builder
-     */
-    public function _shapeData() : Builder
-    {
-        if ($this->_dataSearch->queryCount() === 0)
-        {
-            return $this->_dataTable->query();
-        }
-
-        return $this->_dataSearch->searchData($this->_dataTable->query());
-    }
-
-    /**
      * How should the dataset be searched?
      * Define the search algorithm, e.g. SimpleSearch or FulltextSearch
      *
@@ -110,6 +97,19 @@ class DataScout extends DataComponent {
     public function getSearchUrl() : string
     {
         return $this->_dataSearch->getSearchUrl();
+    }
+
+    /**
+     * @return Builder
+     */
+    protected function _shapeData() : Builder
+    {
+        if ($this->_dataSearch->queryCount() === 0)
+        {
+            return $this->_dataTable->query();
+        }
+
+        return $this->_dataSearch->searchData($this->_dataTable->query());
     }
 
     protected function _afterInit() : void

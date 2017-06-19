@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class FulltextSearch extends DataSearch {
 
+    const SUPPORTED_DRIVERS = ['mysql', 'sqlite'];
+
     /** @var string */
     private $_mode;
 
@@ -26,6 +28,23 @@ class FulltextSearch extends DataSearch {
         parent::__construct($searchableFields);
         $this->_mode = $mode;
         $this->_databaseDriver = \config('database.connections.' . \config('database.default') . '.driver');
+    }
+
+    /**
+     * @param string $driver
+     * @return FulltextSearch
+     * @throws \RuntimeException
+     */
+    public function forceDatabaseDriver(string $driver) : FulltextSearch
+    {
+        if (!\in_array($driver, self::SUPPORTED_DRIVERS, true))
+        {
+            throw new \RuntimeException($driver . ' is not supported at the moment');
+        }
+
+        $this->_databaseDriver = $driver;
+
+        return $this;
     }
 
     /**
@@ -73,6 +92,6 @@ class FulltextSearch extends DataSearch {
             return $matchQuery;
         }
 
-        return 'MATCH(' . \implode(',', $this->_searchableFields) . ') AGAINST (\'' . $value . '\'' . (!empty($this->_mode) ? $this->_mode : '') . ')';
+        return 'MATCH(' . \implode(',', $this->_searchableFields) . ') AGAINST (\'' . $value . '\'' . (!empty($this->_mode) ? (' ' . $this->_mode) : '') . ')';
     }
 }
