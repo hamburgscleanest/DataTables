@@ -29,6 +29,7 @@ class TestCase extends Orchestra {
             $table->unsignedInteger('test_model_id')->nullable();
             $table->foreign('test_model_id')->references('id')->on('testmodels');
         });
+
         TestModel::truncate();
         \factory(TestModel::class, 100)->create();
     }

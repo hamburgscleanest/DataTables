@@ -5,6 +5,8 @@ namespace hamburgscleanest\DataTables\Tests;
 use Carbon\Carbon;
 use hamburgscleanest\DataTables\Facades\DataTable;
 use hamburgscleanest\DataTables\Models\DataComponents\DataScout;
+use hamburgscleanest\DataTables\Models\DataComponents\Search\FulltextSearch;
+use hamburgscleanest\DataTables\Models\DataComponents\Search\SimpleSearch;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /**
@@ -21,7 +23,32 @@ class DataScoutTest extends TestCase {
     public function searching_reduces_the_dataset()
     {
         /** @var DataScout $dataScout */
-        $dataScout = new DataScout(['name']);
+        $dataScout = new DataScout(new SimpleSearch(['name']));
+
+        /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
+            ->addComponent($dataScout);
+
+        $countBeforeSearch = $dataScout->getQueryCount();
+
+        $queryString = 'test-123';
+
+        TestModel::create(['name' => $queryString, 'created_at' => Carbon::now()]);
+
+        $dataScout->addQuery($queryString);
+        $dataTable->render();
+
+        static::assertLessThan($countBeforeSearch, $dataScout->getQueryCount());
+    }
+
+    /**
+     * @test
+     */
+    public function changing_the_algorithm_works()
+    {
+        /** @var DataScout $dataScout */
+        $dataScout = new DataScout(new FulltextSearch(['name']));
+        $dataScout->setSearch(new SimpleSearch(['name']));
 
         /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
         $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'])
@@ -50,7 +77,7 @@ class DataScoutTest extends TestCase {
 
         TestModel::create(['name' => $queryString, 'created_at' => Carbon::now()]);
 
-        $dataTable = DataTable::model(TestModel::class, ['name'])->addComponent(new DataScout(['name']));
+        $dataTable = DataTable::model(TestModel::class, ['name'])->addComponent(new DataScout(new SimpleSearch(['name'])));
 
         static::assertEquals(
             '<table class="table"><tr><th>name</th></tr><tr><td>' . $queryString . '</td></tr></table>',
@@ -64,7 +91,7 @@ class DataScoutTest extends TestCase {
     public function can_make_field_searchable()
     {
         /** @var DataScout $dataScout */
-        $dataScout = new DataScout();
+        $dataScout = new DataScout(new SimpleSearch());
         $dataScout->makeSearchable('name');
         $dataTable = DataTable::model(TestModel::class, ['name'])->addComponent($dataScout);
 
@@ -87,7 +114,7 @@ class DataScoutTest extends TestCase {
         $dataTable = DataTable::model(TestModel::class, ['name']);
         $beforeSearch = $dataTable->render();
 
-        $dataTable->addComponent(new DataScout(['name']));
+        $dataTable->addComponent(new DataScout(new SimpleSearch(['name'])));
 
         static::assertEquals($beforeSearch, $dataTable->render());
     }
@@ -100,7 +127,7 @@ class DataScoutTest extends TestCase {
         $queryString = 'test-123';
 
         /** @var DataScout $dataScout */
-        $dataScout = new DataScout(['created_at']);
+        $dataScout = new DataScout(new SimpleSearch(['created_at']));
         $dataScout->addQuery($queryString);
 
         TestModel::create(['name' => $queryString, 'created_at' => Carbon::now()]);
@@ -114,19 +141,17 @@ class DataScoutTest extends TestCase {
     /**
      * @test
      */
-    public function displays_alternative_button_text()
+    public function displays_alternative_placeholder()
     {
-        $buttonText = 'my-test-button';
+        $placeholder = 'my-test-placeholder';
 
-        $dataScout = new DataScout();
-        $dataScout->buttonText($buttonText);
+        $dataScout = new DataScout(new SimpleSearch());
+        $dataScout->placeholder($placeholder);
 
         DataTable::model(TestModel::class, ['name'])->addComponent($dataScout);
 
         static::assertEquals(
-            '<form method="get" action="' . $this->baseUrl .
-            '?search="><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="Search.."/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
-            $buttonText . '</button></div></div></form>',
+            '<input name="datascout-search" class="form-control datascout-input" placeholder="' . $placeholder . '"/>',
             $dataScout->render()
         );
     }
@@ -134,20 +159,11 @@ class DataScoutTest extends TestCase {
     /**
      * @test
      */
-    public function displays_alternative_placeholder()
+    public function get_search_action()
     {
-        $placeholder = 'my-test-placeholder';
+        $dataScout = new DataScout(new SimpleSearch(['name']));
+        $dataScout->addQuery('hello world');
 
-        $dataScout = new DataScout();
-        $dataScout->placeholder($placeholder);
-
-        DataTable::model(TestModel::class, ['name'])->addComponent($dataScout);
-
-        static::assertEquals(
-            '<form method="get" action="' . $this->baseUrl .
-            '?search="><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
-            $placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">Search</button></div></div></form>',
-            $dataScout->render()
-        );
+        self::assertEquals($this->baseUrl . '?search=hello+world', $dataScout->getSearchUrl());
     }
 }

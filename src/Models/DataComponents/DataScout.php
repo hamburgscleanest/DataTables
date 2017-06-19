@@ -2,8 +2,8 @@
 
 namespace hamburgscleanest\DataTables\Models\DataComponents;
 
-use hamburgscleanest\DataTables\Facades\UrlHelper;
 use hamburgscleanest\DataTables\Models\DataComponent;
+use hamburgscleanest\DataTables\Models\DataComponents\Search\DataSearch;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -12,26 +12,20 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class DataScout extends DataComponent {
 
-    /** @var array */
-    private $_searchQueries = [];
-
-    /** @var array */
-    private $_searchableFields;
-
-    /** @var string */
-    private $_buttonText = 'Search';
-
     /** @var string */
     private $_placeholder = 'Search..';
 
+    /** @var DataSearch */
+    private $_dataSearch;
+
     /**
      * DataScout constructor.
-     * @param array $searchableFields
+     * @param DataSearch $dataSearch
      * @param bool $remember
      */
-    public function __construct(array $searchableFields = [], $remember = false)
+    public function __construct(DataSearch $dataSearch, $remember = false)
     {
-        $this->_searchableFields = $searchableFields;
+        $this->_dataSearch = $dataSearch;
         $this->_rememberKey = 'data-scout';
         $this->_rememberState = $remember;
     }
@@ -41,55 +35,37 @@ class DataScout extends DataComponent {
      */
     public function _shapeData() : Builder
     {
-        if (\count($this->_searchQueries) === 0)
+        if ($this->_dataSearch->queryCount() === 0)
         {
             return $this->_dataTable->query();
         }
 
-        $this->_dataTable->query()->where(function($query) {
-            foreach ($this->_searchQueries as $value)
-            {
-                $this->_addWhereQueries($query, $value);
-            }
-        });
-
-        return $this->_dataTable->query();
+        return $this->_dataSearch->searchData($this->_dataTable->query());
     }
 
     /**
-     * @param Builder $query
-     * @param string $value
-     */
-    private function _addWhereQueries(Builder $query, string $value) : void
-    {
-        foreach ($this->_searchableFields as $field)
-        {
-            $query->orWhere($field, 'like', '%' . $value . '%');
-        }
-    }
-
-    /**
-     * Add a query programmatically.
+     * How should the dataset be searched?
+     * Define the search algorithm, e.g. SimpleSearch or FulltextSearch
      *
-     * @param string $value
+     * @param DataSearch $dataSearch
      * @return DataScout
      */
-    public function addQuery(string $value) : DataScout
+    public function setSearch(DataSearch $dataSearch) : DataScout
     {
-        $this->_searchQueries[] = $value;
+        $this->_dataSearch = $dataSearch;
 
         return $this;
     }
 
     /**
-     * Set the text for the search button.
+     * Add a query programmatically.
      *
-     * @param string $text
+     * @param string $query
      * @return DataScout
      */
-    public function buttonText(string $text) : DataScout
+    public function addQuery(string $query) : DataScout
     {
-        $this->_buttonText = $text;
+        $this->_dataSearch->addQuery($query);
 
         return $this;
     }
@@ -115,7 +91,7 @@ class DataScout extends DataComponent {
      */
     public function makeSearchable(string $field) : DataScout
     {
-        $this->_searchableFields[] = $field;
+        $this->_dataSearch->addField($field);
 
         return $this;
     }
@@ -125,21 +101,15 @@ class DataScout extends DataComponent {
      */
     public function render() : string
     {
-        return '<form method="get" action="' . $this->_buildSearchUrl() .
-               '"><div class="row"><div class="col-md-10"><input name="search" class="form-control data-scout-input" placeholder="' .
-               $this->_placeholder . '"/></div><div class="col-md-2"><button type="submit" class="btn btn-primary">' .
-               $this->_buttonText . '</button></div></div></form>';
+        return '<input name="' . $this->getName() . '-search" class="form-control datascout-input" placeholder="' . $this->_placeholder . '"/>';
     }
 
     /**
      * @return string
      */
-    private function _buildSearchUrl() : string
+    public function getSearchUrl() : string
     {
-        $parameters = UrlHelper::queryParameters();
-        $parameters['search'] = \implode(',', $this->_searchQueries);
-
-        return \request()->url() . '?' . \http_build_query($parameters);
+        return $this->_dataSearch->getSearchUrl();
     }
 
     protected function _afterInit() : void
@@ -147,7 +117,7 @@ class DataScout extends DataComponent {
         $search = \request()->get('search');
         if (!empty($search))
         {
-            $this->_searchQueries += \explode(',', $search);
+            $this->_dataSearch->addQueries(\explode(',', $search));
         }
     }
 }
