@@ -35,9 +35,9 @@ class FulltextSearch extends DataSearch {
      * @see https://dev.mysql.com/doc/refman/5.7/en/fulltext-search.html
      *
      * @param string $mode
-     * @return DataSearch
+     * @return FulltextSearch
      */
-    public function setMode(string $mode) : DataSearch
+    public function setMode(string $mode) : FulltextSearch
     {
         $this->_mode = $mode;
 
