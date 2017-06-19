@@ -4,6 +4,7 @@ namespace hamburgscleanest\DataTables\Models\ColumnFormatters;
 
 use Carbon\Carbon;
 use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class DateColumn
@@ -28,7 +29,7 @@ class DateColumn implements ColumnFormatter {
      * @param string $dateFormat
      * @return DateColumn
      */
-    public function dateFormat(string $dateFormat): DateColumn
+    public function dateFormat(string $dateFormat) : DateColumn
     {
         $this->_dateFormat = $dateFormat;
 
@@ -36,10 +37,11 @@ class DateColumn implements ColumnFormatter {
     }
 
     /**
+     * @param Model $rowModel
      * @param string $column
      * @return string
      */
-    public function format(string $column): string
+    public function format(Model $rowModel, string $column) : string
     {
         return Carbon::parse($column)->format($this->_dateFormat);
     }

@@ -94,7 +94,7 @@ To keep your code clean use the DataTables properties.
 ``` php   
     ...
     
-    {!! $dataTable->myComponent->render() !!}
+    {!! $dataTable->paginator->render() !!}
     
     ...
 ```
@@ -158,7 +158,9 @@ Or even the "columns" function.
 
 ## Combine components and formatters
 
-Add sorting to the table via a data component and make your table headers sortable with a header formatter.
+You can combine any number of components and formatters to get your desired results. Mix all the data components, header formatters and column formatters you need.
+
+For example: Add sorting to the table with the "Sorter" data component and make your table headers sortable with the "SortableHeader" header formatter.
 
 ``` php   
     ...

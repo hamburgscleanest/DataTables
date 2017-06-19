@@ -4,7 +4,7 @@ All Notable changes to `data-tables` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.0.0
+## 1.0.0 (NEXT)
 
 ### Added
 - Nothing
@@ -20,6 +20,19 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Security
 - Nothing
+
+## 0.9.1
+
+### Added
+- LinkColumn formatter
+``` php
+/**
+  * Every attribute of the model can be used to generate a link.
+  * For example generating a link to the users profile on the "name" column.
+  * Values in curly braces, e.g. "{id}" will be replaced by the model's value.
+  */
+$dataTable->formatColumn('name', new LinkColumn('/users/{id}')); // e.g. /users/1337
+```
 
 ## 0.9.0
 
