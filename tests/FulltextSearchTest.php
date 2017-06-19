@@ -58,6 +58,18 @@ class FulltextSearchTest extends TestCase {
     /**
      * @test
      */
+    public function cannot_force_unsupported_database_driver()
+    {
+        $this->expectException(\RuntimeException::class);
+
+        /** @var FulltextSearch $searcher */
+        $searcher = new FulltextSearch(['name']);
+        $searcher->forceDatabaseDriver('test');
+    }
+
+    /**
+     * @test
+     */
     public function search_in_other_mode()
     {
         /** @var \hamburgscleanest\DataTables\Models\DataTable $dataTable */
