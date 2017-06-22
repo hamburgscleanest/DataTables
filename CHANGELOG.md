@@ -7,7 +7,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ## 1.0.0 (NEXT)
 
 ### Added
-- Nothing
+- `Automatic Package Discovery` for Laravel versions 5.5.x and later
 
 ### Deprecated
 - Nothing

@@ -57,10 +57,17 @@
   "extra": {
     "branch-alias": {
       "dev-master": "1.0-dev"
+    },
+    "laravel": {
+      "providers": [
+        "hamburgscleanest\\DataTables\\DataTablesServiceProvider"
+      ],
+      "aliases": {
+        "DataTable": "hamburgscleanest\\DataTables\\Facades\\DataTable"
+      }
     }
   },
   "config": {
     "sort-packages": true
-  },
-  "minimum-stability": "dev"
+  }
 }

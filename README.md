@@ -20,6 +20,8 @@ Via Composer
 $ composer require hamburgscleanest/data-tables
 ```
 
+### Laravel < 5.5.x
+
 Add the service provider to your providers array
 ``` php
     'providers' => [
@@ -29,6 +31,11 @@ Add the service provider to your providers array
             DataTablesServiceProvider::class,
         ],
 ```
+
+### Laravel >= 5.5.x 
+
+`Automatic Package Discovery`
+Everything is automatically registered for you when using Laravel 5.5.x or later.
 
 ## Usage
 

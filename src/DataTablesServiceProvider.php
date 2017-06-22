@@ -38,7 +38,10 @@ class DataTablesServiceProvider extends ServiceProvider {
         $this->_registerUrlHelper();
         $this->_registerTableRenderer();
 
-        $this->_setDataTableAlias();
+        if (\strncmp($this->app->version(), '5.5.', 4) === - 1)
+        {
+            $this->_setDataTableAlias();
+        }
     }
 
     private function _registerDataTable() : void
