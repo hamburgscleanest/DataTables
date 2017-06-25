@@ -8,6 +8,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Added
 - `Automatic Package Discovery` for Laravel versions 5.5.x and later
+- Caching of the results
+``` php       
+     DataTable::model(TestModel::class, $columns, new SimpleCache($minutes));
+     // or
+     $dataTable->cache(new SimpleCache(1440));
+```
 
 ### Deprecated
 - Nothing
