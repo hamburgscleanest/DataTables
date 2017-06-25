@@ -6,6 +6,8 @@ use hamburgscleanest\DataTables\Exceptions\MultipleComponentAssertionException;
 use hamburgscleanest\DataTables\Facades\TableRenderer;
 use hamburgscleanest\DataTables\Interfaces\ColumnFormatter;
 use hamburgscleanest\DataTables\Interfaces\HeaderFormatter;
+use hamburgscleanest\DataTables\Models\Cache\Cache;
+use hamburgscleanest\DataTables\Models\Cache\NoCache;
 use hamburgscleanest\DataTables\Models\Column\Column;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -42,15 +44,19 @@ class DataTable {
     /** @var string */
     private $_noDataHtml = '<div>no data</div>';
 
+    /** @var Cache */
+    private $_cache;
+
     /**
      * Set the base model whose data is displayed in the table.
      *
      * @param string $modelName
      * @param array $columns
-     * @return $this
+     * @param Cache|null $cache
+     * @return $this|DataTable
      * @throws \RuntimeException
      */
-    public function model(string $modelName, array $columns = []) : DataTable
+    public function model(string $modelName, array $columns = [], Cache $cache = null) : DataTable
     {
         if (!\is_subclass_of($modelName, Model::class))
         {
@@ -60,6 +66,7 @@ class DataTable {
         $this->_model = new $modelName;
         $this->_queryBuilder = $this->_model->newQuery();
         $this->_columns = $this->_fetchColumns($columns);
+        $this->_cache = $cache ?? new NoCache();
 
         return $this;
     }
@@ -96,6 +103,17 @@ class DataTable {
         }
 
         return [$column, $formatter];
+    }
+
+    /**
+     * @param Cache $cache
+     * @return DataTable
+     */
+    public function cache(Cache $cache) : DataTable
+    {
+        $this->_cache = $cache;
+
+        return $this;
     }
 
     /**
@@ -276,8 +294,12 @@ class DataTable {
      */
     public function render() : string
     {
-        $data = $this->_getData();
+        if ($this->_queryBuilder === null)
+        {
+            throw new RuntimeException('Unknown base model!');
+        }
 
+        $data = $this->_cache->retrieve(function() { return $this->_getData(); });
         if ($data->count() === 0)
         {
             return $this->_noDataHtml;
@@ -293,16 +315,9 @@ class DataTable {
      * Get data which should be displayed in the table.
      *
      * @return Collection
-     *
-     * @throws \RuntimeException
      */
     private function _getData() : Collection
     {
-        if ($this->_queryBuilder === null)
-        {
-            throw new RuntimeException('Unknown base model!');
-        }
-
         $this->_addRelations();
 
         /** @var DataComponent $component */
