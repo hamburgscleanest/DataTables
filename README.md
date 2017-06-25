@@ -194,6 +194,19 @@ If you omit the aggregate function, the value of the first related record is ret
      DataTable::model(TestModel::class)->columns(['COUNT(relation.id)'])->with(['relation']);
 ```
 
+## Cache the table
+
+You can cache the retrieved table data for a certain amount of minutes.
+It is automatically stored with the driver defined in your .env file.
+
+Of course you can write your own caching implementation. Just implement the `hamburgscleanest\DataTables\Models\Cache\Cache` interface.
+
+``` php       
+     DataTable::model(TestModel::class, $columns, new SimpleCache($minutes));
+     // or
+     $dataTable->cache(new SimpleCache(1440));
+```
+
 ## Changes
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
