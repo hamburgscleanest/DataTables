@@ -21,7 +21,7 @@ class ColumnCollection extends Collection {
      * @param  mixed $items
      * @param Model $model
      */
-    public function __construct($items = [], Model $model)
+    public function __construct($items, Model $model)
     {
         $this->_model = $model;
 
