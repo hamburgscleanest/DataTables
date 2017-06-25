@@ -164,8 +164,17 @@ class DataTableTest extends TestCase {
     {
         $this->expectException(UnknownBaseModelException::class);
 
-        $dataTable = DataTable::columns(['id', 'created_at', 'name']);
-        $dataTable->render();
+        DataTable::render();
+    }
+
+    /**
+     * @test
+     */
+    public function columns_cannot_be_defined_without_a_base_model()
+    {
+        $this->expectException(UnknownBaseModelException::class);
+
+        DataTable::columns(['id', 'created_at', 'name']);
     }
 
     /**
