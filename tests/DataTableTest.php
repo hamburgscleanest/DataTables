@@ -2,6 +2,9 @@
 
 namespace hamburgscleanest\DataTables\Tests;
 
+use hamburgscleanest\DataTables\Exceptions\ColumnNotFoundException;
+use hamburgscleanest\DataTables\Exceptions\NotAnActiveRecordException;
+use hamburgscleanest\DataTables\Exceptions\UnknownBaseModelException;
 use hamburgscleanest\DataTables\Facades\DataTable;
 use hamburgscleanest\DataTables\Facades\SessionHelper;
 use hamburgscleanest\DataTables\Models\ColumnFormatters\DateColumn;
@@ -9,14 +12,12 @@ use hamburgscleanest\DataTables\Models\DataComponents\Sorter;
 use hamburgscleanest\DataTables\Models\Header;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Support\Facades\View;
-use RuntimeException;
 
 /**
  * Class DataTableTest
  * @package hamburgscleanest\DataTables\Tests
  */
-class DataTableTest extends TestCase
-{
+class DataTableTest extends TestCase {
 
     use DatabaseMigrations;
 
@@ -143,7 +144,7 @@ class DataTableTest extends TestCase
      */
     public function handles_not_existing_class()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NotAnActiveRecordException::class);
         DataTable::model('non-existing');
     }
 
@@ -152,7 +153,7 @@ class DataTableTest extends TestCase
      */
     public function handles_class_which_is_no_active_record()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(NotAnActiveRecordException::class);
         DataTable::model(Header::class);
     }
 
@@ -161,7 +162,7 @@ class DataTableTest extends TestCase
      */
     public function handles_no_model_set()
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(UnknownBaseModelException::class);
 
         $dataTable = DataTable::columns(['id', 'created_at', 'name']);
         $dataTable->render();
@@ -292,5 +293,15 @@ class DataTableTest extends TestCase
             '<table class="table"><tr><th>created_at</th><th>count_testers_id</th></tr><tr><td>2017-01-01 00:00:00</td><td>2</td></tr></table>',
             $dataTable->render()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function cannot_format_undefined_column()
+    {
+        $this->expectException(ColumnNotFoundException::class);
+
+        DataTable::model(TestModel::class, ['created_at'])->formatColumn('tested_at', new DateColumn());
     }
 }

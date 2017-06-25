@@ -20,7 +20,8 @@ class SimpleCacheTest extends TestCase {
         // This key will be used for caching this explicit piece of data..
         $cacheKey = 'cc719d550b73b0162e54a8cd8f1ae1f4';
 
-        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name'], new SimpleCache());
+        $dataTable = DataTable::model(TestModel::class, ['id', 'created_at', 'name']);
+        $dataTable->cache(new SimpleCache());
 
         self::assertNull(Cache::get($cacheKey));
 

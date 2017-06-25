@@ -3,6 +3,7 @@
 namespace hamburgscleanest\DataTables\Models\DataComponents;
 
 use hamburgscleanest\DataTables\Facades\SessionHelper;
+use hamburgscleanest\DataTables\Models\Column\Column;
 use hamburgscleanest\DataTables\Models\DataComponent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -113,7 +114,7 @@ class Sorter extends DataComponent {
     private function _sortField(string $fieldName, string $direction) : void
     {
         /** @var Column $column */
-        $column = \array_first($this->_dataTable->getColumns(), function($column) use ($fieldName) {
+        $column = $this->_dataTable->getColumns()->first(function($column) use ($fieldName) {
             /** @var Column $column */
             return $column->getKey() === $fieldName;
         });
