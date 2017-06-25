@@ -194,7 +194,7 @@ If you omit the aggregate function, the value of the first related record is ret
      DataTable::model(TestModel::class)->columns(['COUNT(relation.id)'])->with(['relation']);
 ```
 
-## Cache the table
+## Cache the table data
 
 You can cache the retrieved table data for a certain amount of minutes.
 It is automatically stored with the driver defined in your .env file.
