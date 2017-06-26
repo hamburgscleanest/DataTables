@@ -73,13 +73,17 @@ Optionally you can pass a name for better identification or using multiple compo
 
 **Example 1 - Adding a component without a name:**
 
-`$dataTable->addComponent(new Component())`
+```php
+$dataTable->addComponent(new DataComponent());
+```
 
 Render it in the view: `$dataTable->component->render()`
 
 **Example 2 - Adding a component with a name:**
 
-`$dataTable->addComponent(new Component(), 'my shiny component')`
+```php
+$dataTable->addComponent(new Component(), 'my shiny component')
+```
 
 Render it in the view: `$dataTable->myshinycomponent->render()`
 
