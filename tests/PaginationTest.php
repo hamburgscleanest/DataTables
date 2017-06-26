@@ -205,4 +205,33 @@ class PaginationTest extends TestCase {
             $dataTable->render()
         );
     }
+
+    /**
+     * @test
+     */
+    public function can_change_page_symbols()
+    {
+        $paginator = new Paginator();
+        $paginator->surroundingPages(1);
+
+        \request()->request->add(['page' => 3]);
+
+        DataTable::model(TestModel::class, ['id'])->addComponent($paginator);
+
+        $symbols = [
+            'first' => 'erste', 'last' => 'letzte', 'next' => '->', 'previous' => '<-'
+        ];
+
+        $paginator->pageSymbols($symbols);
+
+        static::assertEquals(
+            '<ul class="pagination"><li><a href="http://localhost?page=1">' .
+            $symbols['first'] . '</a></li><li><a href="http://localhost?page=2">' .
+            $symbols['previous'] . '</a></li><li><a href="http://localhost?page=2">2</a></li><li class="active"><a href="http://localhost?page=3">3</a>' .
+            '</li><li><a href="http://localhost?page=4">4</a></li><li><a href="http://localhost?page=4">' .
+            $symbols['next'] . '</a></li><li><a href="http://localhost?page=7">' .
+            $symbols['last'] . '</a></li></ul>',
+            $paginator->render()
+        );
+    }
 }

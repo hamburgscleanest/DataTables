@@ -105,7 +105,7 @@ class DataTable {
      * Displayed columns
      *
      * @param array $columns
-     * @return $this
+     * @return DataTable
      * @throws UnknownBaseModelException
      */
     public function columns(array $columns) : DataTable
@@ -212,7 +212,7 @@ class DataTable {
      *
      * @param string $classes
      *
-     * @return $this
+     * @return DataTable
      */
     public function classes(string $classes) : DataTable
     {

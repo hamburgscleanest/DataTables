@@ -50,7 +50,7 @@ class SortableHeader implements HeaderFormatter {
      */
     public function sortingSymbols(array $sortingSymbols) : SortableHeader
     {
-        $this->_sortingSymbols = $sortingSymbols;
+        $this->_sortingSymbols = \array_merge($this->_sortingSymbols, $sortingSymbols);
 
         return $this;
     }
@@ -112,7 +112,7 @@ class SortableHeader implements HeaderFormatter {
         if ($this->_showSortLink($headerAttributeName))
         {
             $header->key = '<a class="sortable-header" href="' . (\request()->url() . '?' . $this->_buildSortQuery($headerAttributeName, $direction)) . '">' .
-                            $header->key . ' <span class="sort-symbol">' . ($this->_sortingSymbols[$direction] ?? '') . '</span></a>';
+                           $header->key . ' <span class="sort-symbol">' . $this->_sortingSymbols[$direction] . '</span></a>';
         }
     }
 

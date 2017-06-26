@@ -4,6 +4,10 @@ namespace hamburgscleanest\DataTables\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class DataLink
+ * @package hamburgscleanest\DataTables\Models
+ */
 class DataLink {
 
     /** @var string */
@@ -16,6 +20,21 @@ class DataLink {
     public function __construct(string $url)
     {
         $this->_url = $url;
+    }
+
+    /**
+     * For example:
+     *      $url = '/users/{id}';
+     *      $parameters = ['id' => 1337];
+     * --------------------------------
+     *    = '/users/1337'
+     *
+     * @param Model $rowModel
+     * @return string
+     */
+    public function generate(Model $rowModel) : string
+    {
+        return \strtr($this->_url, $this->_getFieldValues($rowModel));
     }
 
     /**
@@ -33,20 +52,5 @@ class DataLink {
         }
 
         return $fieldValues;
-    }
-
-    /**
-     * For example:
-     *      $url = '/users/{id}';
-     *      $parameters = ['id' => 1337];
-     * --------------------------------
-     *    = '/users/1337'
-     *
-     * @param Model $rowModel
-     * @return string
-     */
-    public function generate(Model $rowModel) : string
-    {
-        return \strtr($this->_url, $this->_getFieldValues($rowModel));
     }
 }

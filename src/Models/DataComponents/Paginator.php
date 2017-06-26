@@ -18,21 +18,11 @@ class Paginator extends DataComponent {
     /** @var int */
     private $_currentPage;
 
-    /** @var string */
-    private $_firstPageSymbol = 'first';
-
-    /** @var string */
-    private $_previousPageSymbol = '←';
-
-    /** @var string */
-    private $_nextPageSymbol = '→';
-
-    /** @var string */
-    private $_lastPageSymbol = 'last';
-
     /** @var int */
     private $_surroundingPages = 2;
 
+    /** @var array */
+    private $_pageSymbols = ['first' => 'first', 'last' => 'last', 'next' => '→', 'previous' => '←'];
 
     /**
      * Paginator constructor.
@@ -70,6 +60,17 @@ class Paginator extends DataComponent {
     }
 
     /**
+     * @param array $pageSymbols
+     * @return Paginator
+     */
+    public function pageSymbols(array $pageSymbols) : Paginator
+    {
+        $this->_pageSymbols = \array_merge($this->_pageSymbols, $pageSymbols);
+
+        return $this;
+    }
+
+    /**
      * Render the page links.
      *
      * @return string
@@ -83,11 +84,11 @@ class Paginator extends DataComponent {
         }
 
         return '<ul class="pagination">' .
-               $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_firstPageSymbol) .
-               $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_previousPageSymbol) .
+               $this->_renderListItem($this->_currentPage - 1, $this->_getFirstPageUrl(), $this->_pageSymbols['first']) .
+               $this->_renderListItem($this->_currentPage - 1, $this->_getPreviousPageUrl(), $this->_pageSymbols['previous']) .
                $this->_renderPageList() .
-               $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_nextPageSymbol) .
-               $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_lastPageSymbol) .
+               $this->_renderListItem($this->_currentPage + 1, $this->_getNextPageUrl(), $this->_pageSymbols['next']) .
+               $this->_renderListItem($this->_currentPage + 1, $this->_getLastPageUrl(), $this->_pageSymbols['last']) .
                '</ul>';
     }
 
