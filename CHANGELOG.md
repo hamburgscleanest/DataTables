@@ -4,16 +4,10 @@ All Notable changes to `data-tables` will be documented in this file.
 
 Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.0.0 (NEXT)
+## NEXT
 
 ### Added
-- `Automatic Package Discovery` for Laravel versions 5.5.x and later
-- Caching of the results
-``` php       
-     DataTable::model(TestModel::class, $columns, new SimpleCache($minutes));
-     // or
-     $dataTable->cache(new SimpleCache(1440));
-```
+- Nothing
 
 ### Deprecated
 - Nothing
@@ -26,6 +20,24 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 
 ### Security
 - Nothing
+
+## 1.0.0
+
+The first revision of the wiki has been released!\
+https://github.com/hamburgscleanest/data-tables/wiki
+
+### Added
+- `Automatic Package Discovery` for Laravel versions 5.5.x and later
+- Caching of the results
+``` php       
+     DataTable::model(TestModel::class, $columns, new SimpleCache($minutes));
+     // or
+     $dataTable->cache(new SimpleCache(1440));
+```
+- You can now change the pagination symbols
+``` php       
+     $paginator->pageSymbols(['first' => 'first page', 'last' => 'last page', 'next' => 'next', 'previous' => 'prev']);
+```
 
 ## 0.9.2
 
