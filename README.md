@@ -11,6 +11,8 @@ Data tables whose behavior and appearance can be extended by components.
 For example sorting, paginating or filtering the table. 
 No JavaScript is required.
 
+## Wiki
+Examples and more detailed information about particular components are located in the wiki: https://github.com/hamburgscleanest/data-tables/wiki
 
 ## Install
 
