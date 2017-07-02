@@ -70,19 +70,6 @@ class LinkColumn implements ColumnFormatter {
     }
 
     /**
-     * @param string $name
-     * @param string $url
-     * @return string
-     */
-    private function _renderLink(string $name, string $url) : string
-    {
-        return '<a href="' . $url . '"' .
-               ($this->_openNew ? ' target="_blank"' : '') .
-               (!empty($this->_classes) ? (' class="' . $this->_classes . '"') : '') .
-               '>' . $name . '</a>';
-    }
-
-    /**
      * @param Model $rowModel
      * @param string $column
      * @return string
@@ -90,5 +77,18 @@ class LinkColumn implements ColumnFormatter {
     public function format(Model $rowModel, string $column) : string
     {
         return $this->_renderLink($column, $this->_dataLink->generate($rowModel));
+    }
+
+    /**
+     * @param string $name
+     * @param string $url
+     * @return string
+     */
+    private function _renderLink(string $name, string $url) : string
+    {
+        return '<a href="' . $url . '"' .
+               ($this->_openNew ? ' target="_blank" rel="noopener"' : '') .
+               (!empty($this->_classes) ? (' class="' . $this->_classes . '"') : '') .
+               '>' . $name . '</a>';
     }
 }

@@ -43,7 +43,7 @@ class LinkColumnTest extends TestCase {
         $dataTable->query()->where('name', $fieldName);
 
         static::assertEquals(
-            '<table class="table"><tr><th>name</th></tr><tr><td><a href="/link/' . $fieldName . '" target="_blank">' . $fieldName . '</a></td></tr></table>',
+            '<table class="table"><tr><th>name</th></tr><tr><td><a href="/link/' . $fieldName . '" target="_blank" rel="noopener">' . $fieldName . '</a></td></tr></table>',
             $dataTable->render()
         );
     }
