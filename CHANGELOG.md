@@ -21,6 +21,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 1.0.1
+
+### Security
+- LinkColumn: Opens external anchors using rel="noopener"
+
 ## 1.0.0
 
 The first revision of the wiki has been released!\
