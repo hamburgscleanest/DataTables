@@ -42,4 +42,4 @@ var menudata={children:[
 {text:"q",url:"functions_func.html#index_q"},
 {text:"r",url:"functions_func.html#index_r"},
 {text:"s",url:"functions_func.html#index_s"},
-{text:"w",url:"functions_func.html#index_w"}]}]}]}]}
+{text:"w",url:"functions_func.html#index_w"}]}]}]}]};

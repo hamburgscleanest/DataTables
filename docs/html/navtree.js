@@ -1,4 +1,4 @@
-var navTreeSubIndices = new Array();
+var navTreeSubIndices = [];
 var arrowDown = '&#9660;';
 var arrowRight = '&#9658;';
 
@@ -87,7 +87,7 @@ function getScript(scriptName,func,show)
       }
     }
   }
-  head.appendChild(script); 
+  head.appendChild(script);
 }
 
 function createIndent(o,domNode,node,level)
@@ -111,7 +111,7 @@ function createIndent(o,domNode,node,level)
       } else {
         expandNode(o, node, false, false);
       }
-    }
+    };
     node.expandToggle.appendChild(imgNode);
     domNode.appendChild(node.expandToggle);
   } else {
@@ -155,7 +155,7 @@ function gotoAnchor(anchor,aname,updateLocation)
 
 function newNode(o, po, text, link, childrenData, lastNode)
 {
-  var node = new Object();
+  var node = {};
   node.children = Array();
   node.childrenData = childrenData;
   node.depth = po.depth + 1;
@@ -460,12 +460,12 @@ function toggleSyncButton(relpath)
 
 function initNavTree(toroot,relpath)
 {
-  var o = new Object();
+  var o = {};
   o.toroot = toroot;
-  o.node = new Object();
+  o.node = {};
   o.node.li = document.getElementById("nav-tree-contents");
   o.node.childrenData = NAVTREE;
-  o.node.children = new Array();
+  o.node.children = [];
   o.node.childrenUL = document.createElement("ul");
   o.node.getChildrenUL = function() { return o.node.childrenUL; };
   o.node.li.appendChild(o.node.childrenUL);
